@@ -1,0 +1,65 @@
+.TH oremind 1 "@PROJECT_YEAR@" "@PROJECT_VERSION@" "User Commands"
+.SH NAME
+oremind \- concatenate files to standard output
+.SH SYNOPSIS
+.B oremind
+.RI [ OPTION ]...
+.RI [ FILE ]...
+.SH DESCRIPTION
+Copy each
+.I FILE
+to standard output in order. If
+.I FILE
+is a single dash
+.RB ( \- ),
+read standard input at that position. If no
+.I FILE
+is given, read standard input once.
+.PP
+.B oremind
+is similar in spirit to
+.BR cat (1):
+it writes the concatenation of inputs to standard output.
+.SH OPTIONS
+.TP
+.BR \-v ", " \-\-verbose
+Print each file name (or
+.RB \(lq standard\ input \(rq
+for
+.RB \(lq \- \(rq)
+to standard error before copying that input.
+.TP
+.BR \-q ", " \-\-quiet
+Suppress messages that would be printed by
+.BR \-\-verbose .
+If both
+.B \-\-verbose
+and
+.B \-\-quiet
+are given,
+.B \-\-quiet
+wins.
+.TP
+.BR \-h ", " \-\-help
+Print a usage summary and exit successfully.
+.TP
+.B \-\-version
+Print version and license information and exit successfully.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+An error occurred (invalid options, unreadable file, or I/O error).
+.SH AUTHOR
+Written by @PROJECT_AUTHOR@ <@PROJECT_EMAIL@>.
+.SH COPYRIGHT
+Copyright \(co @PROJECT_YEAR@.
+License AGPL-3.0-or-later. This is free software: you are free to change and
+redistribute it under the terms of the GNU Affero General Public License.
+There is NO WARRANTY, to the extent permitted by law.
+See the LICENSE file in the source distribution for the full license text,
+including supplemental terms stating this project opposes AI exploitation and
+AI hegemony, and rejects mindless MIT-style licensing and politically naive
+BSD-style licensing.

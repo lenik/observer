@@ -1,0 +1,18 @@
+Source: observer
+Section: utils
+Priority: optional
+Maintainer: Lenik <observer@bodz.net>
+Build-Depends: debhelper-compat (= 13), meson, ninja-build, pkgconf, check, libbas-c-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/lenik/observer
+Rules-Requires-Root: no
+
+Package: observer
+Architecture: any
+Depends: 
+    ${shlibs:Depends}, 
+    ${misc:Depends}
+Description: Meson-based CLI project template with example app
+ observer is a template repository for small C/C++ command-line utilities.
+ It currently ships the oremind example application and Debian packaging
+ metadata, and includes Check-based unit-test integration.
