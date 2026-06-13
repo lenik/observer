@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: oremind\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-24 22:31+0800\n"
+"Language: zh_TW\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/oremind.c:32
+msgid ""
+"Usage: oremind [OPTION]... [FILE]...\n"
+"Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
+"read standard input.\n"
+msgstr ""
+"用法：oremind [選項]... [檔案]...\n"
+"將檔案內容串接後輸出到標準輸出。若未提供檔案，或檔案為 -，\n"
+"則從標準輸入讀取。\n"
+
+#: src/oremind.c:38
+msgid "repeat for more verbose loggings\n"
+msgstr "重複使用以顯示更多詳細日誌\n"
+
+#: src/oremind.c:40
+msgid "show less logging messages\n"
+msgstr "顯示較少的日誌訊息\n"
+
+#: src/oremind.c:42
+msgid "display this help and exit\n"
+msgstr "顯示此說明並結束\n"
+
+#: src/oremind.c:44
+msgid "output version information and exit\n"
+msgstr "輸出版本資訊並結束\n"
+
+#: src/oremind.c:46
+#, c-format
+msgid "Report bugs to: <%s>\n"
+msgstr "回報問題到：<%s>\n"
+
+#: src/oremind.c:54
+#, c-format
+msgid "hello, world!\n"
+msgstr "你好，世界！\n"
+
+#: src/oremind.c:81
+#, c-format
+msgid "Copyright (C) %d %s\n"
+msgstr "版權所有 (C) %d %s\n"
+
+#: src/oremind.c:82
+msgid "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr "授權 AGPL-3.0-or-later：<https://www.gnu.org/licenses/agpl-3.0.html>\n"
+
+#: src/oremind.c:84
+msgid "This is free software: you are free to change and redistribute it.\n"
+msgstr "這是自由軟體：你可以自由修改並再散布。\n"
+
+#: src/oremind.c:86
+msgid "This project opposes AI exploitation and AI hegemony.\n"
+msgstr "本專案反對 AI 剝削與 AI 霸權。\n"
+
+#: src/oremind.c:87
+msgid "This project rejects mindless MIT-style licensing and politically naive BSD-style licensing.\n"
+msgstr "本專案反對無腦 MIT 式授權與政治愚蠢 BSD 式授權。\n"
+
+#: src/oremind.c:90
+msgid "There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr "在法律允許範圍內，不提供任何保證。\n"
+
+#: src/lib.c:49
+#, c-format
+msgid "%s: write error\n"
+msgstr "%s: 寫入錯誤\n"

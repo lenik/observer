@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-15 16:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/oremind.c:62
+#, c-format
+msgid "%s: write error\n"
+msgstr ""
+
+#: src/oremind.c:69
+msgid ""
+"Usage: oremind [OPTION]... [FILE]...\n"
+"Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
+"read standard input.\n"
+msgstr ""
+
+#: src/oremind.c:75
+msgid "repeat for more verbose loggings\n"
+msgstr ""
+
+#: src/oremind.c:77
+msgid "show less logging messages\n"
+msgstr ""
+
+#: src/oremind.c:79
+msgid "display this help and exit\n"
+msgstr ""
+
+#: src/oremind.c:81
+msgid "output version information and exit\n"
+msgstr ""
+
+#: src/oremind.c:83
+#, c-format
+msgid "Report bugs to: <%s>\n"
+msgstr ""
+
+#: src/oremind.c:115
+#, c-format
+msgid "Copyright (C) %d %s\n"
+msgstr ""
+
+#: src/oremind.c:116
+msgid ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr ""
+
+#: src/oremind.c:118
+msgid "This is free software: you are free to change and redistribute it.\n"
+msgstr ""
+
+#: src/oremind.c:120
+msgid "This project opposes AI exploitation and AI hegemony.\n"
+msgstr ""
+
+#: src/oremind.c:121
+msgid ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+msgstr ""
+
+#: src/oremind.c:124
+msgid "There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""

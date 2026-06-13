@@ -1,0 +1,518 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: oremind\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-13 19:13+0800\n"
+"Language: ko\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/oremind.cpp:38
+msgid ""
+"Usage: oremind [OPTION]...\n"
+"Run a desktop self-observation prompt in the background.\n"
+msgstr ""
+"사용법: oremind [OPTION]...\n"
+"데스크톱 자기 관찰 프롬프트를 백그라운드에서 실행합니다.\n"
+
+#: src/oremind.cpp:43
+msgid "repeat for more verbose loggings\n"
+msgstr "더 자세한 로그를 보려면 반복 지정\n"
+
+#: src/oremind.cpp:45
+msgid "show less logging messages\n"
+msgstr "로그 메시지를 더 적게 표시\n"
+
+#: src/oremind.cpp:47
+msgid "display this help and exit\n"
+msgstr "이 도움말을 표시하고 종료\n"
+
+#: src/oremind.cpp:49
+msgid "set theme: light or dark\n"
+msgstr "테마 설정: light 또는 dark\n"
+
+#: src/oremind.cpp:51
+#, fuzzy
+msgid "set prompt interval in minutes\n"
+msgstr "프롬프트 간격을 분 단위로 설정\n"
+
+#: src/oremind.cpp:53
+msgid "SQLite file path, or log directory when PATH is a directory\n"
+msgstr "SQLite 파일 경로. PATH가 디렉터리이면 로그 저장 위치\n"
+
+#: src/oremind.cpp:55
+msgid "output version information and exit\n"
+msgstr "버전 정보를 표시하고 종료\n"
+
+#: src/oremind.cpp:57
+#, c-format
+msgid "Report bugs to: <%s>\n"
+msgstr "버그 제보: <%s>\n"
+
+#: src/oremind.cpp:92
+#, c-format
+msgid "invalid theme: %s\n"
+msgstr "잘못된 테마: %s\n"
+
+#: src/oremind.cpp:102
+#, c-format
+msgid "invalid interval: %s\n"
+msgstr "잘못된 간격: %s\n"
+
+#: src/oremind.cpp:113
+#, c-format
+msgid "Copyright (C) %d %s\n"
+msgstr "저작권 (C) %d %s\n"
+
+#: src/oremind.cpp:114
+msgid ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr ""
+"라이선스 AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+
+#: src/oremind.cpp:116
+msgid "This is free software: you are free to change and redistribute it.\n"
+msgstr "이것은 자유 소프트웨어이며 자유롭게 변경하고 재배포할 수 있습니다.\n"
+
+#: src/oremind.cpp:118
+msgid "This project opposes AI exploitation and AI hegemony.\n"
+msgstr "이 프로젝트는 AI 착취와 AI 패권에 반대합니다.\n"
+
+#: src/oremind.cpp:119
+msgid ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+msgstr ""
+"이 프로젝트는 무비판적 MIT식 라이선스와 정치적으로 순진한 BSD식 라이선스를 거"
+"부합니다.\n"
+
+#: src/oremind.cpp:122
+msgid "There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr "법이 허용하는 범위에서 어떠한 보증도 없습니다.\n"
+
+#: src/ObservationDialog.cpp:376
+msgid "energy"
+msgstr "에너지"
+
+#: src/ObservationDialog.cpp:380
+msgid "mood"
+msgstr "기분"
+
+#: src/ObservationDialog.cpp:384
+msgid "grounding"
+msgstr "접지감"
+
+#: src/ObservationDialog.cpp:463
+msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+msgstr "<Enter> 제출, <Escape> 취소. 다음 프롬프트는"
+
+#: src/ObservationDialog.cpp:466
+msgid "minutes."
+msgstr "분 후."
+
+#: src/ObservationDialog.cpp:467
+msgid "seconds."
+msgstr "초 후."
+
+#: src/QuoteProvider.cpp:9
+msgid "明天是今天的延续，今天是明天的提前。"
+msgstr "내일은 오늘의 연속이고, 오늘은 내일의 예고입니다."
+
+#: src/QuoteProvider.cpp:10
+msgid "中低电量，也要推进一个最小动作。"
+msgstr "에너지가 낮아도 가장 작은 행동은 밀고 갑니다."
+
+#: src/QuoteProvider.cpp:11
+msgid "不要创造刺激，先创造价值。"
+msgstr "자극을 만들기 전에 먼저 가치를 만듭니다."
+
+#: src/QuoteProvider.cpp:12
+msgid "高维空转会成为利息税。"
+msgstr "높은 공회전은 결국 이자가 됩니다."
+
+#: src/QuoteProvider.cpp:13
+msgid "接地，不是放弃理想，是把理想接到地面。"
+msgstr "접지는 이상을 포기하는 것이 아니라 이상을 땅에 연결하는 것입니다."
+
+#: src/QuoteProvider.cpp:14
+msgid "现在不是证明自己伟大，而是完成下一步。"
+msgstr "위대함을 증명할 때가 아니라 다음 단계를 끝낼 때입니다."
+
+#: src/QuoteProvider.cpp:15
+msgid "把当前状态记录下来，就是重新夺回方向盘。"
+msgstr "현재 상태를 기록하는 것은 운전대를 되찾는 일입니다."
+
+#: src/QuoteProvider.cpp:16
+msgid "疲惫时不要规划人生，先完成一个小动作。"
+msgstr "피곤할 때는 인생을 계획하지 말고 작은 행동 하나를 먼저 끝냅니다."
+
+#: src/QuoteProvider.cpp:17
+msgid "真正的执行，不依赖情绪同意。"
+msgstr "진짜 실행은 감정의 동의에 기대지 않습니다."
+
+#: src/QuoteProvider.cpp:18
+msgid "空想可以点火，但落地才能发电。"
+msgstr "공상은 불을 붙일 수 있지만, 착지해야 전기를 만듭니다."
+
+#: src/QuoteProvider.cpp:19
+msgid "不要等状态好，状态是在行动中恢复的。"
+msgstr "상태가 좋아지기를 기다리지 마세요. 상태는 행동 속에서 회복됩니다."
+
+#: src/QuoteProvider.cpp:20
+msgid "先把手放到事情上，心会慢慢跟上。"
+msgstr "먼저 손을 일 위에 올리면 마음은 천천히 따라옵니다."
+
+#: src/QuoteProvider.cpp:21
+msgid "焦虑不是命令，它只是噪音。"
+msgstr "불안은 명령이 아니라 소음입니다."
+
+#: src/QuoteProvider.cpp:22
+msgid "今天不用赢世界，只要赢一次漂移。"
+msgstr "오늘 세계를 이길 필요는 없습니다. 한 번의 표류만 이기면 됩니다."
+
+#: src/QuoteProvider.cpp:23
+msgid "能量低，就把任务切到更小。"
+msgstr "에너지가 낮으면 일을 더 작게 자릅니다."
+
+#: src/QuoteProvider.cpp:24
+msgid "接地的第一步，是说清我现在在干嘛。"
+msgstr "접지의 첫걸음은 지금 무엇을 하는지 분명히 말하는 것입니다."
+
+#: src/QuoteProvider.cpp:25
+msgid "记录不是浪费时间，记录是在校准方向。"
+msgstr "기록은 시간 낭비가 아니라 방향 보정입니다."
+
+#: src/QuoteProvider.cpp:26
+msgid "不必立刻强大，但要立刻靠近现实。"
+msgstr "당장 강해질 필요는 없지만, 당장 현실에 가까워져야 합니다."
+
+#: src/QuoteProvider.cpp:27
+msgid "世界不会因为你想明白才开始运转。"
+msgstr "세상은 당신이 다 이해할 때까지 멈추지 않습니다."
+
+#: src/QuoteProvider.cpp:28
+msgid "先做可见的一步，再谈宏大的结构。"
+msgstr "거대한 구조보다 먼저 보이는 한 걸음을 합니다."
+
+#: src/QuoteProvider.cpp:29
+msgid "把想法压进动作里，它才会变成力量。"
+msgstr "생각을 행동에 눌러 넣어야 힘이 됩니다."
+
+#: src/QuoteProvider.cpp:30
+msgid "拖延不是失败，但不观察拖延会变成系统。"
+msgstr "미루기는 실패가 아니지만, 관찰하지 않은 미루기는 시스템이 됩니다."
+
+#: src/QuoteProvider.cpp:31
+msgid "今天的最小闭环，就是明天的支点。"
+msgstr "오늘의 가장 작은 닫힌 고리가 내일의 지점이 됩니다."
+
+#: src/QuoteProvider.cpp:32
+msgid "不要追求完美启动，追求真实启动。"
+msgstr "완벽한 시작보다 진짜 시작을 추구합니다."
+
+#: src/QuoteProvider.cpp:33
+msgid "当前这一分钟，比想象中的未来更有权重。"
+msgstr "지금 이 1분은 상상 속 미래보다 무게가 큽니다."
+
+#: src/QuoteProvider.cpp:34
+msgid "不要用复杂性保护逃避。"
+msgstr "내일은 오늘의 연속이고, 오늘은 내일의 예고입니다."
+
+#: src/QuoteProvider.cpp:35
+msgid "把混乱写下来，混乱就开始失去权力。"
+msgstr "에너지가 낮아도 가장 작은 행동은 밀고 갑니다."
+
+#: src/QuoteProvider.cpp:36
+msgid "接地值下降时，先回到手边的任务。"
+msgstr "자극을 만들기 전에 먼저 가치를 만듭니다."
+
+#: src/QuoteProvider.cpp:37
+msgid "能量值不是道德评分，它只是仪表盘。"
+msgstr "높은 공회전은 결국 이자가 됩니다."
+
+#: src/QuoteProvider.cpp:38
+msgid "心情值不是结论，它只是天气。"
+msgstr "접지는 이상을 포기하는 것이 아니라 이상을 땅에 연결하는 것입니다."
+
+#: src/QuoteProvider.cpp:39
+msgid "低心情时，不要做终局判断。"
+msgstr "위대함을 증명할 때가 아니라 다음 단계를 끝낼 때입니다."
+
+#: src/QuoteProvider.cpp:40
+msgid "低能量时，不要否定整个人生。"
+msgstr "현재 상태를 기록하는 것은 운전대를 되찾는 일입니다."
+
+#: src/QuoteProvider.cpp:41
+msgid "低接地时，不要相信宏大冲动。"
+msgstr "피곤할 때는 인생을 계획하지 말고 작은 행동 하나를 먼저 끝냅니다."
+
+#: src/QuoteProvider.cpp:42
+msgid "先问：我现在能完成什么？"
+msgstr "진짜 실행은 감정의 동의에 기대지 않습니다."
+
+#: src/QuoteProvider.cpp:43
+msgid "事情不是靠感动完成的，是靠连续动作完成的。"
+msgstr "공상은 불을 붙일 수 있지만, 착지해야 전기를 만듭니다."
+
+#: src/QuoteProvider.cpp:44
+msgid "少一点解释自己，多一点移动棋子。"
+msgstr "상태가 좋아지기를 기다리지 마세요. 상태는 행동 속에서 회복됩니다."
+
+#: src/QuoteProvider.cpp:45
+msgid "真正的自由，来自可重复的执行能力。"
+msgstr "먼저 손을 일 위에 올리면 마음은 천천히 따라옵니다."
+
+#: src/QuoteProvider.cpp:46
+msgid "把今天变成证据，而不是幻想。"
+msgstr "불안은 명령이 아니라 소음입니다."
+
+#: src/QuoteProvider.cpp:47
+msgid "你不需要燃烧，你需要稳定供电。"
+msgstr "오늘 세계를 이길 필요는 없습니다. 한 번의 표류만 이기면 됩니다."
+
+#: src/QuoteProvider.cpp:48
+msgid "别让大目标吃掉小动作。"
+msgstr "에너지가 낮으면 일을 더 작게 자릅니다."
+
+#: src/QuoteProvider.cpp:49
+msgid "现实不是敌人，现实是接口。"
+msgstr "접지의 첫걸음은 지금 무엇을 하는지 분명히 말하는 것입니다."
+
+#: src/QuoteProvider.cpp:50
+msgid "最好的灵感，是能进入下一步的灵感。"
+msgstr "기록은 시간 낭비가 아니라 방향 보정입니다."
+
+#: src/QuoteProvider.cpp:51
+msgid "不要把思考当成完成。"
+msgstr "당장 강해질 필요는 없지만, 당장 현실에 가까워져야 합니다."
+
+#: src/QuoteProvider.cpp:52
+msgid "不要把紧张当成努力。"
+msgstr "세상은 당신이 다 이해할 때까지 멈추지 않습니다."
+
+#: src/QuoteProvider.cpp:53
+msgid "不要把收藏当成学习。"
+msgstr "거대한 구조보다 먼저 보이는 한 걸음을 합니다."
+
+#: src/QuoteProvider.cpp:54
+msgid "不要把计划当成推进。"
+msgstr "생각을 행동에 눌러 넣어야 힘이 됩니다."
+
+#: src/QuoteProvider.cpp:55
+msgid "不要把焦虑当成责任感。"
+msgstr "미루기는 실패가 아니지만, 관찰하지 않은 미루기는 시스템이 됩니다."
+
+#: src/QuoteProvider.cpp:56
+msgid "不要把兴奋当成成果。"
+msgstr "오늘의 가장 작은 닫힌 고리가 내일의 지점이 됩니다."
+
+#: src/QuoteProvider.cpp:57
+msgid "真正的进展，会留下痕迹。"
+msgstr "완벽한 시작보다 진짜 시작을 추구합니다."
+
+#: src/QuoteProvider.cpp:58
+msgid "今天至少留下一条可验证的痕迹。"
+msgstr "지금 이 1분은 상상 속 미래보다 무게가 큽니다."
+
+#: src/QuoteProvider.cpp:59
+msgid "没有闭环的忙碌，会慢慢变成幻觉。"
+msgstr "내일은 오늘의 연속이고, 오늘은 내일의 예고입니다."
+
+#: src/QuoteProvider.cpp:60
+msgid "一件事落地，胜过十个宏大判断。"
+msgstr "에너지가 낮아도 가장 작은 행동은 밀고 갑니다."
+
+#: src/QuoteProvider.cpp:61
+msgid "先交付一个粗糙版本，再优化尊严。"
+msgstr "자극을 만들기 전에 먼저 가치를 만듭니다."
+
+#: src/QuoteProvider.cpp:62
+msgid "把任务做到能被别人看见。"
+msgstr "높은 공회전은 결국 이자가 됩니다."
+
+#: src/QuoteProvider.cpp:63
+msgid "把想法做到能被自己复盘。"
+msgstr "접지는 이상을 포기하는 것이 아니라 이상을 땅에 연결하는 것입니다."
+
+#: src/QuoteProvider.cpp:64
+msgid "重复不是低级，重复是系统成形的方式。"
+msgstr "위대함을 증명할 때가 아니라 다음 단계를 끝낼 때입니다."
+
+#: src/QuoteProvider.cpp:65
+msgid "节奏比爆发更可靠。"
+msgstr "현재 상태를 기록하는 것은 운전대를 되찾는 일입니다."
+
+#: src/QuoteProvider.cpp:66
+msgid "你不是没方向，你是需要重新对焦。"
+msgstr "피곤할 때는 인생을 계획하지 말고 작은 행동 하나를 먼저 끝냅니다."
+
+#: src/QuoteProvider.cpp:67
+msgid "漂移不可怕，不回看才可怕。"
+msgstr "진짜 실행은 감정의 동의에 기대지 않습니다."
+
+#: src/QuoteProvider.cpp:68
+msgid "观察自己，不是审判自己。"
+msgstr "공상은 불을 붙일 수 있지만, 착지해야 전기를 만듭니다."
+
+#: src/QuoteProvider.cpp:69
+msgid "状态差时，降低难度，不要取消行动。"
+msgstr "상태가 좋아지기를 기다리지 마세요. 상태는 행동 속에서 회복됩니다."
+
+#: src/QuoteProvider.cpp:70
+msgid "把自己从情绪里捞出来，放回任务里。"
+msgstr "먼저 손을 일 위에 올리면 마음은 천천히 따라옵니다."
+
+#: src/QuoteProvider.cpp:71
+msgid "不要在脑内开会，打开文件。"
+msgstr "불안은 명령이 아니라 소음입니다."
+
+#: src/QuoteProvider.cpp:72
+msgid "不要在脑内创业，发出一个请求。"
+msgstr "오늘 세계를 이길 필요는 없습니다. 한 번의 표류만 이기면 됩니다."
+
+#: src/QuoteProvider.cpp:73
+msgid "不要在脑内复盘，写下一句话。"
+msgstr "에너지가 낮으면 일을 더 작게 자릅니다."
+
+#: src/QuoteProvider.cpp:74
+msgid "把注意力从评价切回动作。"
+msgstr "접지의 첫걸음은 지금 무엇을 하는지 분명히 말하는 것입니다."
+
+#: src/QuoteProvider.cpp:75
+msgid "能做一点，就先做一点。"
+msgstr "기록은 시간 낭비가 아니라 방향 보정입니다."
+
+#: src/QuoteProvider.cpp:76
+msgid "一点点不是安慰，一点点是入口。"
+msgstr "당장 강해질 필요는 없지만, 당장 현실에 가까워져야 합니다."
+
+#: src/QuoteProvider.cpp:77
+msgid "入口比宏图重要。"
+msgstr "세상은 당신이 다 이해할 때까지 멈추지 않습니다."
+
+#: src/QuoteProvider.cpp:78
+msgid "启动比姿势重要。"
+msgstr "거대한 구조보다 먼저 보이는 한 걸음을 합니다."
+
+#: src/QuoteProvider.cpp:79
+msgid "完成比解释重要。"
+msgstr "생각을 행동에 눌러 넣어야 힘이 됩니다."
+
+#: src/QuoteProvider.cpp:80
+msgid "复盘比自责重要。"
+msgstr "미루기는 실패가 아니지만, 관찰하지 않은 미루기는 시스템이 됩니다."
+
+#: src/QuoteProvider.cpp:81
+msgid "今天的执行，是给明天的自己铺路。"
+msgstr "오늘의 가장 작은 닫힌 고리가 내일의 지점이 됩니다."
+
+#: src/QuoteProvider.cpp:82
+msgid "人会漂，系统要拉你回来。"
+msgstr "완벽한 시작보다 진짜 시작을 추구합니다."
+
+#: src/QuoteProvider.cpp:83
+msgid "当你不知道做什么，就记录现在。"
+msgstr "지금 이 1분은 상상 속 미래보다 무게가 큽니다."
+
+#: src/QuoteProvider.cpp:84
+msgid "当你想逃避，就缩小任务。"
+msgstr "내일은 오늘의 연속이고, 오늘은 내일의 예고입니다."
+
+#: src/QuoteProvider.cpp:85
+msgid "当你想证明，就先交付。"
+msgstr "에너지가 낮아도 가장 작은 행동은 밀고 갑니다."
+
+#: src/QuoteProvider.cpp:86
+msgid "当你想放弃，就先暂停判断。"
+msgstr "자극을 만들기 전에 먼저 가치를 만듭니다."
+
+#: src/QuoteProvider.cpp:87
+msgid "当你想空转，就问现实接口在哪里。"
+msgstr "높은 공회전은 결국 이자가 됩니다."
+
+#: src/QuoteProvider.cpp:88
+msgid "别急着寻找意义，先制造一个可用结果。"
+msgstr "접지는 이상을 포기하는 것이 아니라 이상을 땅에 연결하는 것입니다."
+
+#: src/QuoteProvider.cpp:89
+msgid "意义不是想出来的，是被行动压实的。"
+msgstr "위대함을 증명할 때가 아니라 다음 단계를 끝낼 때입니다."
+
+#: src/QuoteProvider.cpp:90
+msgid "稳定的小动作，会慢慢长成命运。"
+msgstr "현재 상태를 기록하는 것은 운전대를 되찾는 일입니다."
+
+#: src/QuoteProvider.cpp:91
+msgid "让今天有一个干净的切口。"
+msgstr "피곤할 때는 인생을 계획하지 말고 작은 행동 하나를 먼저 끝냅니다."
+
+#: src/QuoteProvider.cpp:92
+msgid "让任务小到无法拒绝。"
+msgstr "진짜 실행은 감정의 동의에 기대지 않습니다."
+
+#: src/QuoteProvider.cpp:93
+msgid "让记录诚实到无法欺骗。"
+msgstr "공상은 불을 붙일 수 있지만, 착지해야 전기를 만듭니다."
+
+#: src/QuoteProvider.cpp:94
+msgid "让系统温柔到可以持续。"
+msgstr "상태가 좋아지기를 기다리지 마세요. 상태는 행동 속에서 회복됩니다."
+
+#: src/QuoteProvider.cpp:95
+msgid "让行动具体到可以开始。"
+msgstr "먼저 손을 일 위에 올리면 마음은 천천히 따라옵니다."
+
+#: src/QuoteProvider.cpp:96
+msgid "别和疲惫争辩，给它一个小任务。"
+msgstr "불안은 명령이 아니라 소음입니다."
+
+#: src/QuoteProvider.cpp:97
+msgid "别和焦虑辩论，给它一个时间盒。"
+msgstr "오늘 세계를 이길 필요는 없습니다. 한 번의 표류만 이기면 됩니다."
+
+#: src/QuoteProvider.cpp:98
+msgid "别和空虚对抗，给它一个现实动作。"
+msgstr "에너지가 낮으면 일을 더 작게 자릅니다."
+
+#: src/QuoteProvider.cpp:99
+msgid "能量会波动，结构要稳定。"
+msgstr "접지의 첫걸음은 지금 무엇을 하는지 분명히 말하는 것입니다."
+
+#: src/QuoteProvider.cpp:100
+msgid "心情会波动，记录要稳定。"
+msgstr "기록은 시간 낭비가 아니라 방향 보정입니다."
+
+#: src/QuoteProvider.cpp:101
+msgid "接地会波动，提醒要稳定。"
+msgstr "당장 강해질 필요는 없지만, 당장 현실에 가까워져야 합니다."
+
+#: src/QuoteProvider.cpp:102
+msgid "每一次记录，都是一次返航。"
+msgstr "세상은 당신이 다 이해할 때까지 멈추지 않습니다."
+
+#: src/QuoteProvider.cpp:103
+msgid "每一次提交，都是一次落子。"
+msgstr "거대한 구조보다 먼저 보이는 한 걸음을 합니다."
+
+#: src/QuoteProvider.cpp:104
+msgid "每一次接地，都是一次回到现实。"
+msgstr "생각을 행동에 눌러 넣어야 힘이 됩니다."
+
+#: src/QuoteProvider.cpp:105
+msgid "不要轻看两分钟，它能切断一整天的漂移。"
+msgstr "미루기는 실패가 아니지만, 관찰하지 않은 미루기는 시스템이 됩니다."
+
+#: src/QuoteProvider.cpp:106
+msgid "观察不是为了控制一切，而是为了不被一切拖走。"
+msgstr "오늘의 가장 작은 닫힌 고리가 내일의 지점이 됩니다."
+
+#: src/QuoteProvider.cpp:107
+msgid "今天只问三个数和一句话。"
+msgstr "완벽한 시작보다 진짜 시작을 추구합니다."
+
+#: src/QuoteProvider.cpp:108
+msgid "你现在在哪里？你正在做什么？你还要不要回来？"
+msgstr "지금 이 1분은 상상 속 미래보다 무게가 큽니다."
+
+#~ msgid "What are you doing now?"
+#~ msgstr "지금 무엇을 하고 있나요?"

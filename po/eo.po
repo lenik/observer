@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: oremind\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-24 22:31+0800\n"
+"Language: eo\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/oremind.c:32
+msgid ""
+"Usage: oremind [OPTION]... [FILE]...\n"
+"Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
+"read standard input.\n"
+msgstr ""
+"Uzo: oremind [OPTION]... [FILE]...\n"
+"Kunigas FILE(j)n al norma eligo. Sen FILE, au kiam FILE estas -,\n"
+"legi de norma enigo.\n"
+
+#: src/oremind.c:38
+msgid "repeat for more verbose loggings\n"
+msgstr "ripetu por pli detalaj protokoloj\n"
+
+#: src/oremind.c:40
+msgid "show less logging messages\n"
+msgstr "montri malpli da protokolaj mesagxoj\n"
+
+#: src/oremind.c:42
+msgid "display this help and exit\n"
+msgstr "montri cxi tiun helpon kaj eliri\n"
+
+#: src/oremind.c:44
+msgid "output version information and exit\n"
+msgstr "montri versiajn informojn kaj eliri\n"
+
+#: src/oremind.c:46
+#, c-format
+msgid "Report bugs to: <%s>\n"
+msgstr "Raportu cimojn al: <%s>\n"
+
+#: src/oremind.c:54
+#, c-format
+msgid "hello, world!\n"
+msgstr "Saluton, mondo!\n"
+
+#: src/oremind.c:81
+#, c-format
+msgid "Copyright (C) %d %s\n"
+msgstr "Kopirajto (C) %d %s\n"
+
+#: src/oremind.c:82
+msgid "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr "Permesilo AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+
+#: src/oremind.c:84
+msgid "This is free software: you are free to change and redistribute it.\n"
+msgstr "Tio estas libera programaro: vi rajtas sxangxi kaj redistribui gxin.\n"
+
+#: src/oremind.c:86
+msgid "This project opposes AI exploitation and AI hegemony.\n"
+msgstr "Tiu projekto kontrauxas AI-ekspluaton kaj AI-hegemonion.\n"
+
+#: src/oremind.c:87
+msgid "This project rejects mindless MIT-style licensing and politically naive BSD-style licensing.\n"
+msgstr "Tiu projekto malakceptas senpripensan MIT-stilan permesilon kaj politike naivan BSD-stilan permesilon.\n"
+
+#: src/oremind.c:90
+msgid "There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr "NE ESTAS GARANTIO, lau la amplekso permesita de la lexo.\n"
+
+#: src/lib.c:49
+#, c-format
+msgid "%s: write error\n"
+msgstr "%s: skriberaro\n"

@@ -1,0 +1,538 @@
+# English translations for observer package.
+# Copyright (C) 2026 THE observer'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the observer package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: observer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-13 19:13+0800\n"
+"PO-Revision-Date: 2026-06-13 16:33+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/oremind.cpp:38
+msgid ""
+"Usage: oremind [OPTION]...\n"
+"Run a desktop self-observation prompt in the background.\n"
+msgstr ""
+"Usage: oremind [OPTION]...\n"
+"Run a desktop self-observation prompt in the background.\n"
+
+#: src/oremind.cpp:43
+msgid "repeat for more verbose loggings\n"
+msgstr "repeat for more verbose loggings\n"
+
+#: src/oremind.cpp:45
+msgid "show less logging messages\n"
+msgstr "show less logging messages\n"
+
+#: src/oremind.cpp:47
+msgid "display this help and exit\n"
+msgstr "display this help and exit\n"
+
+#: src/oremind.cpp:49
+msgid "set theme: light or dark\n"
+msgstr "set theme: light or dark\n"
+
+#: src/oremind.cpp:51
+#, fuzzy
+msgid "set prompt interval in minutes\n"
+msgstr "set prompt interval in minutes\n"
+
+#: src/oremind.cpp:53
+msgid "SQLite file path, or log directory when PATH is a directory\n"
+msgstr "SQLite file path, or log directory when PATH is a directory\n"
+
+#: src/oremind.cpp:55
+msgid "output version information and exit\n"
+msgstr "output version information and exit\n"
+
+#: src/oremind.cpp:57
+#, c-format
+msgid "Report bugs to: <%s>\n"
+msgstr "Report bugs to: <%s>\n"
+
+#: src/oremind.cpp:92
+#, c-format
+msgid "invalid theme: %s\n"
+msgstr "invalid theme: %s\n"
+
+#: src/oremind.cpp:102
+#, c-format
+msgid "invalid interval: %s\n"
+msgstr "invalid interval: %s\n"
+
+#: src/oremind.cpp:113
+#, c-format
+msgid "Copyright (C) %d %s\n"
+msgstr "Copyright (C) %d %s\n"
+
+#: src/oremind.cpp:114
+msgid ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+
+#: src/oremind.cpp:116
+msgid "This is free software: you are free to change and redistribute it.\n"
+msgstr "This is free software: you are free to change and redistribute it.\n"
+
+#: src/oremind.cpp:118
+msgid "This project opposes AI exploitation and AI hegemony.\n"
+msgstr "This project opposes AI exploitation and AI hegemony.\n"
+
+#: src/oremind.cpp:119
+msgid ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+msgstr ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+
+#: src/oremind.cpp:122
+msgid "There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr "There is NO WARRANTY, to the extent permitted by law.\n"
+
+#: src/ObservationDialog.cpp:376
+msgid "energy"
+msgstr "energy"
+
+#: src/ObservationDialog.cpp:380
+msgid "mood"
+msgstr "mood"
+
+#: src/ObservationDialog.cpp:384
+msgid "grounding"
+msgstr "grounding"
+
+#: src/ObservationDialog.cpp:463
+msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+msgstr "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+
+#: src/ObservationDialog.cpp:466
+msgid "minutes."
+msgstr "minutes."
+
+#: src/ObservationDialog.cpp:467
+msgid "seconds."
+msgstr "seconds."
+
+#: src/QuoteProvider.cpp:9
+msgid "明天是今天的延续，今天是明天的提前。"
+msgstr "Tomorrow extends today; today previews tomorrow."
+
+#: src/QuoteProvider.cpp:10
+msgid "中低电量，也要推进一个最小动作。"
+msgstr "Even at low power, move one smallest action forward."
+
+#: src/QuoteProvider.cpp:11
+msgid "不要创造刺激，先创造价值。"
+msgstr "Do not create stimulation; create value first."
+
+#: src/QuoteProvider.cpp:12
+msgid "高维空转会成为利息税。"
+msgstr "High-level spinning becomes interest tax."
+
+#: src/QuoteProvider.cpp:13
+msgid "接地，不是放弃理想，是把理想接到地面。"
+msgstr ""
+"Grounding is not giving up ideals; it is connecting ideals to the ground."
+
+#: src/QuoteProvider.cpp:14
+msgid "现在不是证明自己伟大，而是完成下一步。"
+msgstr ""
+"This is not the time to prove greatness; it is time to finish the next step."
+
+#: src/QuoteProvider.cpp:15
+msgid "把当前状态记录下来，就是重新夺回方向盘。"
+msgstr "Recording the current state is taking back the steering wheel."
+
+#: src/QuoteProvider.cpp:16
+msgid "疲惫时不要规划人生，先完成一个小动作。"
+msgstr "When tired, do not plan your life; finish one small action first."
+
+#: src/QuoteProvider.cpp:17
+msgid "真正的执行，不依赖情绪同意。"
+msgstr "Real execution does not depend on emotional permission."
+
+#: src/QuoteProvider.cpp:18
+msgid "空想可以点火，但落地才能发电。"
+msgstr "Imagination can ignite, but landing generates power."
+
+#: src/QuoteProvider.cpp:19
+msgid "不要等状态好，状态是在行动中恢复的。"
+msgstr "Do not wait for a good state; state recovers through action."
+
+#: src/QuoteProvider.cpp:20
+msgid "先把手放到事情上，心会慢慢跟上。"
+msgstr "Put your hands on the work first; the heart will follow slowly."
+
+#: src/QuoteProvider.cpp:21
+msgid "焦虑不是命令，它只是噪音。"
+msgstr "Anxiety is not a command; it is only noise."
+
+#: src/QuoteProvider.cpp:22
+msgid "今天不用赢世界，只要赢一次漂移。"
+msgstr "You do not need to beat the world today; beat one drift."
+
+#: src/QuoteProvider.cpp:23
+msgid "能量低，就把任务切到更小。"
+msgstr "When energy is low, cut the task smaller."
+
+#: src/QuoteProvider.cpp:24
+msgid "接地的第一步，是说清我现在在干嘛。"
+msgstr "The first step of grounding is saying clearly what I am doing now."
+
+#: src/QuoteProvider.cpp:25
+msgid "记录不是浪费时间，记录是在校准方向。"
+msgstr "Recording is not wasting time; recording calibrates direction."
+
+#: src/QuoteProvider.cpp:26
+msgid "不必立刻强大，但要立刻靠近现实。"
+msgstr ""
+"You do not need to be strong immediately, but you need to approach reality "
+"immediately."
+
+#: src/QuoteProvider.cpp:27
+msgid "世界不会因为你想明白才开始运转。"
+msgstr ""
+"The world does not wait for you to think everything through before it turns."
+
+#: src/QuoteProvider.cpp:28
+msgid "先做可见的一步，再谈宏大的结构。"
+msgstr "Do one visible step first, then discuss grand structures."
+
+#: src/QuoteProvider.cpp:29
+msgid "把想法压进动作里，它才会变成力量。"
+msgstr "Press the idea into action; only then does it become force."
+
+#: src/QuoteProvider.cpp:30
+msgid "拖延不是失败，但不观察拖延会变成系统。"
+msgstr "Delay is not failure, but unobserved delay becomes a system."
+
+#: src/QuoteProvider.cpp:31
+msgid "今天的最小闭环，就是明天的支点。"
+msgstr "Today's smallest closed loop is tomorrow's support point."
+
+#: src/QuoteProvider.cpp:32
+msgid "不要追求完美启动，追求真实启动。"
+msgstr "Do not seek a perfect start; seek a real start."
+
+#: src/QuoteProvider.cpp:33
+msgid "当前这一分钟，比想象中的未来更有权重。"
+msgstr "This current minute has more weight than the imagined future."
+
+#: src/QuoteProvider.cpp:34
+msgid "不要用复杂性保护逃避。"
+msgstr "Do not use complexity to protect avoidance."
+
+#: src/QuoteProvider.cpp:35
+msgid "把混乱写下来，混乱就开始失去权力。"
+msgstr "Write the chaos down, and chaos begins to lose power."
+
+#: src/QuoteProvider.cpp:36
+msgid "接地值下降时，先回到手边的任务。"
+msgstr "When grounding drops, return first to the task at hand."
+
+#: src/QuoteProvider.cpp:37
+msgid "能量值不是道德评分，它只是仪表盘。"
+msgstr "Energy is not a moral score; it is a dashboard."
+
+#: src/QuoteProvider.cpp:38
+msgid "心情值不是结论，它只是天气。"
+msgstr "Mood is not a conclusion; it is weather."
+
+#: src/QuoteProvider.cpp:39
+msgid "低心情时，不要做终局判断。"
+msgstr "When mood is low, do not make final judgments."
+
+#: src/QuoteProvider.cpp:40
+msgid "低能量时，不要否定整个人生。"
+msgstr "When energy is low, do not deny your whole life."
+
+#: src/QuoteProvider.cpp:41
+msgid "低接地时，不要相信宏大冲动。"
+msgstr "When grounding is low, do not trust grand impulses."
+
+#: src/QuoteProvider.cpp:42
+msgid "先问：我现在能完成什么？"
+msgstr "First ask: what can I finish now?"
+
+#: src/QuoteProvider.cpp:43
+msgid "事情不是靠感动完成的，是靠连续动作完成的。"
+msgstr ""
+"Things are not completed by being moved; they are completed by continuous "
+"actions."
+
+#: src/QuoteProvider.cpp:44
+msgid "少一点解释自己，多一点移动棋子。"
+msgstr "Explain yourself less; move pieces more."
+
+#: src/QuoteProvider.cpp:45
+msgid "真正的自由，来自可重复的执行能力。"
+msgstr "True freedom comes from repeatable execution."
+
+#: src/QuoteProvider.cpp:46
+msgid "把今天变成证据，而不是幻想。"
+msgstr "Turn today into evidence, not fantasy."
+
+#: src/QuoteProvider.cpp:47
+msgid "你不需要燃烧，你需要稳定供电。"
+msgstr "You do not need to burn; you need stable power."
+
+#: src/QuoteProvider.cpp:48
+msgid "别让大目标吃掉小动作。"
+msgstr "Do not let big goals eat small actions."
+
+#: src/QuoteProvider.cpp:49
+msgid "现实不是敌人，现实是接口。"
+msgstr "Reality is not the enemy; reality is the interface."
+
+#: src/QuoteProvider.cpp:50
+msgid "最好的灵感，是能进入下一步的灵感。"
+msgstr "The best inspiration is inspiration that can enter the next step."
+
+#: src/QuoteProvider.cpp:51
+msgid "不要把思考当成完成。"
+msgstr "Do not mistake thinking for finishing."
+
+#: src/QuoteProvider.cpp:52
+msgid "不要把紧张当成努力。"
+msgstr "Do not mistake tension for effort."
+
+#: src/QuoteProvider.cpp:53
+msgid "不要把收藏当成学习。"
+msgstr "Do not mistake collecting for learning."
+
+#: src/QuoteProvider.cpp:54
+msgid "不要把计划当成推进。"
+msgstr "Do not mistake planning for progress."
+
+#: src/QuoteProvider.cpp:55
+msgid "不要把焦虑当成责任感。"
+msgstr "Do not mistake anxiety for responsibility."
+
+#: src/QuoteProvider.cpp:56
+msgid "不要把兴奋当成成果。"
+msgstr "Do not mistake excitement for results."
+
+#: src/QuoteProvider.cpp:57
+msgid "真正的进展，会留下痕迹。"
+msgstr "Real progress leaves traces."
+
+#: src/QuoteProvider.cpp:58
+msgid "今天至少留下一条可验证的痕迹。"
+msgstr "Leave at least one verifiable trace today."
+
+#: src/QuoteProvider.cpp:59
+msgid "没有闭环的忙碌，会慢慢变成幻觉。"
+msgstr "Busyness without closure slowly becomes hallucination."
+
+#: src/QuoteProvider.cpp:60
+msgid "一件事落地，胜过十个宏大判断。"
+msgstr "One thing landed beats ten grand judgments."
+
+#: src/QuoteProvider.cpp:61
+msgid "先交付一个粗糙版本，再优化尊严。"
+msgstr "Deliver a rough version first; optimize dignity later."
+
+#: src/QuoteProvider.cpp:62
+msgid "把任务做到能被别人看见。"
+msgstr "Make the task visible to others."
+
+#: src/QuoteProvider.cpp:63
+msgid "把想法做到能被自己复盘。"
+msgstr "Make the idea reviewable by yourself."
+
+#: src/QuoteProvider.cpp:64
+msgid "重复不是低级，重复是系统成形的方式。"
+msgstr "Repetition is not low-level; repetition is how systems form."
+
+#: src/QuoteProvider.cpp:65
+msgid "节奏比爆发更可靠。"
+msgstr "Rhythm is more reliable than bursts."
+
+#: src/QuoteProvider.cpp:66
+msgid "你不是没方向，你是需要重新对焦。"
+msgstr "You are not directionless; you need to refocus."
+
+#: src/QuoteProvider.cpp:67
+msgid "漂移不可怕，不回看才可怕。"
+msgstr "Drifting is not scary; never looking back is."
+
+#: src/QuoteProvider.cpp:68
+msgid "观察自己，不是审判自己。"
+msgstr "Observing yourself is not judging yourself."
+
+#: src/QuoteProvider.cpp:69
+msgid "状态差时，降低难度，不要取消行动。"
+msgstr "When the state is poor, lower the difficulty; do not cancel action."
+
+#: src/QuoteProvider.cpp:70
+msgid "把自己从情绪里捞出来，放回任务里。"
+msgstr "Lift yourself out of emotion and put yourself back into the task."
+
+#: src/QuoteProvider.cpp:71
+msgid "不要在脑内开会，打开文件。"
+msgstr "Do not hold meetings in your head; open the file."
+
+#: src/QuoteProvider.cpp:72
+msgid "不要在脑内创业，发出一个请求。"
+msgstr "Do not start a company in your head; send one request."
+
+#: src/QuoteProvider.cpp:73
+msgid "不要在脑内复盘，写下一句话。"
+msgstr "Do not review in your head; write one sentence."
+
+#: src/QuoteProvider.cpp:74
+msgid "把注意力从评价切回动作。"
+msgstr "Move attention from evaluation back to action."
+
+#: src/QuoteProvider.cpp:75
+msgid "能做一点，就先做一点。"
+msgstr "If you can do a little, do a little first."
+
+#: src/QuoteProvider.cpp:76
+msgid "一点点不是安慰，一点点是入口。"
+msgstr "A little is not comfort; a little is an entrance."
+
+#: src/QuoteProvider.cpp:77
+msgid "入口比宏图重要。"
+msgstr "The entrance matters more than the grand map."
+
+#: src/QuoteProvider.cpp:78
+msgid "启动比姿势重要。"
+msgstr "Starting matters more than posture."
+
+#: src/QuoteProvider.cpp:79
+msgid "完成比解释重要。"
+msgstr "Finishing matters more than explanation."
+
+#: src/QuoteProvider.cpp:80
+msgid "复盘比自责重要。"
+msgstr "Review matters more than self-blame."
+
+#: src/QuoteProvider.cpp:81
+msgid "今天的执行，是给明天的自己铺路。"
+msgstr "Today's execution lays road for tomorrow's self."
+
+#: src/QuoteProvider.cpp:82
+msgid "人会漂，系统要拉你回来。"
+msgstr "People drift; the system should pull you back."
+
+#: src/QuoteProvider.cpp:83
+msgid "当你不知道做什么，就记录现在。"
+msgstr "When you do not know what to do, record now."
+
+#: src/QuoteProvider.cpp:84
+msgid "当你想逃避，就缩小任务。"
+msgstr "When you want to avoid, shrink the task."
+
+#: src/QuoteProvider.cpp:85
+msgid "当你想证明，就先交付。"
+msgstr "When you want to prove, deliver first."
+
+#: src/QuoteProvider.cpp:86
+msgid "当你想放弃，就先暂停判断。"
+msgstr "When you want to give up, pause judgment first."
+
+#: src/QuoteProvider.cpp:87
+msgid "当你想空转，就问现实接口在哪里。"
+msgstr "When you want to spin, ask where the reality interface is."
+
+#: src/QuoteProvider.cpp:88
+msgid "别急着寻找意义，先制造一个可用结果。"
+msgstr "Do not rush to find meaning; make a usable result first."
+
+#: src/QuoteProvider.cpp:89
+msgid "意义不是想出来的，是被行动压实的。"
+msgstr "Meaning is not imagined; it is compacted by action."
+
+#: src/QuoteProvider.cpp:90
+msgid "稳定的小动作，会慢慢长成命运。"
+msgstr "Stable small actions slowly grow into fate."
+
+#: src/QuoteProvider.cpp:91
+msgid "让今天有一个干净的切口。"
+msgstr "Give today a clean incision."
+
+#: src/QuoteProvider.cpp:92
+msgid "让任务小到无法拒绝。"
+msgstr "Make the task too small to refuse."
+
+#: src/QuoteProvider.cpp:93
+msgid "让记录诚实到无法欺骗。"
+msgstr "Make the record honest enough that it cannot deceive."
+
+#: src/QuoteProvider.cpp:94
+msgid "让系统温柔到可以持续。"
+msgstr "Make the system gentle enough to continue."
+
+#: src/QuoteProvider.cpp:95
+msgid "让行动具体到可以开始。"
+msgstr "Make the action concrete enough to begin."
+
+#: src/QuoteProvider.cpp:96
+msgid "别和疲惫争辩，给它一个小任务。"
+msgstr "Do not argue with fatigue; give it a small task."
+
+#: src/QuoteProvider.cpp:97
+msgid "别和焦虑辩论，给它一个时间盒。"
+msgstr "Do not debate anxiety; give it a timebox."
+
+#: src/QuoteProvider.cpp:98
+msgid "别和空虚对抗，给它一个现实动作。"
+msgstr "Do not fight emptiness; give it a real action."
+
+#: src/QuoteProvider.cpp:99
+msgid "能量会波动，结构要稳定。"
+msgstr "Energy will fluctuate; structure should stay stable."
+
+#: src/QuoteProvider.cpp:100
+msgid "心情会波动，记录要稳定。"
+msgstr "Mood will fluctuate; recording should stay stable."
+
+#: src/QuoteProvider.cpp:101
+msgid "接地会波动，提醒要稳定。"
+msgstr "Grounding will fluctuate; reminders should stay stable."
+
+#: src/QuoteProvider.cpp:102
+msgid "每一次记录，都是一次返航。"
+msgstr "Every record is a return voyage."
+
+#: src/QuoteProvider.cpp:103
+msgid "每一次提交，都是一次落子。"
+msgstr "Every submission is a move placed."
+
+#: src/QuoteProvider.cpp:104
+msgid "每一次接地，都是一次回到现实。"
+msgstr "Every grounding is a return to reality."
+
+#: src/QuoteProvider.cpp:105
+msgid "不要轻看两分钟，它能切断一整天的漂移。"
+msgstr ""
+"Do not underestimate two minutes; it can cut off a whole day of drifting."
+
+#: src/QuoteProvider.cpp:106
+msgid "观察不是为了控制一切，而是为了不被一切拖走。"
+msgstr ""
+"Observation is not to control everything, but to avoid being dragged away by "
+"everything."
+
+#: src/QuoteProvider.cpp:107
+msgid "今天只问三个数和一句话。"
+msgstr "Today asks only three numbers and one sentence."
+
+#: src/QuoteProvider.cpp:108
+msgid "你现在在哪里？你正在做什么？你还要不要回来？"
+msgstr "Where are you now? What are you doing? Do you still want to return?"
+
+#~ msgid "What are you doing now?"
+#~ msgstr "What are you doing now?"
