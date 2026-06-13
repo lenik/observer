@@ -2,7 +2,16 @@ Source: observer
 Section: utils
 Priority: optional
 Maintainer: Lenik <observer@bodz.net>
-Build-Depends: debhelper-compat (= 13), meson, ninja-build, pkgconf, check, libbas-c-dev
+Build-Depends:
+ debhelper-compat (= 13),
+ meson,
+ ninja-build,
+ pkgconf,
+ check,
+ libbas-c-dev,
+ libbas-cpp-dev,
+ libsqlite3-dev,
+ libx11-dev
 Standards-Version: 4.6.0
 Homepage: https://github.com/lenik/observer
 Rules-Requires-Root: no

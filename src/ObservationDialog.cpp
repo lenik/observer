@@ -27,6 +27,7 @@ namespace {
 constexpr int ID_SUBMIT = wxID_OK;
 constexpr int ID_SKIP = wxID_CANCEL;
 constexpr int ID_SNOOZE = wxID_HIGHEST + 1;
+constexpr int ID_QUIT = wxID_HIGHEST + 2;
 
 int clampScore(int value)
 {
@@ -421,6 +422,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     SetFont(baseFont);
     SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
     SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
+    finalOpacity_ = std::max(0, std::min(255, static_cast<int>(std::round(defaults.opacityPercent * 255.0 / 100.0))));
 
     int emWidth = 12;
     int emHeight = 20;
@@ -530,11 +532,21 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     intervalUnitLabel_->SetCursor(wxCursor(wxCURSOR_HAND));
     intervalUnitLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
     intervalCtrl_->SetFont(hintFont);
+    auto* quitPrefix = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_(", or")));
+    quitPrefix->SetFont(hintFont);
+    quitPrefix->SetForegroundColour(darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116));
+    quitLabel_ = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("Quit.")));
+    quitLabel_->SetFont(hintFont);
+    quitLabel_->SetForegroundColour(darkTheme ? wxColour(175, 183, 194) : wxColour(72, 80, 92));
+    quitLabel_->SetCursor(wxCursor(wxCURSOR_HAND));
+    quitLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { quit(); });
 
     bottomRow->AddStretchSpacer(1);
     bottomRow->Add(hintText_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     bottomRow->Add(intervalCtrl_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(intervalUnitLabel_, 0, wxALIGN_CENTER_VERTICAL);
+    bottomRow->Add(intervalUnitLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
+    bottomRow->Add(quitPrefix, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
+    bottomRow->Add(quitLabel_, 0, wxALIGN_CENTER_VERTICAL);
     root->Add(bottomRow, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
     Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
@@ -632,6 +644,10 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         snooze();
         return;
     }
+    if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'Q' || keyCode == 'q')) {
+        quit();
+        return;
+    }
     event.Skip();
 }
 
@@ -648,6 +664,11 @@ void ObservationDialog::skip()
 void ObservationDialog::snooze()
 {
     finishWithResult(ID_SNOOZE);
+}
+
+void ObservationDialog::quit()
+{
+    finishWithResult(ID_QUIT);
 }
 
 void ObservationDialog::showNextQuote()

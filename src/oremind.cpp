@@ -19,20 +19,90 @@
 #include <bas/log/deflog.h>
 #include <bas/proc/env.h>
 
+#include <filesystem>
 #include <sys/stat.h>
 
 #include <getopt.h>
 #include <limits.h>
+#include <libintl.h>
 #include <locale.h>
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 define_logger();
 wxIMPLEMENT_APP_NO_MAIN(ObserverApp);
 
 enum { OPT_VERSION = 256 };
+
+void set_locale_env(const char* locale) {
+    if (locale == nullptr || *locale == '\0') {
+        return;
+    }
+
+    std::string lang = locale;
+    if (lang == "ja") {
+        lang = "ja_JP.utf8";
+    } else if (lang == "ko") {
+        lang = "ko_KR.utf8";
+    } else if (lang == "zh_CN") {
+        lang = "zh_CN.utf8";
+    } else if (lang == "zh_TW") {
+        lang = "zh_TW.utf8";
+    } else if (lang.find('.') == std::string::npos && lang != "C" && lang != "POSIX") {
+        lang += ".utf8";
+    }
+    setenv("LANGUAGE", locale, 1);
+    setenv("LC_ALL", lang.c_str(), 1);
+    setenv("LANG", lang.c_str(), 1);
+    appConfig().locale = locale;
+}
+
+void bind_dev_locale_dir(const char* argv0) {
+    namespace fs = std::filesystem;
+    const char* domain = "observer";
+    std::error_code ec;
+
+    fs::path exe_path;
+#if defined(__linux__)
+    char resolved[PATH_MAX] = {};
+    ssize_t length = readlink("/proc/self/exe", resolved, sizeof(resolved) - 1);
+    if (length > 0) {
+        resolved[length] = '\0';
+        exe_path = resolved;
+    }
+#endif
+    if (exe_path.empty() && argv0 != nullptr) {
+        exe_path = fs::weakly_canonical(argv0, ec);
+    }
+    if (exe_path.empty()) {
+        return;
+    }
+
+    fs::path candidate = exe_path.parent_path() / "po";
+    if (fs::is_directory(candidate, ec)) {
+        bindtextdomain(domain, candidate.c_str());
+    }
+}
+
+const char* preparse_locale(int argc, char **argv) {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--locale") == 0) {
+            if (i + 1 < argc) {
+                return argv[i + 1];
+            }
+            return nullptr;
+        }
+        const char* prefix = "--locale=";
+        const size_t prefix_len = strlen(prefix);
+        if (strncmp(argv[i], prefix, prefix_len) == 0) {
+            return argv[i] + prefix_len;
+        }
+    }
+    return nullptr;
+}
 
 void usage(FILE *out) {
     fputs(_("Usage: oremind [OPTION]...\n"
@@ -45,8 +115,12 @@ void usage(FILE *out) {
     fputs(_("show less logging messages\n"), out);
     fputs("  -h, --help         ", out);
     fputs(_("display this help and exit\n"), out);
+    fputs("  -l, --locale LOCALE ", out);
+    fputs(_("set UI locale, for example zh_CN, ja, ko, en\n"), out);
     fputs("  -t, --theme THEME  ", out);
     fputs(_("set theme: light or dark\n"), out);
+    fputs("  -o, --opacity NUM  ", out);
+    fputs(_("set final dialog opacity percentage, 0 to 100\n"), out);
     fputs("  -i, --interval NUM ", out);
     fputs(_("set prompt interval in minutes\n"), out);
     fputs("  -d, --sqlite-db PATH ", out);
@@ -59,13 +133,23 @@ void usage(FILE *out) {
 
 int main(int argc, char **argv) {
     const char *exe = argc > 0 ? argv[0] : "oremind";
+    const char* preparsed_locale = preparse_locale(argc, argv);
+    if (preparsed_locale != nullptr && *preparsed_locale != '\0') {
+        set_locale_env(preparsed_locale);
+    }
+    setlocale(LC_ALL, "");
     init_i18n(LOCALEDIR);
+    bind_dev_locale_dir(exe);
+    bind_textdomain_codeset("observer", "UTF-8");
+    textdomain("observer");
 
     static const struct option long_opts[] = {
         {"verbose", no_argument, NULL, 'v'},
         {"quiet", no_argument, NULL, 'q'},
         {"help", no_argument, NULL, 'h'},
+        {"locale", required_argument, NULL, 'l'},
         {"theme", required_argument, NULL, 't'},
+        {"opacity", required_argument, NULL, 'o'},
         {"interval", required_argument, NULL, 'i'},
         {"sqlite-db", required_argument, NULL, 'd'},
         {"version", no_argument, NULL, OPT_VERSION},
@@ -73,7 +157,7 @@ int main(int argc, char **argv) {
     };
 
     for (;;) {
-        int c = getopt_long(argc, argv, "vqht:i:d:", long_opts, NULL);
+        int c = getopt_long(argc, argv, "vqhl:t:o:i:d:", long_opts, NULL);
         if (c == -1) {
             break;
         }
@@ -87,6 +171,13 @@ int main(int argc, char **argv) {
         case 'h':
             usage(stdout);
             return 0;
+        case 'l':
+            if (optarg == nullptr || *optarg == '\0') {
+                fprintf(stderr, _("invalid locale: %s\n"), optarg != nullptr ? optarg : "");
+                return 1;
+            }
+            set_locale_env(optarg);
+            break;
         case 't':
             if (strcmp(optarg, "light") != 0 && strcmp(optarg, "dark") != 0) {
                 fprintf(stderr, _("invalid theme: %s\n"), optarg);
@@ -94,6 +185,17 @@ int main(int argc, char **argv) {
             }
             appConfig().theme = optarg;
             break;
+        case 'o': {
+            char* end = nullptr;
+            errno = 0;
+            long opacity = strtol(optarg, &end, 10);
+            if (errno != 0 || end == optarg || *end != '\0' || opacity < 0 || opacity > 100) {
+                fprintf(stderr, _("invalid opacity: %s\n"), optarg);
+                return 1;
+            }
+            appConfig().opacityPercent = static_cast<int>(opacity);
+            break;
+        }
         case 'i': {
             char* end = nullptr;
             errno = 0;

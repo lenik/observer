@@ -5,6 +5,7 @@
 namespace {
 
 constexpr int ID_SNOOZE = wxID_HIGHEST + 1;
+constexpr int ID_QUIT = wxID_HIGHEST + 2;
 
 }
 
@@ -29,6 +30,10 @@ ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults& defaults)
 
     if (result == ID_SNOOZE) {
         return ObserveResult{ObserveResultKind::Snoozed, std::nullopt, dialog.intervalSeconds()};
+    }
+
+    if (result == ID_QUIT) {
+        return ObserveResult{ObserveResultKind::Quit, std::nullopt, dialog.intervalSeconds()};
     }
 
     return ObserveResult{ObserveResultKind::Skipped, std::nullopt, dialog.intervalSeconds()};

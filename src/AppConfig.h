@@ -5,7 +5,9 @@
 
 struct AppConfig {
     std::string theme = "dark";
-    double intervalSeconds = 120.0;
+    std::string locale;
+    int opacityPercent = 75;
+    double intervalSeconds = 300.0;
     std::string storePath;
 };
 

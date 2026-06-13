@@ -11,7 +11,8 @@ enum class ObserveResultKind {
     Submitted,
     Skipped,
     Snoozed,
-    Empty
+    Empty,
+    Quit
 };
 
 struct ObservePromptDefaults {
@@ -19,6 +20,7 @@ struct ObservePromptDefaults {
     double mood = DefaultObservationScore;
     double grounding = DefaultObservationScore;
     double intervalSeconds = 120.0;
+    int opacityPercent = 75;
     std::string theme = "dark";
     std::string quote;
     std::vector<std::string> quotes;

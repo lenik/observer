@@ -24,6 +24,7 @@ private:
     void submit();
     void skip();
     void snooze();
+    void quit();
     void finishWithResult(int result);
     void animateOut();
     std::string currentTimestamp() const;
@@ -40,6 +41,7 @@ private:
     RatingControl* groundingRating_ = nullptr;
     wxTextCtrl* intervalCtrl_ = nullptr;
     wxStaticText* intervalUnitLabel_ = nullptr;
+    wxStaticText* quitLabel_ = nullptr;
     wxStaticText* hintText_ = nullptr;
     wxStyledTextCtrl* activityCtrl_ = nullptr;
     wxPoint animationStartPosition_;

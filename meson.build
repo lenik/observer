@@ -66,6 +66,7 @@ bas_cpp_dep = dependency('bas-cpp', required: true)
 # bas_cpp_static_dep = dependency('bas-cpp-static', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
+x11_dep = dependency('x11', required: true)
 wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc'], required: true)
 
 lib_objects = []
@@ -126,6 +127,7 @@ lib_inc = [
 lib_deps = [
     bas_cpp_dep,
     wx_dep, 
+    x11_dep,
     sqlite_dep,
 ]
 
