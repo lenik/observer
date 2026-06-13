@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: observer\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 19:13+0800\n"
+"Project-Id-Version: observer 1.0.0\n"
+"Report-Msgid-Bugs-To: observer@bodz.net\n"
+"POT-Creation-Date: 2026-06-13 20:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,27 +94,27 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 
-#: src/ObservationDialog.cpp:376
+#: src/ObservationDialog.cpp:439
 msgid "energy"
 msgstr ""
 
-#: src/ObservationDialog.cpp:380
+#: src/ObservationDialog.cpp:443
 msgid "mood"
 msgstr ""
 
-#: src/ObservationDialog.cpp:384
+#: src/ObservationDialog.cpp:447
 msgid "grounding"
 msgstr ""
 
-#: src/ObservationDialog.cpp:463
+#: src/ObservationDialog.cpp:524
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 msgstr ""
 
-#: src/ObservationDialog.cpp:466
+#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
 msgid "minutes."
 msgstr ""
 
-#: src/ObservationDialog.cpp:467
+#: src/ObservationDialog.cpp:674
 msgid "seconds."
 msgstr ""
 

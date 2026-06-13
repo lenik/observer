@@ -1,9 +1,13 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: oremind\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 19:13+0800\n"
+"Project-Id-Version: observer\n"
+"Report-Msgid-Bugs-To: observer@bodz.net\n"
+"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"PO-Revision-Date: 2026-06-13 20:00+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "Language: ko\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -32,9 +36,9 @@ msgid "set theme: light or dark\n"
 msgstr "테마 설정: light 또는 dark\n"
 
 #: src/oremind.cpp:51
-#, fuzzy
 msgid "set prompt interval in minutes\n"
-msgstr "프롬프트 간격을 분 단위로 설정\n"
+msgstr ""
+"프롬프트 간격을 분 단위로 설정\n"
 
 #: src/oremind.cpp:53
 msgid "SQLite file path, or log directory when PATH is a directory\n"
@@ -90,27 +94,27 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "법이 허용하는 범위에서 어떠한 보증도 없습니다.\n"
 
-#: src/ObservationDialog.cpp:376
+#: src/ObservationDialog.cpp:439
 msgid "energy"
 msgstr "에너지"
 
-#: src/ObservationDialog.cpp:380
+#: src/ObservationDialog.cpp:443
 msgid "mood"
 msgstr "기분"
 
-#: src/ObservationDialog.cpp:384
+#: src/ObservationDialog.cpp:447
 msgid "grounding"
 msgstr "접지감"
 
-#: src/ObservationDialog.cpp:463
+#: src/ObservationDialog.cpp:524
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 msgstr "<Enter> 제출, <Escape> 취소. 다음 프롬프트는"
 
-#: src/ObservationDialog.cpp:466
+#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
 msgid "minutes."
 msgstr "분 후."
 
-#: src/ObservationDialog.cpp:467
+#: src/ObservationDialog.cpp:674
 msgid "seconds."
 msgstr "초 후."
 

@@ -1,74 +1,540 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: oremind\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 22:31+0800\n"
+"Project-Id-Version: observer\n"
+"Report-Msgid-Bugs-To: observer@bodz.net\n"
+"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"PO-Revision-Date: 2026-06-13 20:00+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "Language: vi\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.c:32
+#: src/oremind.cpp:38
 msgid ""
-"Usage: oremind [OPTION]... [FILE]...\n"
-"Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
-"read standard input.\n"
+"Usage: oremind [OPTION]...\n"
+"Run a desktop self-observation prompt in the background.\n"
 msgstr ""
-"Cách dùng: oremind [OPTION]... [FILE]...\n"
-"Nối các FILE và ghi ra đầu ra chuẩn. Khi không có FILE hoặc FILE là -,\n"
-"đọc từ đầu vào chuẩn.\n"
+"Cách sử dụng: oremind [TÙY CHỌN]...\n"
+"Chạy lời nhắc tự quan sát trên màn hình ở chế độ nền.\n"
 
-#: src/oremind.c:38
+#: src/oremind.cpp:43
 msgid "repeat for more verbose loggings\n"
 msgstr "lap lai de hien thi nhieu nhat ky chi tiet hon\n"
 
-#: src/oremind.c:40
+#: src/oremind.cpp:45
 msgid "show less logging messages\n"
 msgstr "hien thi it thong diep nhat ky hon\n"
 
-#: src/oremind.c:42
+#: src/oremind.cpp:47
 msgid "display this help and exit\n"
 msgstr "hiển thị trợ giúp này và thoát\n"
 
-#: src/oremind.c:44
+#: src/oremind.cpp:49
+msgid "set theme: light or dark\n"
+msgstr ""
+"đặt chủ đề: sáng hoặc tối\n"
+
+#: src/oremind.cpp:51
+msgid "set prompt interval in minutes\n"
+msgstr ""
+"đặt khoảng thời gian nhắc nhở tính bằng phút\n"
+
+#: src/oremind.cpp:53
+msgid "SQLite file path, or log directory when PATH is a directory\n"
+msgstr ""
+"Đường dẫn tệp SQLite hoặc thư mục nhật ký khi PATH là một thư mục\n"
+
+#: src/oremind.cpp:55
 msgid "output version information and exit\n"
 msgstr "in thông tin phiên bản và thoát\n"
 
-#: src/oremind.c:46
+#: src/oremind.cpp:57
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Báo lỗi tới: <%s>\n"
 
-#: src/oremind.c:54
+#: src/oremind.cpp:92
 #, c-format
-msgid "hello, world!\n"
-msgstr "Xin chào, thế giới!\n"
+msgid "invalid theme: %s\n"
+msgstr ""
+"chủ đề không hợp lệ: %s\n"
 
-#: src/oremind.c:81
+#: src/oremind.cpp:102
+#, c-format
+msgid "invalid interval: %s\n"
+msgstr ""
+"khoảng thời gian không hợp lệ: %s\n"
+
+#: src/oremind.cpp:113
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Bản quyền (C) %d %s\n"
 
-#: src/oremind.c:82
-msgid "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
-msgstr "Giấy phép AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+#: src/oremind.cpp:114
+msgid ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr ""
+"Giấy phép AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.c:84
+#: src/oremind.cpp:116
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Đây là phần mềm tự do: bạn có thể sửa đổi và phân phối lại.\n"
 
-#: src/oremind.c:86
+#: src/oremind.cpp:118
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "Dự án này phản đối bóc lột AI và bá quyền AI.\n"
 
-#: src/oremind.c:87
-msgid "This project rejects mindless MIT-style licensing and politically naive BSD-style licensing.\n"
-msgstr "Dự án này bác bỏ kiểu cấp phép MIT máy móc và kiểu cấp phép BSD ngây ngô về chính trị.\n"
+#: src/oremind.cpp:119
+msgid ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+msgstr ""
+"Dự án này bác bỏ kiểu cấp phép MIT máy móc và kiểu cấp phép BSD ngây ngô về "
+"chính trị.\n"
 
-#: src/oremind.c:90
+#: src/oremind.cpp:122
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "KHÔNG CÓ BẤT KỲ BẢO HÀNH nào trong phạm vi luật cho phép.\n"
 
-#: src/lib.c:49
+#: src/ObservationDialog.cpp:439
+msgid "energy"
+msgstr "năng lượng"
+
+#: src/ObservationDialog.cpp:443
+msgid "mood"
+msgstr "tâm trạng"
+
+#: src/ObservationDialog.cpp:447
+msgid "grounding"
+msgstr "nối đất"
+
+#: src/ObservationDialog.cpp:524
+msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+msgstr "Nhấn <Enter> để gửi, <Escape> hủy. Lời nhắc tiếp theo sau"
+
+#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
+msgid "minutes."
+msgstr "phút."
+
+#: src/ObservationDialog.cpp:674
+msgid "seconds."
+msgstr "giây."
+
+#: src/QuoteProvider.cpp:9
+msgid "明天是今天的延续，今天是明天的提前。"
+msgstr "Ngày mai là sự tiếp nối của ngày hôm nay và hôm nay là bước tiến của ngày mai."
+
+#: src/QuoteProvider.cpp:10
+msgid "中低电量，也要推进一个最小动作。"
+msgstr "Ngay cả khi pin ở mức trung bình hoặc yếu, bạn phải thực hiện hành động tối thiểu."
+
+#: src/QuoteProvider.cpp:11
+msgid "不要创造刺激，先创造价值。"
+msgstr "Đừng tạo hứng thú, hãy tạo giá trị trước tiên."
+
+#: src/QuoteProvider.cpp:12
+msgid "高维空转会成为利息税。"
+msgstr "Chuyển khoản trống chiều cao sẽ trở thành thuế lãi."
+
+#: src/QuoteProvider.cpp:13
+msgid "接地，不是放弃理想，是把理想接到地面。"
+msgstr "Tiếp đất không có nghĩa là từ bỏ lý tưởng của bạn mà là kết nối lý tưởng của bạn với thực tế."
+
+#: src/QuoteProvider.cpp:14
+msgid "现在不是证明自己伟大，而是完成下一步。"
+msgstr "Bây giờ vấn đề không phải là chứng minh sự vĩ đại của bạn mà là hoàn thành bước tiếp theo."
+
+#: src/QuoteProvider.cpp:15
+msgid "把当前状态记录下来，就是重新夺回方向盘。"
+msgstr "Ghi lại trạng thái hiện tại là lấy lại tay lái."
+
+#: src/QuoteProvider.cpp:16
+msgid "疲惫时不要规划人生，先完成一个小动作。"
+msgstr "Đừng lên kế hoạch cho cuộc sống khi bạn mệt mỏi, hãy hoàn thành một hành động nhỏ trước."
+
+#: src/QuoteProvider.cpp:17
+msgid "真正的执行，不依赖情绪同意。"
+msgstr "Thực thi thực sự, không phụ thuộc vào sự đồng ý về mặt cảm xúc."
+
+#: src/QuoteProvider.cpp:18
+msgid "空想可以点火，但落地才能发电。"
+msgstr "Giấc mơ có thể tạo ra lửa, nhưng chỉ khi đặt xuống đất thì chúng mới có thể tạo ra điện."
+
+#: src/QuoteProvider.cpp:19
+msgid "不要等状态好，状态是在行动中恢复的。"
+msgstr "Đừng chờ đợi tình trạng tốt, tình trạng sẽ được khôi phục trong hành động."
+
+#: src/QuoteProvider.cpp:20
+msgid "先把手放到事情上，心会慢慢跟上。"
+msgstr "Đặt tay vào mọi việc trước, trái tim bạn sẽ từ từ bắt nhịp."
+
+#: src/QuoteProvider.cpp:21
+msgid "焦虑不是命令，它只是噪音。"
+msgstr "Lo lắng không phải là mệnh lệnh, nó chỉ là tiếng ồn."
+
+#: src/QuoteProvider.cpp:22
+msgid "今天不用赢世界，只要赢一次漂移。"
+msgstr "Hôm nay bạn không cần phải vô địch thế giới, bạn chỉ cần thắng một lần drift."
+
+#: src/QuoteProvider.cpp:23
+msgid "能量低，就把任务切到更小。"
+msgstr "Nếu năng lượng thấp, hãy cắt nhiệm vụ thành những phần nhỏ hơn."
+
+#: src/QuoteProvider.cpp:24
+msgid "接地的第一步，是说清我现在在干嘛。"
+msgstr "Bước đầu tiên để giải quyết vấn đề là làm rõ những gì tôi đang làm hiện tại."
+
+#: src/QuoteProvider.cpp:25
+msgid "记录不是浪费时间，记录是在校准方向。"
+msgstr "Ghi không lãng phí thời gian, ghi theo hướng hiệu chỉnh."
+
+#: src/QuoteProvider.cpp:26
+msgid "不必立刻强大，但要立刻靠近现实。"
+msgstr "Bạn không cần phải mạnh mẽ ngay lập tức mà cần phải gần gũi với thực tế ngay lập tức."
+
+#: src/QuoteProvider.cpp:27
+msgid "世界不会因为你想明白才开始运转。"
+msgstr "Thế giới không bắt đầu hoạt động chỉ vì bạn đã tìm ra nó."
+
+#: src/QuoteProvider.cpp:28
+msgid "先做可见的一步，再谈宏大的结构。"
+msgstr "Trước tiên hãy thực hiện bước có thể nhìn thấy được, sau đó nói về cấu trúc lớn."
+
+#: src/QuoteProvider.cpp:29
+msgid "把想法压进动作里，它才会变成力量。"
+msgstr "Hãy biến suy nghĩ thành hành động và chúng sẽ trở thành sức mạnh."
+
+#: src/QuoteProvider.cpp:30
+msgid "拖延不是失败，但不观察拖延会变成系统。"
+msgstr "Trì hoãn không phải là thất bại, nhưng trì hoãn mà không quan sát có thể trở thành một hệ thống."
+
+#: src/QuoteProvider.cpp:31
+msgid "今天的最小闭环，就是明天的支点。"
+msgstr "Vòng khép kín tối thiểu hôm nay là điểm tựa của ngày mai."
+
+#: src/QuoteProvider.cpp:32
+msgid "不要追求完美启动，追求真实启动。"
+msgstr "Đừng theo đuổi khởi nghiệp hoàn hảo, hãy theo đuổi khởi nghiệp thực sự."
+
+#: src/QuoteProvider.cpp:33
+msgid "当前这一分钟，比想象中的未来更有权重。"
+msgstr "Phút hiện tại có trọng lượng hơn tương lai tưởng tượng."
+
+#: src/QuoteProvider.cpp:34
+msgid "不要用复杂性保护逃避。"
+msgstr "Đừng sử dụng sự phức tạp để bảo vệ sự trốn tránh."
+
+#: src/QuoteProvider.cpp:35
+msgid "把混乱写下来，混乱就开始失去权力。"
+msgstr "Ghi lại sự hỗn loạn và sự hỗn loạn bắt đầu mất điện."
+
+#: src/QuoteProvider.cpp:36
+msgid "接地值下降时，先回到手边的任务。"
+msgstr "Khi giá trị mặt đất giảm xuống, hãy quay lại nhiệm vụ hiện tại."
+
+#: src/QuoteProvider.cpp:37
+msgid "能量值不是道德评分，它只是仪表盘。"
+msgstr "Năng lượng không phải là điểm đạo đức, nó chỉ là bảng điều khiển."
+
+#: src/QuoteProvider.cpp:38
+msgid "心情值不是结论，它只是天气。"
+msgstr "Giá trị tâm trạng không phải là một kết luận, nó chỉ là thời tiết mà thôi."
+
+#: src/QuoteProvider.cpp:39
+msgid "低心情时，不要做终局判断。"
+msgstr "Đừng đưa ra phán xét cuối cùng khi bạn đang có tâm trạng không tốt."
+
+#: src/QuoteProvider.cpp:40
+msgid "低能量时，不要否定整个人生。"
+msgstr "Khi năng lượng của bạn cạn kiệt, đừng phủ nhận toàn bộ cuộc sống của bạn."
+
+#: src/QuoteProvider.cpp:41
+msgid "低接地时，不要相信宏大冲动。"
+msgstr "Đừng tin vào sự thôi thúc hoành tráng khi nền đất thấp."
+
+#: src/QuoteProvider.cpp:42
+msgid "先问：我现在能完成什么？"
+msgstr "Đầu tiên hãy hỏi: Bây giờ tôi có thể đạt được điều gì?"
+
+#: src/QuoteProvider.cpp:43
+msgid "事情不是靠感动完成的，是靠连续动作完成的。"
+msgstr "Mọi việc không được hoàn thành bằng cách di chuyển mà bằng những hành động liên tục."
+
+#: src/QuoteProvider.cpp:44
+msgid "少一点解释自己，多一点移动棋子。"
+msgstr "Ít giải thích về bản thân hơn và di chuyển các quân cờ nhiều hơn."
+
+#: src/QuoteProvider.cpp:45
+msgid "真正的自由，来自可重复的执行能力。"
+msgstr "Sự tự do thực sự đến từ việc thực hiện lặp đi lặp lại."
+
+#: src/QuoteProvider.cpp:46
+msgid "把今天变成证据，而不是幻想。"
+msgstr "Biến ngày hôm nay thành bằng chứng chứ không phải ảo tưởng."
+
+#: src/QuoteProvider.cpp:47
+msgid "你不需要燃烧，你需要稳定供电。"
+msgstr "Bạn không cần đốt cháy, bạn cần nguồn điện ổn định."
+
+#: src/QuoteProvider.cpp:48
+msgid "别让大目标吃掉小动作。"
+msgstr "Đừng để những mục tiêu lớn lấn át những bước đi nhỏ."
+
+#: src/QuoteProvider.cpp:49
+msgid "现实不是敌人，现实是接口。"
+msgstr "Thực tế không phải là kẻ thù, thực tế là giao diện."
+
+#: src/QuoteProvider.cpp:50
+msgid "最好的灵感，是能进入下一步的灵感。"
+msgstr "Nguồn cảm hứng tốt nhất là nguồn cảm hứng dẫn đến bước tiếp theo."
+
+#: src/QuoteProvider.cpp:51
+msgid "不要把思考当成完成。"
+msgstr "Đừng nghĩ suy nghĩ là xong."
+
+#: src/QuoteProvider.cpp:52
+msgid "不要把紧张当成努力。"
+msgstr "Đừng nhầm lẫn sự lo lắng với nỗ lực."
+
+#: src/QuoteProvider.cpp:53
+msgid "不要把收藏当成学习。"
+msgstr "Đừng coi việc sưu tầm là học tập."
+
+#: src/QuoteProvider.cpp:54
+msgid "不要把计划当成推进。"
+msgstr "Đừng nghĩ việc lập kế hoạch là sự tiến bộ."
+
+#: src/QuoteProvider.cpp:55
+msgid "不要把焦虑当成责任感。"
+msgstr "Đừng nhầm lẫn sự lo lắng với trách nhiệm."
+
+#: src/QuoteProvider.cpp:56
+msgid "不要把兴奋当成成果。"
+msgstr "Đừng nhầm lẫn sự phấn khích với kết quả."
+
+#: src/QuoteProvider.cpp:57
+msgid "真正的进展，会留下痕迹。"
+msgstr "Tiến bộ thực sự để lại dấu vết."
+
+#: src/QuoteProvider.cpp:58
+msgid "今天至少留下一条可验证的痕迹。"
+msgstr "Hôm nay để lại ít nhất một dấu vết có thể xác minh được."
+
+#: src/QuoteProvider.cpp:59
+msgid "没有闭环的忙碌，会慢慢变成幻觉。"
+msgstr "Sự bận rộn không có vòng khép kín sẽ dần biến thành ảo ảnh."
+
+#: src/QuoteProvider.cpp:60
+msgid "一件事落地，胜过十个宏大判断。"
+msgstr "Thực hiện một việc còn hơn mười đại phán quyết."
+
+#: src/QuoteProvider.cpp:61
+msgid "先交付一个粗糙版本，再优化尊严。"
+msgstr "Cung cấp phiên bản thô trước, sau đó tối ưu hóa phẩm giá."
+
+#: src/QuoteProvider.cpp:62
+msgid "把任务做到能被别人看见。"
+msgstr "Thực hiện nhiệm vụ để người khác có thể nhìn thấy."
+
+#: src/QuoteProvider.cpp:63
+msgid "把想法做到能被自己复盘。"
+msgstr "Lên ý tưởng để bạn có thể tự mình xem xét."
+
+#: src/QuoteProvider.cpp:64
+msgid "重复不是低级，重复是系统成形的方式。"
+msgstr "Sự lặp lại không hề thua kém, sự lặp lại là cách các hệ thống hình thành."
+
+#: src/QuoteProvider.cpp:65
+msgid "节奏比爆发更可靠。"
+msgstr "Nhịp điệu đáng tin cậy hơn sự bùng nổ."
+
+#: src/QuoteProvider.cpp:66
+msgid "你不是没方向，你是需要重新对焦。"
+msgstr "Không phải là bạn không có phương hướng, bạn cần phải tập trung lại."
+
+#: src/QuoteProvider.cpp:67
+msgid "漂移不可怕，不回看才可怕。"
+msgstr "Trôi đi không đáng sợ, nhưng không nhìn lại mới đáng sợ."
+
+#: src/QuoteProvider.cpp:68
+msgid "观察自己，不是审判自己。"
+msgstr "Hãy quan sát bản thân chứ đừng phán xét bản thân."
+
+#: src/QuoteProvider.cpp:69
+msgid "状态差时，降低难度，不要取消行动。"
+msgstr "Khi trạng thái xấu, hãy giảm độ khó và không hủy hành động."
+
+#: src/QuoteProvider.cpp:70
+msgid "把自己从情绪里捞出来，放回任务里。"
+msgstr "Loại bỏ cảm xúc của bạn và quay trở lại với nhiệm vụ."
+
+#: src/QuoteProvider.cpp:71
+msgid "不要在脑内开会，打开文件。"
+msgstr "Đừng họp trong đầu, hãy mở một tập tin."
+
+#: src/QuoteProvider.cpp:72
+msgid "不要在脑内创业，发出一个请求。"
+msgstr "Thay vì khởi nghiệp kinh doanh trong đầu, hãy đưa ra yêu cầu."
+
+#: src/QuoteProvider.cpp:73
+msgid "不要在脑内复盘，写下一句话。"
+msgstr "Thay vì lặp lại nó trong đầu, hãy viết ra một câu."
+
+#: src/QuoteProvider.cpp:74
+msgid "把注意力从评价切回动作。"
+msgstr "Chuyển trọng tâm của bạn từ đánh giá sang hành động."
+
+#: src/QuoteProvider.cpp:75
+msgid "能做一点，就先做一点。"
+msgstr "Nếu bạn có thể làm được việc gì, hãy làm nó trước."
+
+#: src/QuoteProvider.cpp:76
+msgid "一点点不是安慰，一点点是入口。"
+msgstr "Một chút không thoải mái, một chút là lối vào."
+
+#: src/QuoteProvider.cpp:77
+msgid "入口比宏图重要。"
+msgstr "Lối vào quan trọng hơn bức tranh tổng thể."
+
+#: src/QuoteProvider.cpp:78
+msgid "启动比姿势重要。"
+msgstr "Sự khởi đầu quan trọng hơn tư thế."
+
+#: src/QuoteProvider.cpp:79
+msgid "完成比解释重要。"
+msgstr "Hoàn thành quan trọng hơn giải thích."
+
+#: src/QuoteProvider.cpp:80
+msgid "复盘比自责重要。"
+msgstr "Xem xét lại quan trọng hơn tự trách mình."
+
+#: src/QuoteProvider.cpp:81
+msgid "今天的执行，是给明天的自己铺路。"
+msgstr "Cuộc hành hình hôm nay là để mở đường cho chính mình ngày mai."
+
+#: src/QuoteProvider.cpp:82
+msgid "人会漂，系统要拉你回来。"
+msgstr "Mọi người trôi đi, hệ thống muốn kéo bạn lại."
+
+#: src/QuoteProvider.cpp:83
+msgid "当你不知道做什么，就记录现在。"
+msgstr "Khi không biết làm gì thì cứ ghi lại khoảnh khắc hiện tại."
+
+#: src/QuoteProvider.cpp:84
+msgid "当你想逃避，就缩小任务。"
+msgstr "Khi muốn trốn thoát, hãy thu hẹp nhiệm vụ."
+
+#: src/QuoteProvider.cpp:85
+msgid "当你想证明，就先交付。"
+msgstr "Muốn chứng minh thì giao trước."
+
+#: src/QuoteProvider.cpp:86
+msgid "当你想放弃，就先暂停判断。"
+msgstr "Khi bạn muốn bỏ cuộc, hãy tạm dừng phán xét trước."
+
+#: src/QuoteProvider.cpp:87
+msgid "当你想空转，就问现实接口在哪里。"
+msgstr "Khi bạn muốn rảnh, hãy hỏi giao diện thực sự ở đâu."
+
+#: src/QuoteProvider.cpp:88
+msgid "别急着寻找意义，先制造一个可用结果。"
+msgstr "Đừng vội đi tìm ý nghĩa, hãy tạo ra kết quả có thể sử dụng được trước đã."
+
+#: src/QuoteProvider.cpp:89
+msgid "意义不是想出来的，是被行动压实的。"
+msgstr "Ý nghĩa không phải do tưởng tượng mà được củng cố bằng hành động."
+
+#: src/QuoteProvider.cpp:90
+msgid "稳定的小动作，会慢慢长成命运。"
+msgstr "Những hành động nhỏ và đều đặn sẽ dần dần trở thành định mệnh."
+
+#: src/QuoteProvider.cpp:91
+msgid "让今天有一个干净的切口。"
+msgstr "Hôm nay chúng ta hãy làm rõ ràng nhé."
+
+#: src/QuoteProvider.cpp:92
+msgid "让任务小到无法拒绝。"
+msgstr "Thực hiện nhiệm vụ quá nhỏ để từ chối."
+
+#: src/QuoteProvider.cpp:93
+msgid "让记录诚实到无法欺骗。"
+msgstr "Lập hồ sơ trung thực đến mức không thể bị lừa dối."
+
+#: src/QuoteProvider.cpp:94
+msgid "让系统温柔到可以持续。"
+msgstr "Làm cho hệ thống đủ nhẹ để tồn tại lâu dài."
+
+#: src/QuoteProvider.cpp:95
+msgid "让行动具体到可以开始。"
+msgstr "Hãy làm cho hành động đủ cụ thể để bắt đầu."
+
+#: src/QuoteProvider.cpp:96
+msgid "别和疲惫争辩，给它一个小任务。"
+msgstr "Đừng tranh cãi với sự mệt mỏi, hãy giao cho nó một nhiệm vụ nhỏ."
+
+#: src/QuoteProvider.cpp:97
+msgid "别和焦虑辩论，给它一个时间盒。"
+msgstr "Đừng tranh cãi với sự lo lắng, hãy cho nó một chiếc hộp thời gian."
+
+#: src/QuoteProvider.cpp:98
+msgid "别和空虚对抗，给它一个现实动作。"
+msgstr "Đừng chống lại khoảng trống, hãy hành động thực tế."
+
+#: src/QuoteProvider.cpp:99
+msgid "能量会波动，结构要稳定。"
+msgstr "Năng lượng sẽ dao động và cấu trúc phải ổn định."
+
+#: src/QuoteProvider.cpp:100
+msgid "心情会波动，记录要稳定。"
+msgstr "Tâm trạng sẽ dao động, hồ sơ sẽ ổn định."
+
+#: src/QuoteProvider.cpp:101
+msgid "接地会波动，提醒要稳定。"
+msgstr "Việc tiếp đất sẽ dao động, nhắc nhở bạn ổn định nó."
+
+#: src/QuoteProvider.cpp:102
+msgid "每一次记录，都是一次返航。"
+msgstr "Mỗi bản ghi là một chuyến trở về."
+
+#: src/QuoteProvider.cpp:103
+msgid "每一次提交，都是一次落子。"
+msgstr "Mỗi lần gửi là một nước đi."
+
+#: src/QuoteProvider.cpp:104
+msgid "每一次接地，都是一次回到现实。"
+msgstr "Mỗi khi bạn bị cấm túc, bạn sẽ trở về thực tại."
+
+#: src/QuoteProvider.cpp:105
+msgid "不要轻看两分钟，它能切断一整天的漂移。"
+msgstr "Đừng coi thường hai phút, nó có thể cắt đứt sự trôi dạt của cả ngày."
+
+#: src/QuoteProvider.cpp:106
+msgid "观察不是为了控制一切，而是为了不被一切拖走。"
+msgstr "Quan sát không phải là để kiểm soát mọi thứ mà là để không bị mọi thứ lôi kéo đi."
+
+#: src/QuoteProvider.cpp:107
+msgid "今天只问三个数和一句话。"
+msgstr "Hôm nay tôi chỉ hỏi ba số và một câu thôi."
+
+#: src/QuoteProvider.cpp:108
+msgid "你现在在哪里？你正在做什么？你还要不要回来？"
+msgstr "Bây giờ bạn đang ở đâu? Bạn đang làm gì thế? Bạn có muốn quay lại không?"
+
+#~ msgid ""
+#~ "Usage: oremind [OPTION]... [FILE]...\n"
+#~ "Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
+#~ "read standard input.\n"
+#~ msgstr ""
+#~ "Cách dùng: oremind [OPTION]... [FILE]...\n"
+#~ "Nối các FILE và ghi ra đầu ra chuẩn. Khi không có FILE hoặc FILE là -,\n"
+#~ "đọc từ đầu vào chuẩn.\n"
+
 #, c-format
-msgid "%s: write error\n"
-msgstr "%s: lỗi ghi\n"
+#~ msgid "hello, world!\n"
+#~ msgstr "Xin chào, thế giới!\n"
+
+#, c-format
+#~ msgid "%s: write error\n"
+#~ msgstr "%s: lỗi ghi\n"

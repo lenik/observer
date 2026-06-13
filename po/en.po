@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 19:13+0800\n"
+"Report-Msgid-Bugs-To: observer@bodz.net\n"
+"POT-Creation-Date: 2026-06-13 20:04+0800\n"
 "PO-Revision-Date: 2026-06-13 16:33+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -42,9 +42,9 @@ msgid "set theme: light or dark\n"
 msgstr "set theme: light or dark\n"
 
 #: src/oremind.cpp:51
-#, fuzzy
 msgid "set prompt interval in minutes\n"
-msgstr "set prompt interval in minutes\n"
+msgstr ""
+"set prompt interval in minutes\n"
 
 #: src/oremind.cpp:53
 msgid "SQLite file path, or log directory when PATH is a directory\n"
@@ -100,27 +100,27 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "There is NO WARRANTY, to the extent permitted by law.\n"
 
-#: src/ObservationDialog.cpp:376
+#: src/ObservationDialog.cpp:439
 msgid "energy"
 msgstr "energy"
 
-#: src/ObservationDialog.cpp:380
+#: src/ObservationDialog.cpp:443
 msgid "mood"
 msgstr "mood"
 
-#: src/ObservationDialog.cpp:384
+#: src/ObservationDialog.cpp:447
 msgid "grounding"
 msgstr "grounding"
 
-#: src/ObservationDialog.cpp:463
+#: src/ObservationDialog.cpp:524
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 msgstr "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 
-#: src/ObservationDialog.cpp:466
+#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
 msgid "minutes."
 msgstr "minutes."
 
-#: src/ObservationDialog.cpp:467
+#: src/ObservationDialog.cpp:674
 msgid "seconds."
 msgstr "seconds."
 

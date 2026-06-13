@@ -1,74 +1,540 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: oremind\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 22:31+0800\n"
+"Project-Id-Version: observer\n"
+"Report-Msgid-Bugs-To: observer@bodz.net\n"
+"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"PO-Revision-Date: 2026-06-13 20:00+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "Language: eo\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.c:32
+#: src/oremind.cpp:38
 msgid ""
-"Usage: oremind [OPTION]... [FILE]...\n"
-"Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
-"read standard input.\n"
+"Usage: oremind [OPTION]...\n"
+"Run a desktop self-observation prompt in the background.\n"
 msgstr ""
-"Uzo: oremind [OPTION]... [FILE]...\n"
-"Kunigas FILE(j)n al norma eligo. Sen FILE, au kiam FILE estas -,\n"
-"legi de norma enigo.\n"
+"Uzo: oremindu [OPCIO]...\n"
+"Rulu surtablan mem-observon en la fono.\n"
 
-#: src/oremind.c:38
+#: src/oremind.cpp:43
 msgid "repeat for more verbose loggings\n"
 msgstr "ripetu por pli detalaj protokoloj\n"
 
-#: src/oremind.c:40
+#: src/oremind.cpp:45
 msgid "show less logging messages\n"
 msgstr "montri malpli da protokolaj mesagxoj\n"
 
-#: src/oremind.c:42
+#: src/oremind.cpp:47
 msgid "display this help and exit\n"
 msgstr "montri cxi tiun helpon kaj eliri\n"
 
-#: src/oremind.c:44
+#: src/oremind.cpp:49
+msgid "set theme: light or dark\n"
+msgstr ""
+"fiksita temo: lumo aŭ mallumo\n"
+
+#: src/oremind.cpp:51
+msgid "set prompt interval in minutes\n"
+msgstr ""
+"starigu promptan intervalon en minutoj\n"
+
+#: src/oremind.cpp:53
+msgid "SQLite file path, or log directory when PATH is a directory\n"
+msgstr ""
+"SQLite-dosiervojo, aŭ protokolo-dosierujo kiam PATH estas dosierujo\n"
+
+#: src/oremind.cpp:55
 msgid "output version information and exit\n"
 msgstr "montri versiajn informojn kaj eliri\n"
 
-#: src/oremind.c:46
+#: src/oremind.cpp:57
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Raportu cimojn al: <%s>\n"
 
-#: src/oremind.c:54
+#: src/oremind.cpp:92
 #, c-format
-msgid "hello, world!\n"
-msgstr "Saluton, mondo!\n"
+msgid "invalid theme: %s\n"
+msgstr ""
+"nevalida temo: %s\n"
 
-#: src/oremind.c:81
+#: src/oremind.cpp:102
+#, c-format
+msgid "invalid interval: %s\n"
+msgstr ""
+"nevalida intervalo: %s\n"
+
+#: src/oremind.cpp:113
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Kopirajto (C) %d %s\n"
 
-#: src/oremind.c:82
-msgid "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
-msgstr "Permesilo AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+#: src/oremind.cpp:114
+msgid ""
+"License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
+msgstr ""
+"Permesilo AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.c:84
+#: src/oremind.cpp:116
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Tio estas libera programaro: vi rajtas sxangxi kaj redistribui gxin.\n"
 
-#: src/oremind.c:86
+#: src/oremind.cpp:118
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "Tiu projekto kontrauxas AI-ekspluaton kaj AI-hegemonion.\n"
 
-#: src/oremind.c:87
-msgid "This project rejects mindless MIT-style licensing and politically naive BSD-style licensing.\n"
-msgstr "Tiu projekto malakceptas senpripensan MIT-stilan permesilon kaj politike naivan BSD-stilan permesilon.\n"
+#: src/oremind.cpp:119
+msgid ""
+"This project rejects mindless MIT-style licensing and politically naive BSD-"
+"style licensing.\n"
+msgstr ""
+"Tiu projekto malakceptas senpripensan MIT-stilan permesilon kaj politike "
+"naivan BSD-stilan permesilon.\n"
 
-#: src/oremind.c:90
+#: src/oremind.cpp:122
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "NE ESTAS GARANTIO, lau la amplekso permesita de la lexo.\n"
 
-#: src/lib.c:49
+#: src/ObservationDialog.cpp:439
+msgid "energy"
+msgstr "energio"
+
+#: src/ObservationDialog.cpp:443
+msgid "mood"
+msgstr "humoro"
+
+#: src/ObservationDialog.cpp:447
+msgid "grounding"
+msgstr "surteriĝo"
+
+#: src/ObservationDialog.cpp:524
+msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+msgstr "Premu <Enter> por sendi, <Escape> nuligi. Sekva prompto poste"
+
+#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
+msgid "minutes."
+msgstr "minutoj."
+
+#: src/ObservationDialog.cpp:674
+msgid "seconds."
+msgstr "sekundoj."
+
+#: src/QuoteProvider.cpp:9
+msgid "明天是今天的延续，今天是明天的提前。"
+msgstr "Morgaŭ estas la daŭrigo de hodiaŭ, kaj hodiaŭ estas la antaŭeniĝo de morgaŭ."
+
+#: src/QuoteProvider.cpp:10
+msgid "中低电量，也要推进一个最小动作。"
+msgstr "Eĉ se la baterio estas meza aŭ malalta, minimuma ago devas esti antaŭenigita."
+
+#: src/QuoteProvider.cpp:11
+msgid "不要创造刺激，先创造价值。"
+msgstr "Ne kreu eksciton, kreu valoron unue."
+
+#: src/QuoteProvider.cpp:12
+msgid "高维空转会成为利息税。"
+msgstr "Altdimensia malplena translokigo fariĝos interezimposto."
+
+#: src/QuoteProvider.cpp:13
+msgid "接地，不是放弃理想，是把理想接到地面。"
+msgstr "Surteriĝo ne signifas rezigni viajn idealojn, sed ligi viajn idealojn al la grundo."
+
+#: src/QuoteProvider.cpp:14
+msgid "现在不是证明自己伟大，而是完成下一步。"
+msgstr "Nun ne temas pri pruvi vian grandecon, ĝi temas pri plenumi la sekvan paŝon."
+
+#: src/QuoteProvider.cpp:15
+msgid "把当前状态记录下来，就是重新夺回方向盘。"
+msgstr "Registrado de la nuna stato estas reakiri la stirilon."
+
+#: src/QuoteProvider.cpp:16
+msgid "疲惫时不要规划人生，先完成一个小动作。"
+msgstr "Ne planu vian vivon kiam vi estas laca, unue plenumu malgrandan agon."
+
+#: src/QuoteProvider.cpp:17
+msgid "真正的执行，不依赖情绪同意。"
+msgstr "Vera ekzekuto, ne dependa de emocia konsento."
+
+#: src/QuoteProvider.cpp:18
+msgid "空想可以点火，但落地才能发电。"
+msgstr "Sonĝoj povas ekbruligi fajron, sed nur kiam ili estas metitaj sur la teron ili povas generi elektron."
+
+#: src/QuoteProvider.cpp:19
+msgid "不要等状态好，状态是在行动中恢复的。"
+msgstr "Ne atendu bonan staton, kondiĉo estas restarigita en ago."
+
+#: src/QuoteProvider.cpp:20
+msgid "先把手放到事情上，心会慢慢跟上。"
+msgstr "Metu viajn manojn sur aferojn unue, kaj via koro malrapide atingos."
+
+#: src/QuoteProvider.cpp:21
+msgid "焦虑不是命令，它只是噪音。"
+msgstr "Maltrankvilo ne estas ordono, ĝi estas nur bruo."
+
+#: src/QuoteProvider.cpp:22
+msgid "今天不用赢世界，只要赢一次漂移。"
+msgstr "Vi ne devas gajni la mondon hodiaŭ, vi nur bezonas gajni unu drivon."
+
+#: src/QuoteProvider.cpp:23
+msgid "能量低，就把任务切到更小。"
+msgstr "Se la energio estas malalta, tranĉu la taskon en pli malgrandajn pecojn."
+
+#: src/QuoteProvider.cpp:24
+msgid "接地的第一步，是说清我现在在干嘛。"
+msgstr "La unua paŝo al tero estas klarigi kion mi faras nun."
+
+#: src/QuoteProvider.cpp:25
+msgid "记录不是浪费时间，记录是在校准方向。"
+msgstr "Registrado ne estas tempoperdo, registrado estas en la kalibra direkto."
+
+#: src/QuoteProvider.cpp:26
+msgid "不必立刻强大，但要立刻靠近现实。"
+msgstr "Vi ne devas esti potenca tuj, sed vi devas esti proksima al la realo tuj."
+
+#: src/QuoteProvider.cpp:27
+msgid "世界不会因为你想明白才开始运转。"
+msgstr "La mondo ne ekfunkcias nur ĉar vi eltrovis ĝin."
+
+#: src/QuoteProvider.cpp:28
+msgid "先做可见的一步，再谈宏大的结构。"
+msgstr "Ni prenu unue la videblan paŝon, kaj poste parolu pri la grandioza strukturo."
+
+#: src/QuoteProvider.cpp:29
+msgid "把想法压进动作里，它才会变成力量。"
+msgstr "Metu pensojn en agojn kaj ili fariĝos potenco."
+
+#: src/QuoteProvider.cpp:30
+msgid "拖延不是失败，但不观察拖延会变成系统。"
+msgstr "Prokrasto ne estas fiasko, sed prokrastado sen observado povas fariĝi sistemo."
+
+#: src/QuoteProvider.cpp:31
+msgid "今天的最小闭环，就是明天的支点。"
+msgstr "La hodiaŭa minimuma fermita buklo estas la morgaŭa fulcro."
+
+#: src/QuoteProvider.cpp:32
+msgid "不要追求完美启动，追求真实启动。"
+msgstr "Ne serĉu perfektan ekfunkciigon, serĉu realan ekfunkciigon."
+
+#: src/QuoteProvider.cpp:33
+msgid "当前这一分钟，比想象中的未来更有权重。"
+msgstr "La nuna minuto havas pli da pezo ol la imagita estonteco."
+
+#: src/QuoteProvider.cpp:34
+msgid "不要用复杂性保护逃避。"
+msgstr "Ne uzu kompleksecon por protekti evitadon."
+
+#: src/QuoteProvider.cpp:35
+msgid "把混乱写下来，混乱就开始失去权力。"
+msgstr "Skribu kaoson kaj kaoso komencas perdi potencon."
+
+#: src/QuoteProvider.cpp:36
+msgid "接地值下降时，先回到手边的任务。"
+msgstr "Kiam la grunda valoro malpliiĝas, revenu al la tasko ĉemane."
+
+#: src/QuoteProvider.cpp:37
+msgid "能量值不是道德评分，它只是仪表盘。"
+msgstr "Energio ne estas morala poentaro, ĝi estas nur panelo."
+
+#: src/QuoteProvider.cpp:38
+msgid "心情值不是结论，它只是天气。"
+msgstr "Humura valoro ne estas konkludo, ĝi estas nur la vetero."
+
+#: src/QuoteProvider.cpp:39
+msgid "低心情时，不要做终局判断。"
+msgstr "Ne faru finajn juĝojn kiam vi estas en malbonhumoro."
+
+#: src/QuoteProvider.cpp:40
+msgid "低能量时，不要否定整个人生。"
+msgstr "Kiam via energio estas malalta, ne neu vian tutan vivon."
+
+#: src/QuoteProvider.cpp:41
+msgid "低接地时，不要相信宏大冲动。"
+msgstr "Ne fidu la impulson al grandioza kiam grundo estas malalta."
+
+#: src/QuoteProvider.cpp:42
+msgid "先问：我现在能完成什么？"
+msgstr "Unue demandu: Kion mi povas fari nun?"
+
+#: src/QuoteProvider.cpp:43
+msgid "事情不是靠感动完成的，是靠连续动作完成的。"
+msgstr "Aferoj ne estas plenumitaj per movo, sed per kontinuaj agoj."
+
+#: src/QuoteProvider.cpp:44
+msgid "少一点解释自己，多一点移动棋子。"
+msgstr "Malpli klarigi vin kaj pli movi la pecojn."
+
+#: src/QuoteProvider.cpp:45
+msgid "真正的自由，来自可重复的执行能力。"
+msgstr "Vera libereco venas de ripetebla ekzekuto."
+
+#: src/QuoteProvider.cpp:46
+msgid "把今天变成证据，而不是幻想。"
+msgstr "Faru hodiaŭ evidentecon, ne fantazion."
+
+#: src/QuoteProvider.cpp:47
+msgid "你不需要燃烧，你需要稳定供电。"
+msgstr "Vi ne bezonas bruladon, vi bezonas stabilan elektroprovizon."
+
+#: src/QuoteProvider.cpp:48
+msgid "别让大目标吃掉小动作。"
+msgstr "Ne lasu la grandajn celojn manĝi la malgrandajn movojn."
+
+#: src/QuoteProvider.cpp:49
+msgid "现实不是敌人，现实是接口。"
+msgstr "Realo ne estas la malamiko, realeco estas la interfaco."
+
+#: src/QuoteProvider.cpp:50
+msgid "最好的灵感，是能进入下一步的灵感。"
+msgstr "La plej bona inspiro estas la inspiro, kiu kondukas al la sekva paŝo."
+
+#: src/QuoteProvider.cpp:51
+msgid "不要把思考当成完成。"
+msgstr "Ne pensu pensi kiel faritan."
+
+#: src/QuoteProvider.cpp:52
+msgid "不要把紧张当成努力。"
+msgstr "Ne konfuzu nervozecon kun peno."
+
+#: src/QuoteProvider.cpp:53
+msgid "不要把收藏当成学习。"
+msgstr "Ne konsideru kolektadon kiel lernadon."
+
+#: src/QuoteProvider.cpp:54
+msgid "不要把计划当成推进。"
+msgstr "Ne pensu pri planado kiel progreso."
+
+#: src/QuoteProvider.cpp:55
+msgid "不要把焦虑当成责任感。"
+msgstr "Ne konfuzu maltrankvilon kun respondeco."
+
+#: src/QuoteProvider.cpp:56
+msgid "不要把兴奋当成成果。"
+msgstr "Ne konfuzu eksciton kun rezultoj."
+
+#: src/QuoteProvider.cpp:57
+msgid "真正的进展，会留下痕迹。"
+msgstr "Reala progreso lasas spurojn."
+
+#: src/QuoteProvider.cpp:58
+msgid "今天至少留下一条可验证的痕迹。"
+msgstr "Lasu almenaŭ unu kontroleblan spuron hodiaŭ."
+
+#: src/QuoteProvider.cpp:59
+msgid "没有闭环的忙碌，会慢慢变成幻觉。"
+msgstr "Okupo sen fermita buklo malrapide fariĝos iluzio."
+
+#: src/QuoteProvider.cpp:60
+msgid "一件事落地，胜过十个宏大判断。"
+msgstr "Unu afero efektivigita estas pli bona ol dek grandaj juĝoj."
+
+#: src/QuoteProvider.cpp:61
+msgid "先交付一个粗糙版本，再优化尊严。"
+msgstr "Unue liveru malglatan version, poste optimumigu la dignon."
+
+#: src/QuoteProvider.cpp:62
+msgid "把任务做到能被别人看见。"
+msgstr "Faru la taskon por ke ĝi estu vidita de aliaj."
+
+#: src/QuoteProvider.cpp:63
+msgid "把想法做到能被自己复盘。"
+msgstr "Faru la ideon por ke ĝi estu reviziata de vi mem."
+
+#: src/QuoteProvider.cpp:64
+msgid "重复不是低级，重复是系统成形的方式。"
+msgstr "Ripeto ne estas malsupera, ripeto estas kiel sistemoj formiĝas."
+
+#: src/QuoteProvider.cpp:65
+msgid "节奏比爆发更可靠。"
+msgstr "Ritmo estas pli fidinda ol eksplodo."
+
+#: src/QuoteProvider.cpp:66
+msgid "你不是没方向，你是需要重新对焦。"
+msgstr "Ne estas ke vi ne havas direkton, vi devas refokusigi."
+
+#: src/QuoteProvider.cpp:67
+msgid "漂移不可怕，不回看才可怕。"
+msgstr "Drivado ne estas timiga, sed ne retrorigardi estas timiga."
+
+#: src/QuoteProvider.cpp:68
+msgid "观察自己，不是审判自己。"
+msgstr "Observu vin, ne juĝu vin."
+
+#: src/QuoteProvider.cpp:69
+msgid "状态差时，降低难度，不要取消行动。"
+msgstr "Kiam la stato estas malbona, reduktu la malfacilecon kaj ne nuligi la agon."
+
+#: src/QuoteProvider.cpp:70
+msgid "把自己从情绪里捞出来，放回任务里。"
+msgstr "Forigu vin de viaj emocioj kaj remetu vin sur taskon."
+
+#: src/QuoteProvider.cpp:71
+msgid "不要在脑内开会，打开文件。"
+msgstr "Ne havas kunvenon en via kapo, malfermu dosieron."
+
+#: src/QuoteProvider.cpp:72
+msgid "不要在脑内创业，发出一个请求。"
+msgstr "Anstataŭ komenci komercon en via kapo, faru peton."
+
+#: src/QuoteProvider.cpp:73
+msgid "不要在脑内复盘，写下一句话。"
+msgstr "Anstataŭ reludi ĝin en via kapo, skribu frazon."
+
+#: src/QuoteProvider.cpp:74
+msgid "把注意力从评价切回动作。"
+msgstr "Ŝanĝu vian fokuson de taksado reen al ago."
+
+#: src/QuoteProvider.cpp:75
+msgid "能做一点，就先做一点。"
+msgstr "Se vi povas fari ion, faru ĝin unue."
+
+#: src/QuoteProvider.cpp:76
+msgid "一点点不是安慰，一点点是入口。"
+msgstr "Iom ne estas komforto, iom estas eniro."
+
+#: src/QuoteProvider.cpp:77
+msgid "入口比宏图重要。"
+msgstr "La enirejo estas pli grava ol la grandioza bildo."
+
+#: src/QuoteProvider.cpp:78
+msgid "启动比姿势重要。"
+msgstr "Inico estas pli grava ol sinteno."
+
+#: src/QuoteProvider.cpp:79
+msgid "完成比解释重要。"
+msgstr "Kompletigo estas pli grava ol klarigo."
+
+#: src/QuoteProvider.cpp:80
+msgid "复盘比自责重要。"
+msgstr "Revizio estas pli grava ol memkulpigo."
+
+#: src/QuoteProvider.cpp:81
+msgid "今天的执行，是给明天的自己铺路。"
+msgstr "La hodiaŭa ekzekuto devas pavimi la vojon al la morgaŭa memo."
+
+#: src/QuoteProvider.cpp:82
+msgid "人会漂，系统要拉你回来。"
+msgstr "Homoj foriras, kaj la sistemo volas tiri vin reen."
+
+#: src/QuoteProvider.cpp:83
+msgid "当你不知道做什么，就记录现在。"
+msgstr "Kiam vi ne scias kion fari, nur registri la nunan momenton."
+
+#: src/QuoteProvider.cpp:84
+msgid "当你想逃避，就缩小任务。"
+msgstr "Kiam vi volas eskapi, malvastigu la taskon."
+
+#: src/QuoteProvider.cpp:85
+msgid "当你想证明，就先交付。"
+msgstr "Kiam vi volas pruvi ĝin, unue liveru ĝin."
+
+#: src/QuoteProvider.cpp:86
+msgid "当你想放弃，就先暂停判断。"
+msgstr "Kiam vi volas rezigni, unue suspendu la juĝon."
+
+#: src/QuoteProvider.cpp:87
+msgid "当你想空转，就问现实接口在哪里。"
+msgstr "Kiam vi volas malakcepti, demandu kie estas la vera interfaco."
+
+#: src/QuoteProvider.cpp:88
+msgid "别急着寻找意义，先制造一个可用结果。"
+msgstr "Ne rapidu trovi signifon, unue kreu uzeblan rezulton."
+
+#: src/QuoteProvider.cpp:89
+msgid "意义不是想出来的，是被行动压实的。"
+msgstr "Signifo ne estas imagita, ĝi estas firmigita per agoj."
+
+#: src/QuoteProvider.cpp:90
+msgid "稳定的小动作，会慢慢长成命运。"
+msgstr "Malgrandaj kaj konstantaj agoj malrapide kreskos al destino."
+
+#: src/QuoteProvider.cpp:91
+msgid "让今天有一个干净的切口。"
+msgstr "Ni havu puran tranĉon hodiaŭ."
+
+#: src/QuoteProvider.cpp:92
+msgid "让任务小到无法拒绝。"
+msgstr "Faru la taskon tro malgranda por rifuzi."
+
+#: src/QuoteProvider.cpp:93
+msgid "让记录诚实到无法欺骗。"
+msgstr "Faru rekordojn tiel honestaj, ke ili ne povas esti trompitaj."
+
+#: src/QuoteProvider.cpp:94
+msgid "让系统温柔到可以持续。"
+msgstr "Faru la sistemon sufiĉe milda por daŭri."
+
+#: src/QuoteProvider.cpp:95
+msgid "让行动具体到可以开始。"
+msgstr "Faru la agon sufiĉe konkreta por komenci."
+
+#: src/QuoteProvider.cpp:96
+msgid "别和疲惫争辩，给它一个小任务。"
+msgstr "Ne diskutu kun laceco, donu al ĝi malgrandan taskon."
+
+#: src/QuoteProvider.cpp:97
+msgid "别和焦虑辩论，给它一个时间盒。"
+msgstr "Ne diskutu kun angoro, donu al ĝi temposkatolon."
+
+#: src/QuoteProvider.cpp:98
+msgid "别和空虚对抗，给它一个现实动作。"
+msgstr "Ne batalu kontraŭ la malpleno, donu al ĝi realisman agon."
+
+#: src/QuoteProvider.cpp:99
+msgid "能量会波动，结构要稳定。"
+msgstr "Energio fluktuos kaj la strukturo devas esti stabila."
+
+#: src/QuoteProvider.cpp:100
+msgid "心情会波动，记录要稳定。"
+msgstr "Humoroj fluktuos, rekordoj devus esti stabilaj."
+
+#: src/QuoteProvider.cpp:101
+msgid "接地会波动，提醒要稳定。"
+msgstr "Grundo fluktuos, memorigante vin stabiligi ĝin."
+
+#: src/QuoteProvider.cpp:102
+msgid "每一次记录，都是一次返航。"
+msgstr "Ĉiu disko estas reveturo."
+
+#: src/QuoteProvider.cpp:103
+msgid "每一次提交，都是一次落子。"
+msgstr "Ĉiu submetaĵo estas movo."
+
+#: src/QuoteProvider.cpp:104
+msgid "每一次接地，都是一次回到现实。"
+msgstr "Ĉiufoje kiam vi estas surterigita, vi revenas al realeco."
+
+#: src/QuoteProvider.cpp:105
+msgid "不要轻看两分钟，它能切断一整天的漂移。"
+msgstr "Ne subtaksu du minutojn, ĝi povas fortranĉi tutan tagon."
+
+#: src/QuoteProvider.cpp:106
+msgid "观察不是为了控制一切，而是为了不被一切拖走。"
+msgstr "Observado ne estas kontroli ĉion, sed ne esti trenita for de ĉio."
+
+#: src/QuoteProvider.cpp:107
+msgid "今天只问三个数和一句话。"
+msgstr "Hodiaŭ mi petas nur tri nombrojn kaj unu frazon."
+
+#: src/QuoteProvider.cpp:108
+msgid "你现在在哪里？你正在做什么？你还要不要回来？"
+msgstr "Kie vi estas nun? Kion vi faras? Ĉu vi volas reveni?"
+
+#~ msgid ""
+#~ "Usage: oremind [OPTION]... [FILE]...\n"
+#~ "Concatenate FILE(s) to standard output. With no FILE, or when FILE is -,\n"
+#~ "read standard input.\n"
+#~ msgstr ""
+#~ "Uzo: oremind [OPTION]... [FILE]...\n"
+#~ "Kunigas FILE(j)n al norma eligo. Sen FILE, au kiam FILE estas -,\n"
+#~ "legi de norma enigo.\n"
+
 #, c-format
-msgid "%s: write error\n"
-msgstr "%s: skriberaro\n"
+#~ msgid "hello, world!\n"
+#~ msgstr "Saluton, mondo!\n"
+
+#, c-format
+#~ msgid "%s: write error\n"
+#~ msgstr "%s: skriberaro\n"
