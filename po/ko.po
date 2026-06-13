@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: observer@bodz.net\n"
-"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"POT-Creation-Date: 2026-06-13 21:57+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:38
+#: src/oremind.cpp:99
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,70 +19,88 @@ msgstr ""
 "사용법: oremind [OPTION]...\n"
 "데스크톱 자기 관찰 프롬프트를 백그라운드에서 실행합니다.\n"
 
-#: src/oremind.cpp:43
+#: src/oremind.cpp:104
 msgid "repeat for more verbose loggings\n"
 msgstr "더 자세한 로그를 보려면 반복 지정\n"
 
-#: src/oremind.cpp:45
+#: src/oremind.cpp:106
 msgid "show less logging messages\n"
 msgstr "로그 메시지를 더 적게 표시\n"
 
-#: src/oremind.cpp:47
+#: src/oremind.cpp:108
 msgid "display this help and exit\n"
 msgstr "이 도움말을 표시하고 종료\n"
 
-#: src/oremind.cpp:49
+#: src/oremind.cpp:110
+msgid "set UI locale, for example zh_CN, ja, ko, en\n"
+msgstr "로컬 UI 설정(예: zh_CN, ja, ko, en)\n"
+
+#: src/oremind.cpp:112
 msgid "set theme: light or dark\n"
 msgstr "테마 설정: light 또는 dark\n"
 
-#: src/oremind.cpp:51
-msgid "set prompt interval in minutes\n"
+#: src/oremind.cpp:114
+msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr ""
-"프롬프트 간격을 분 단위로 설정\n"
+"최종 대화상자 불투명도를 0에서 100 사이의 백분율로 설정\n"
 
-#: src/oremind.cpp:53
+#: src/oremind.cpp:116
+msgid "set prompt interval in minutes\n"
+msgstr "프롬프트 간격을 분 단위로 설정\n"
+
+#: src/oremind.cpp:118
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "SQLite 파일 경로. PATH가 디렉터리이면 로그 저장 위치\n"
 
-#: src/oremind.cpp:55
+#: src/oremind.cpp:120
 msgid "output version information and exit\n"
 msgstr "버전 정보를 표시하고 종료\n"
 
-#: src/oremind.cpp:57
+#: src/oremind.cpp:122
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "버그 제보: <%s>\n"
 
-#: src/oremind.cpp:92
+#: src/oremind.cpp:167
+#, c-format
+msgid "invalid locale: %s\n"
+msgstr "잘못된 로캘: %s\n"
+
+#: src/oremind.cpp:174
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "잘못된 테마: %s\n"
 
-#: src/oremind.cpp:102
+#: src/oremind.cpp:184
+msgid "invalid opacity: %s\n"
+msgstr ""
+"잘못된 불투명도: %s\n"
+
+#: src/oremind.cpp:195
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "잘못된 간격: %s\n"
 
-#: src/oremind.cpp:113
+#: src/oremind.cpp:206
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "저작권 (C) %d %s\n"
 
-#: src/oremind.cpp:114
+#: src/oremind.cpp:207
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "라이선스 AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:116
+#: src/oremind.cpp:209
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "이것은 자유 소프트웨어이며 자유롭게 변경하고 재배포할 수 있습니다.\n"
 
-#: src/oremind.cpp:118
+#: src/oremind.cpp:211
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "이 프로젝트는 AI 착취와 AI 패권에 반대합니다.\n"
 
-#: src/oremind.cpp:119
+#: src/oremind.cpp:212
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -90,31 +108,39 @@ msgstr ""
 "이 프로젝트는 무비판적 MIT식 라이선스와 정치적으로 순진한 BSD식 라이선스를 거"
 "부합니다.\n"
 
-#: src/oremind.cpp:122
+#: src/oremind.cpp:215
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "법이 허용하는 범위에서 어떠한 보증도 없습니다.\n"
 
-#: src/ObservationDialog.cpp:439
+#: src/ObservationDialog.cpp:441
 msgid "energy"
 msgstr "에너지"
 
-#: src/ObservationDialog.cpp:443
+#: src/ObservationDialog.cpp:445
 msgid "mood"
 msgstr "기분"
 
-#: src/ObservationDialog.cpp:447
+#: src/ObservationDialog.cpp:449
 msgid "grounding"
 msgstr "접지감"
 
-#: src/ObservationDialog.cpp:524
+#: src/ObservationDialog.cpp:526
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 msgstr "<Enter> 제출, <Escape> 취소. 다음 프롬프트는"
 
-#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:529 src/ObservationDialog.cpp:691
 msgid "minutes."
 msgstr "분 후."
 
-#: src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:535
+msgid ", or"
+msgstr ", 또는"
+
+#: src/ObservationDialog.cpp:538
+msgid "Quit."
+msgstr "종료."
+
+#: src/ObservationDialog.cpp:691
 msgid "seconds."
 msgstr "초 후."
 

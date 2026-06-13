@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: observer@bodz.net\n"
-"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"POT-Creation-Date: 2026-06-13 21:57+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:38
+#: src/oremind.cpp:99
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,75 +19,92 @@ msgstr ""
 "Utilisation : ou rappeler [OPTION]...\n"
 "Exécutez une invite d’auto-observation du bureau en arrière-plan.\n"
 
-#: src/oremind.cpp:43
+#: src/oremind.cpp:104
 msgid "repeat for more verbose loggings\n"
 msgstr "repeter pour obtenir des journaux plus verbeux\n"
 
-#: src/oremind.cpp:45
+#: src/oremind.cpp:106
 msgid "show less logging messages\n"
 msgstr "afficher moins de messages de journal\n"
 
-#: src/oremind.cpp:47
+#: src/oremind.cpp:108
 msgid "display this help and exit\n"
 msgstr "afficher cette aide et quitter\n"
 
-#: src/oremind.cpp:49
+#: src/oremind.cpp:110
+msgid "set UI locale, for example zh_CN, ja, ko, en\n"
+msgstr ""
+"définir l'interface utilisateur locale, par exemple zh_CN, ja, ko, en\n"
+
+#: src/oremind.cpp:112
 msgid "set theme: light or dark\n"
-msgstr ""
-"Thème défini : clair ou sombre\n"
+msgstr "Thème défini : clair ou sombre\n"
 
-#: src/oremind.cpp:51
+#: src/oremind.cpp:114
+msgid "set final dialog opacity percentage, 0 to 100\n"
+msgstr ""
+"définir le pourcentage final d’opacité de la fenêtre, de 0 à 100\n"
+
+#: src/oremind.cpp:116
 msgid "set prompt interval in minutes\n"
-msgstr ""
-"définir l'intervalle d'invite en minutes\n"
+msgstr "définir l'intervalle d'invite en minutes\n"
 
-#: src/oremind.cpp:53
+#: src/oremind.cpp:118
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr ""
-"Chemin du fichier SQLite ou répertoire de journaux lorsque PATH est un répertoire\n"
+"Chemin du fichier SQLite ou répertoire de journaux lorsque PATH est un "
+"répertoire\n"
 
-#: src/oremind.cpp:55
+#: src/oremind.cpp:120
 msgid "output version information and exit\n"
 msgstr "afficher les informations de version et quitter\n"
 
-#: src/oremind.cpp:57
+#: src/oremind.cpp:122
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Signaler les bugs a : <%s>\n"
 
-#: src/oremind.cpp:92
+#: src/oremind.cpp:167
+#, c-format
+msgid "invalid locale: %s\n"
+msgstr "locale invalide : %s\n"
+
+#: src/oremind.cpp:174
 #, c-format
 msgid "invalid theme: %s\n"
-msgstr ""
-"thème invalide : %s\n"
+msgstr "thème invalide : %s\n"
 
-#: src/oremind.cpp:102
+#: src/oremind.cpp:184
+msgid "invalid opacity: %s\n"
+msgstr ""
+"opacité invalide : %s\n"
+
+#: src/oremind.cpp:195
 #, c-format
 msgid "invalid interval: %s\n"
-msgstr ""
-"intervalle non valide : %s\n"
+msgstr "intervalle non valide : %s\n"
 
-#: src/oremind.cpp:113
+#: src/oremind.cpp:206
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Copyright (C) %d %s\n"
 
-#: src/oremind.cpp:114
+#: src/oremind.cpp:207
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "Licence AGPL-3.0-or-later : <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:116
+#: src/oremind.cpp:209
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Ce logiciel est libre : vous pouvez le modifier et le redistribuer.\n"
 
-#: src/oremind.cpp:118
+#: src/oremind.cpp:211
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr ""
 "Ce projet s'oppose a l'exploitation par l'IA et a l'hegemonie de l'IA.\n"
 
-#: src/oremind.cpp:119
+#: src/oremind.cpp:212
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -95,41 +112,55 @@ msgstr ""
 "Ce projet rejette les licences de type MIT sans reflexion et les licences de "
 "type BSD politiquement naives.\n"
 
-#: src/oremind.cpp:122
+#: src/oremind.cpp:215
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "AUCUNE GARANTIE n'est fournie, dans les limites permises par la loi.\n"
 
-#: src/ObservationDialog.cpp:439
+#: src/ObservationDialog.cpp:441
 msgid "energy"
 msgstr "énergie"
 
-#: src/ObservationDialog.cpp:443
+#: src/ObservationDialog.cpp:445
 msgid "mood"
 msgstr "humeur"
 
-#: src/ObservationDialog.cpp:447
+#: src/ObservationDialog.cpp:449
 msgid "grounding"
 msgstr "mise à la terre"
 
-#: src/ObservationDialog.cpp:524
+#: src/ObservationDialog.cpp:526
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
-msgstr "Appuyez sur <Entrée> pour soumettre, <Echap> pour annuler. Prochaine invite après"
+msgstr ""
+"Appuyez sur <Entrée> pour soumettre, <Echap> pour annuler. Prochaine invite "
+"après"
 
-#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:529 src/ObservationDialog.cpp:691
 msgid "minutes."
 msgstr "minutes."
 
-#: src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:535
+msgid ", or"
+msgstr ", ou"
+
+#: src/ObservationDialog.cpp:538
+msgid "Quit."
+msgstr "Quitter."
+
+#: src/ObservationDialog.cpp:691
 msgid "seconds."
 msgstr "secondes."
 
 #: src/QuoteProvider.cpp:9
 msgid "明天是今天的延续，今天是明天的提前。"
-msgstr "Demain est la continuation d'aujourd'hui, et aujourd'hui est l'avancée de demain."
+msgstr ""
+"Demain est la continuation d'aujourd'hui, et aujourd'hui est l'avancée de "
+"demain."
 
 #: src/QuoteProvider.cpp:10
 msgid "中低电量，也要推进一个最小动作。"
-msgstr "Même si la batterie est moyenne ou faible, une action minimale doit être avancée."
+msgstr ""
+"Même si la batterie est moyenne ou faible, une action minimale doit être "
+"avancée."
 
 #: src/QuoteProvider.cpp:11
 msgid "不要创造刺激，先创造价值。"
@@ -137,15 +168,20 @@ msgstr "Ne créez pas d’enthousiasme, créez d’abord de la valeur."
 
 #: src/QuoteProvider.cpp:12
 msgid "高维空转会成为利息税。"
-msgstr "Le transfert vide de grande dimension deviendra un impôt sur les intérêts."
+msgstr ""
+"Le transfert vide de grande dimension deviendra un impôt sur les intérêts."
 
 #: src/QuoteProvider.cpp:13
 msgid "接地，不是放弃理想，是把理想接到地面。"
-msgstr "Enraciner ne signifie pas abandonner vos idéaux, mais connecter vos idéaux au sol."
+msgstr ""
+"Enraciner ne signifie pas abandonner vos idéaux, mais connecter vos idéaux "
+"au sol."
 
 #: src/QuoteProvider.cpp:14
 msgid "现在不是证明自己伟大，而是完成下一步。"
-msgstr "Il ne s’agit plus maintenant de prouver votre grandeur, il s’agit de franchir l’étape suivante."
+msgstr ""
+"Il ne s’agit plus maintenant de prouver votre grandeur, il s’agit de "
+"franchir l’étape suivante."
 
 #: src/QuoteProvider.cpp:15
 msgid "把当前状态记录下来，就是重新夺回方向盘。"
@@ -153,7 +189,9 @@ msgstr "Enregistrer l'état actuel, c'est retrouver le volant."
 
 #: src/QuoteProvider.cpp:16
 msgid "疲惫时不要规划人生，先完成一个小动作。"
-msgstr "Ne planifiez pas votre vie lorsque vous êtes fatigué, effectuez d'abord une petite action."
+msgstr ""
+"Ne planifiez pas votre vie lorsque vous êtes fatigué, effectuez d'abord une "
+"petite action."
 
 #: src/QuoteProvider.cpp:17
 msgid "真正的执行，不依赖情绪同意。"
@@ -161,7 +199,9 @@ msgstr "Exécution véritable, ne dépendant pas du consentement émotionnel."
 
 #: src/QuoteProvider.cpp:18
 msgid "空想可以点火，但落地才能发电。"
-msgstr "Les rêves peuvent allumer un feu, mais ce n'est que lorsqu'ils sont posés au sol qu'ils peuvent produire de l'électricité."
+msgstr ""
+"Les rêves peuvent allumer un feu, mais ce n'est que lorsqu'ils sont posés au "
+"sol qu'ils peuvent produire de l'électricité."
 
 #: src/QuoteProvider.cpp:19
 msgid "不要等状态好，状态是在行动中恢复的。"
@@ -169,7 +209,9 @@ msgstr "N’attendez pas le bon état, l’état est rétabli en action."
 
 #: src/QuoteProvider.cpp:20
 msgid "先把手放到事情上，心会慢慢跟上。"
-msgstr "Mettez d'abord la main sur les choses, et votre cœur rattrapera lentement son retard."
+msgstr ""
+"Mettez d'abord la main sur les choses, et votre cœur rattrapera lentement "
+"son retard."
 
 #: src/QuoteProvider.cpp:21
 msgid "焦虑不是命令，它只是噪音。"
@@ -177,7 +219,9 @@ msgstr "L'anxiété n'est pas un ordre, c'est juste du bruit."
 
 #: src/QuoteProvider.cpp:22
 msgid "今天不用赢世界，只要赢一次漂移。"
-msgstr "Vous n’êtes pas obligé de gagner le monde aujourd’hui, il vous suffit de gagner une dérive."
+msgstr ""
+"Vous n’êtes pas obligé de gagner le monde aujourd’hui, il vous suffit de "
+"gagner une dérive."
 
 #: src/QuoteProvider.cpp:23
 msgid "能量低，就把任务切到更小。"
@@ -185,19 +229,27 @@ msgstr "Si l'énergie est faible, coupez la tâche en morceaux plus petits."
 
 #: src/QuoteProvider.cpp:24
 msgid "接地的第一步，是说清我现在在干嘛。"
-msgstr "La première étape vers la mise à la terre est de clarifier ce que je fais maintenant."
+msgstr ""
+"La première étape vers la mise à la terre est de clarifier ce que je fais "
+"maintenant."
 
 #: src/QuoteProvider.cpp:25
 msgid "记录不是浪费时间，记录是在校准方向。"
-msgstr "L'enregistrement n'est pas une perte de temps, l'enregistrement se fait dans le sens de l'étalonnage."
+msgstr ""
+"L'enregistrement n'est pas une perte de temps, l'enregistrement se fait dans "
+"le sens de l'étalonnage."
 
 #: src/QuoteProvider.cpp:26
 msgid "不必立刻强大，但要立刻靠近现实。"
-msgstr "Vous n’êtes pas obligé d’être puissant immédiatement, mais vous devez être immédiatement proche de la réalité."
+msgstr ""
+"Vous n’êtes pas obligé d’être puissant immédiatement, mais vous devez être "
+"immédiatement proche de la réalité."
 
 #: src/QuoteProvider.cpp:27
 msgid "世界不会因为你想明白才开始运转。"
-msgstr "Le monde ne commence pas à fonctionner simplement parce que vous l’avez compris."
+msgstr ""
+"Le monde ne commence pas à fonctionner simplement parce que vous l’avez "
+"compris."
 
 #: src/QuoteProvider.cpp:28
 msgid "先做可见的一步，再谈宏大的结构。"
@@ -209,15 +261,19 @@ msgstr "Mettez vos pensées en actions et elles deviendront un pouvoir."
 
 #: src/QuoteProvider.cpp:30
 msgid "拖延不是失败，但不观察拖延会变成系统。"
-msgstr "La procrastination n’est pas un échec, mais la procrastination sans observation peut devenir un système."
+msgstr ""
+"La procrastination n’est pas un échec, mais la procrastination sans "
+"observation peut devenir un système."
 
 #: src/QuoteProvider.cpp:31
 msgid "今天的最小闭环，就是明天的支点。"
-msgstr "La boucle fermée minimale d’aujourd’hui est le point d’appui de demain."
+msgstr ""
+"La boucle fermée minimale d’aujourd’hui est le point d’appui de demain."
 
 #: src/QuoteProvider.cpp:32
 msgid "不要追求完美启动，追求真实启动。"
-msgstr "Ne recherchez pas un démarrage parfait, recherchez un véritable démarrage."
+msgstr ""
+"Ne recherchez pas un démarrage parfait, recherchez un véritable démarrage."
 
 #: src/QuoteProvider.cpp:33
 msgid "当前这一分钟，比想象中的未来更有权重。"
@@ -253,7 +309,8 @@ msgstr "Lorsque votre énergie est faible, ne niez pas votre vie entière."
 
 #: src/QuoteProvider.cpp:41
 msgid "低接地时，不要相信宏大冲动。"
-msgstr "Ne vous fiez pas à l’impulsion de grandiose lorsque le terrain est bas."
+msgstr ""
+"Ne vous fiez pas à l’impulsion de grandiose lorsque le terrain est bas."
 
 #: src/QuoteProvider.cpp:42
 msgid "先问：我现在能完成什么？"
@@ -261,7 +318,9 @@ msgstr "Demandez d’abord : Que puis-je accomplir maintenant ?"
 
 #: src/QuoteProvider.cpp:43
 msgid "事情不是靠感动完成的，是靠连续动作完成的。"
-msgstr "Les choses ne s'accomplissent pas en bougeant, mais par des actions continues."
+msgstr ""
+"Les choses ne s'accomplissent pas en bougeant, mais par des actions "
+"continues."
 
 #: src/QuoteProvider.cpp:44
 msgid "少一点解释自己，多一点移动棋子。"
@@ -277,7 +336,9 @@ msgstr "Transformez aujourd’hui en preuve, pas en fantasme."
 
 #: src/QuoteProvider.cpp:47
 msgid "你不需要燃烧，你需要稳定供电。"
-msgstr "Vous n’avez pas besoin de combustion, vous avez besoin d’une alimentation électrique stable."
+msgstr ""
+"Vous n’avez pas besoin de combustion, vous avez besoin d’une alimentation "
+"électrique stable."
 
 #: src/QuoteProvider.cpp:48
 msgid "别让大目标吃掉小动作。"
@@ -337,7 +398,8 @@ msgstr "Livrez d'abord une version approximative, puis optimisez la dignité."
 
 #: src/QuoteProvider.cpp:62
 msgid "把任务做到能被别人看见。"
-msgstr "Effectuez la tâche de manière à ce qu'elle puisse être vue par les autres."
+msgstr ""
+"Effectuez la tâche de manière à ce qu'elle puisse être vue par les autres."
 
 #: src/QuoteProvider.cpp:63
 msgid "把想法做到能被自己复盘。"
@@ -345,7 +407,9 @@ msgstr "Faites l'idée pour qu'elle puisse être révisée par vous-même."
 
 #: src/QuoteProvider.cpp:64
 msgid "重复不是低级，重复是系统成形的方式。"
-msgstr "La répétition n'est pas inférieure, la répétition est la façon dont les systèmes prennent forme."
+msgstr ""
+"La répétition n'est pas inférieure, la répétition est la façon dont les "
+"systèmes prennent forme."
 
 #: src/QuoteProvider.cpp:65
 msgid "节奏比爆发更可靠。"
@@ -353,7 +417,9 @@ msgstr "Le rythme est plus fiable que la rafale."
 
 #: src/QuoteProvider.cpp:66
 msgid "你不是没方向，你是需要重新对焦。"
-msgstr "Ce n’est pas que vous n’avez pas de direction, vous avez besoin de vous recentrer."
+msgstr ""
+"Ce n’est pas que vous n’avez pas de direction, vous avez besoin de vous "
+"recentrer."
 
 #: src/QuoteProvider.cpp:67
 msgid "漂移不可怕，不回看才可怕。"
@@ -365,7 +431,9 @@ msgstr "Observez-vous, ne vous jugez pas."
 
 #: src/QuoteProvider.cpp:69
 msgid "状态差时，降低难度，不要取消行动。"
-msgstr "Lorsque le statut est mauvais, réduisez la difficulté et n'annulez pas l'action."
+msgstr ""
+"Lorsque le statut est mauvais, réduisez la difficulté et n'annulez pas "
+"l'action."
 
 #: src/QuoteProvider.cpp:70
 msgid "把自己从情绪里捞出来，放回任务里。"
@@ -377,7 +445,8 @@ msgstr "Pas de réunion en tête, ouvrez un dossier."
 
 #: src/QuoteProvider.cpp:72
 msgid "不要在脑内创业，发出一个请求。"
-msgstr "Au lieu de démarrer une entreprise dans votre tête, faites une demande."
+msgstr ""
+"Au lieu de démarrer une entreprise dans votre tête, faites une demande."
 
 #: src/QuoteProvider.cpp:73
 msgid "不要在脑内复盘，写下一句话。"
@@ -421,7 +490,8 @@ msgstr "Les gens s'éloignent et le système veut vous faire reculer."
 
 #: src/QuoteProvider.cpp:83
 msgid "当你不知道做什么，就记录现在。"
-msgstr "Quand vous ne savez pas quoi faire, enregistrez simplement le moment présent."
+msgstr ""
+"Quand vous ne savez pas quoi faire, enregistrez simplement le moment présent."
 
 #: src/QuoteProvider.cpp:84
 msgid "当你想逃避，就缩小任务。"
@@ -437,11 +507,15 @@ msgstr "Lorsque vous voulez abandonner, suspendez d'abord votre jugement."
 
 #: src/QuoteProvider.cpp:87
 msgid "当你想空转，就问现实接口在哪里。"
-msgstr "Lorsque vous souhaitez rester inactif, demandez où se trouve la véritable interface."
+msgstr ""
+"Lorsque vous souhaitez rester inactif, demandez où se trouve la véritable "
+"interface."
 
 #: src/QuoteProvider.cpp:88
 msgid "别急着寻找意义，先制造一个可用结果。"
-msgstr "Ne vous précipitez pas pour trouver du sens, créez d’abord un résultat utilisable."
+msgstr ""
+"Ne vous précipitez pas pour trouver du sens, créez d’abord un résultat "
+"utilisable."
 
 #: src/QuoteProvider.cpp:89
 msgid "意义不是想出来的，是被行动压实的。"
@@ -509,11 +583,15 @@ msgstr "Chaque fois que vous êtes cloué au sol, vous revenez à la réalité."
 
 #: src/QuoteProvider.cpp:105
 msgid "不要轻看两分钟，它能切断一整天的漂移。"
-msgstr "Ne sous-estimez pas deux minutes, cela peut couper une journée entière de dérive."
+msgstr ""
+"Ne sous-estimez pas deux minutes, cela peut couper une journée entière de "
+"dérive."
 
 #: src/QuoteProvider.cpp:106
 msgid "观察不是为了控制一切，而是为了不被一切拖走。"
-msgstr "Observer, ce n’est pas tout contrôler, mais ne pas se laisser entraîner par tout."
+msgstr ""
+"Observer, ce n’est pas tout contrôler, mais ne pas se laisser entraîner par "
+"tout."
 
 #: src/QuoteProvider.cpp:107
 msgid "今天只问三个数和一句话。"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: observer@bodz.net\n"
-"POT-Creation-Date: 2026-06-13 20:04+0800\n"
+"POT-Creation-Date: 2026-06-13 21:57+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:38
+#: src/oremind.cpp:99
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,103 +19,125 @@ msgstr ""
 "用法：oremind [選項]...\n"
 "在後臺執行桌面自我觀察提示器。\n"
 
-#: src/oremind.cpp:43
+#: src/oremind.cpp:104
 msgid "repeat for more verbose loggings\n"
 msgstr "重複使用以顯示更多詳細日誌\n"
 
-#: src/oremind.cpp:45
+#: src/oremind.cpp:106
 msgid "show less logging messages\n"
 msgstr "顯示較少的日誌訊息\n"
 
-#: src/oremind.cpp:47
+#: src/oremind.cpp:108
 msgid "display this help and exit\n"
 msgstr "顯示此說明並結束\n"
 
-#: src/oremind.cpp:49
+#: src/oremind.cpp:110
+msgid "set UI locale, for example zh_CN, ja, ko, en\n"
+msgstr "設定介面語言，例如 zh_CN、ja、ko、en\n"
+
+#: src/oremind.cpp:112
 msgid "set theme: light or dark\n"
-msgstr ""
-"設定主題：light 或 dark\n"
+msgstr "設定主題：light 或 dark\n"
 
-#: src/oremind.cpp:51
+#: src/oremind.cpp:114
+msgid "set final dialog opacity percentage, 0 to 100\n"
+msgstr ""
+"設定彈窗最終不透明度百分比，範圍 0 到 100\n"
+
+#: src/oremind.cpp:116
 msgid "set prompt interval in minutes\n"
-msgstr ""
-"設定提示間隔，單位為分鐘\n"
+msgstr "設定提示間隔，單位為分鐘\n"
 
-#: src/oremind.cpp:53
+#: src/oremind.cpp:118
 msgid "SQLite file path, or log directory when PATH is a directory\n"
-msgstr ""
-"SQLite 檔案路徑；如果 PATH 是目錄，則作為日誌目錄\n"
+msgstr "SQLite 檔案路徑；如果 PATH 是目錄，則作為日誌目錄\n"
 
-#: src/oremind.cpp:55
+#: src/oremind.cpp:120
 msgid "output version information and exit\n"
 msgstr "輸出版本資訊並結束\n"
 
-#: src/oremind.cpp:57
+#: src/oremind.cpp:122
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "回報問題到：<%s>\n"
 
-#: src/oremind.cpp:92
+#: src/oremind.cpp:167
+#, c-format
+msgid "invalid locale: %s\n"
+msgstr "無效語言區域：%s\n"
+
+#: src/oremind.cpp:174
 #, c-format
 msgid "invalid theme: %s\n"
-msgstr ""
-"無效主題：%s\n"
+msgstr "無效主題：%s\n"
 
-#: src/oremind.cpp:102
+#: src/oremind.cpp:184
+msgid "invalid opacity: %s\n"
+msgstr ""
+"無效不透明度：%s\n"
+
+#: src/oremind.cpp:195
 #, c-format
 msgid "invalid interval: %s\n"
-msgstr ""
-"無效間隔：%s\n"
+msgstr "無效間隔：%s\n"
 
-#: src/oremind.cpp:113
+#: src/oremind.cpp:206
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "版權所有 (C) %d %s\n"
 
-#: src/oremind.cpp:114
+#: src/oremind.cpp:207
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr "授權 AGPL-3.0-or-later：<https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:116
+#: src/oremind.cpp:209
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "這是自由軟體：你可以自由修改並再散布。\n"
 
-#: src/oremind.cpp:118
+#: src/oremind.cpp:211
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "本專案反對 AI 剝削與 AI 霸權。\n"
 
-#: src/oremind.cpp:119
+#: src/oremind.cpp:212
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
 msgstr "本專案反對無腦 MIT 式授權與政治愚蠢 BSD 式授權。\n"
 
-#: src/oremind.cpp:122
+#: src/oremind.cpp:215
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "在法律允許範圍內，不提供任何保證。\n"
 
-#: src/ObservationDialog.cpp:439
+#: src/ObservationDialog.cpp:441
 msgid "energy"
 msgstr "能量"
 
-#: src/ObservationDialog.cpp:443
+#: src/ObservationDialog.cpp:445
 msgid "mood"
 msgstr "心情"
 
-#: src/ObservationDialog.cpp:447
+#: src/ObservationDialog.cpp:449
 msgid "grounding"
 msgstr "接地"
 
-#: src/ObservationDialog.cpp:524
+#: src/ObservationDialog.cpp:526
 msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
 msgstr "按 <Enter> 提交，按 <Escape> 取消。下次提示將在"
 
-#: src/ObservationDialog.cpp:527 src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:529 src/ObservationDialog.cpp:691
 msgid "minutes."
 msgstr "分鐘後。"
 
-#: src/ObservationDialog.cpp:674
+#: src/ObservationDialog.cpp:535
+msgid ", or"
+msgstr "，或"
+
+#: src/ObservationDialog.cpp:538
+msgid "Quit."
+msgstr "退出。"
+
+#: src/ObservationDialog.cpp:691
 msgid "seconds."
 msgstr "秒後。"
 
