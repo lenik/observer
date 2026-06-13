@@ -6,8 +6,16 @@ _oremind()
 	_init_completion || return
 
 	case "$prev" in
+		-l|--locale)
+			COMPREPLY=($(compgen -W 'en zh_CN zh_TW ja ko th vi fr de it eo' -- "$cur"))
+			return
+			;;
 		-t|--theme)
 			COMPREPLY=($(compgen -W 'dark light' -- "$cur"))
+			return
+			;;
+		-o|--opacity)
+			COMPREPLY=()
 			return
 			;;
 		-i|--interval)
@@ -21,7 +29,7 @@ _oremind()
 	esac
 
 	if [[ $cur == -* ]]; then
-		COMPREPLY=($(compgen -W '-v --verbose -q --quiet -h --help -t --theme -i --interval -d --sqlite-db --version' -- "$cur"))
+		COMPREPLY=($(compgen -W '-v --verbose -q --quiet -h --help -l --locale -t --theme -o --opacity -i --interval -d --sqlite-db --version' -- "$cur"))
 		return
 	fi
 

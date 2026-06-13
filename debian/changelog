@@ -1,3 +1,14 @@
+observer (1.0.1) testing; urgency=medium
+
+  * Add locale selection with -l/--locale and load development translations
+    relative to the executable path.
+  * Add prompt Quit footer action and Ctrl-Q as an in-prompt quit shortcut.
+  * Add a Win+Alt+G X11 global hotkey for immediate prompts while waiting.
+  * Add --opacity to control final prompt opacity from 0 to 100 percent.
+  * Add the X11 build dependency required by the global hotkey implementation.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Sat, 13 Jun 2026 22:05:05 +0800
+
 observer (1.0.0) testing; urgency=medium
 
   * Initial release of the oremind desktop self-observation reminder.

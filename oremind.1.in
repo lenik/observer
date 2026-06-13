@@ -30,6 +30,17 @@ Decrease logging verbosity.
 .BR \-h ", " \-\-help
 Print a usage summary and exit successfully.
 .TP
+.BR \-l ", " \-\-locale " " \fILOCALE\fR
+Set the UI locale before translations are initialized.  Examples include
+.BR en ,
+.BR zh_CN ,
+.BR zh_TW ,
+.BR ja ,
+.BR ko ,
+.BR fr ,
+and
+.BR de .
+.TP
 .BR \-t ", " \-\-theme " " \fITHEME\fR
 Set the prompt theme.  Supported values are
 .B light
@@ -37,6 +48,14 @@ and
 .BR dark .
 The default is
 .BR dark .
+.TP
+.BR \-o ", " \-\-opacity " " \fINUM\fR
+Set the final dialog opacity as a percentage from
+.B 0
+to
+.BR 100 .
+The default is
+.BR 75 .
 .TP
 .BR \-i ", " \-\-interval " " \fINUM\fR
 Set the normal prompt interval in minutes.  Fractional values are accepted.
@@ -67,6 +86,16 @@ exit the application.
 .TP
 .B Control-S
 Snooze the prompt for 30 seconds.
+.TP
+.B Control-Q
+Quit the application from the prompt.
+.TP
+.B Mod4-Alt-G
+Show the prompt immediately while the application is waiting.  Mod4 is usually
+the Windows or Super key.  This shortcut is registered through X11 on Linux.
+.TP
+.B Quit
+Click the small Quit label in the prompt footer to exit the application.
 .TP
 .BR F1 ", " F2
 Decrease or increase the energy score by half a step.

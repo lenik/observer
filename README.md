@@ -16,6 +16,8 @@ energy, mood, and grounding scores.
   shortcuts, and slide/fade transitions.
 - Lets the interval be edited from the prompt; the interval unit label toggles
   between minutes and seconds.
+- Provides a clickable `Quit` label in the prompt footer.
+- Registers `Win+Alt+G` on X11 to show the prompt immediately while waiting.
 - Saves non-empty, trimmed activity notes only.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
@@ -32,7 +34,9 @@ Common examples:
 
 ```bash
 oremind
+oremind --locale zh_CN
 oremind --theme light
+oremind --opacity 85
 oremind --interval 0.5
 oremind --interval 0
 oremind --sqlite-db ~/.observer/observer.sqlite3
@@ -44,7 +48,11 @@ Options:
 - `-v`, `--verbose`: increase logging verbosity.
 - `-q`, `--quiet`: decrease logging verbosity.
 - `-h`, `--help`: show command-line help.
+- `-l`, `--locale LOCALE`: set the UI locale before translations are loaded,
+  for example `en`, `zh_CN`, `zh_TW`, `ja`, `ko`, `fr`, or `de`.
 - `-t`, `--theme light|dark`: select the prompt theme.
+- `-o`, `--opacity NUM`: set the final dialog opacity from `0` to `100`.
+  The default is `75`.
 - `-i`, `--interval NUM`: set the normal prompt interval in minutes. Fractional
   values are accepted. `0` makes the startup prompt a one-shot run.
 - `-d`, `--sqlite-db PATH`: use `PATH` as the SQLite database file, or as a log
@@ -56,6 +64,9 @@ Options:
 - `Enter`: submit. Empty activity text is not recorded.
 - `Escape`: cancel without recording. Three consecutive cancels exit the app.
 - `Ctrl+S`: snooze for 30 seconds.
+- `Ctrl+Q`: quit from the prompt.
+- `Win+Alt+G`: show the prompt immediately while the app is waiting. This uses
+  an X11 global hotkey on Linux.
 - `F1` / `F2`: decrease / increase energy by half a step.
 - `F3` / `F4`: decrease / increase mood by half a step.
 - `F5` / `F6`: decrease / increase grounding by half a step.
@@ -95,7 +106,7 @@ gettext, and the local `bas-c` / `bas-cpp` dependencies used by this project:
 
 ```bash
 sudo apt install meson ninja-build pkg-config gettext sqlite3 libsqlite3-dev \
-    libwxgtk3.2-dev check
+    libwxgtk3.2-dev libx11-dev check
 ```
 
 Then make sure `bas-c` and `bas-cpp` development packages are available to
