@@ -1,113 +1,133 @@
-本文件由模板生成。
-除项目名称和程序名称外，其余内容均为占位符。
-请根据当前项目的具体情况重写此文档。
-
 # observer
 
-`observer` 是一个基于 Meson 的小型 C/C++ 命令行应用项目模板。  
-`oremind` 是此模板中的一个**示例应用**；同一仓库中可以继续添加更多应用。
+`observer` 是一个 Linux 桌面自我状态观察器，技术栈为 C++17、
+wxWidgets、SQLite 和 Meson。当前可执行程序是 `oremind`。
 
-## 仓库结构
+`oremind` 会在后台常驻，启动后立即弹出一次观察窗口，之后按设定间隔继续提醒。
+每次提醒只做很轻的记录：一句当前活动，加上可选的能量、心情、接地评分。
 
-- `src/` - 应用与共享模块源码
-- `tests/` - 使用 Check 框架的单元测试（`*_unit.c`）
-- `debian/` - Debian 打包元数据
-- `meson.build` - 顶层构建定义与辅助目标
+## 功能
 
-## 示例应用：`oremind`
+- 启动后隐藏主窗口，在后台运行。
+- 启动后立即弹窗，之后通过 `wxTimer` 周期提醒。
+- 深色提示界面，包含格言 canvas、emoji 评分控件、快捷键和滑入淡入动画。
+- 可在弹窗右下角调整下一次间隔，点击单位可在分钟和秒之间切换。
+- 提交前会 trim 活动文本；空内容不会记录。
+- `energy`、`mood`、`grounding` 的默认值为 3，保持默认时视为未记录。
+- 默认写入 SQLite，也可以把 `--sqlite-db` 指向目录来写每日文本日志。
+- 连续 3 次按 Escape 取消后退出应用。
 
-`oremind` 是一个类似 `cat` 的工具：
+## 使用
 
 ```bash
-oremind [OPTION]... [FILE]...
+oremind [OPTION]...
 ```
 
-- 如果未提供 `FILE`，则从 `stdin` 读取。
-- 如果某个 `FILE` 为 `-`，则在该位置从 `stdin` 读取。
-- 输出写入 `stdout`。
-
-支持的选项：
-
-- `-v`, `--verbose`
-- `-q`, `--quiet`
-- `-h`, `--help`
-- `--version`
-
-## 构建与测试
-
-### 构建依赖
+常用例子：
 
 ```bash
-sudo apt install meson ninja-build gcc pkg-config check
+oremind
+oremind --theme light
+oremind --interval 0.5
+oremind --interval 0
+oremind --sqlite-db ~/.observer/observer.sqlite3
+oremind --sqlite-db ~/.observer/logs/
 ```
 
-### 配置并构建
+选项：
 
-使用绝对构建目录 `/build`：
+- `-v`, `--verbose`：增加日志详细程度。
+- `-q`, `--quiet`：减少日志输出。
+- `-h`, `--help`：显示帮助。
+- `-t`, `--theme light|dark`：选择浅色或深色主题。
+- `-i`, `--interval NUM`：设置正常提醒间隔，单位为分钟，支持小数。`0` 表示启动弹窗后提交或取消即退出。
+- `-d`, `--sqlite-db PATH`：如果 `PATH` 是文件路径，则作为 SQLite 数据库；如果是已有目录或以 `/` 结尾，则作为日志目录。
+- `--version`：显示版本和许可证信息。
 
-```bash
-meson setup /build
-ninja -C /build
+## 快捷键
+
+- `Enter`：提交。活动内容为空时不记录。
+- `Escape`：取消且不记录。连续取消 3 次会退出应用。
+- `Ctrl+S`：稍后 30 秒。
+- `F1` / `F2`：能量减 / 加半格。
+- `F3` / `F4`：心情减 / 加半格。
+- `F5` / `F6`：接地减 / 加半格。
+
+## 存储
+
+默认 SQLite 数据库：
+
+```text
+~/.observer/observer.sqlite3
 ```
 
-### 运行测试
+应用会自动创建父目录和表。默认评分会保存为 `NULL`。
 
-```bash
-meson test -C /build
+当 `--sqlite-db` 指向目录时，`oremind` 会写每日日志：
+
+```text
+<datadir>/<yyyy-mm-dd>.log
 ```
 
-Meson 会自动发现 `tests/*_unit.c` 中的单元测试并完成注册。
+记录格式：
 
-## i18n（gettext）
-
-`oremind` 使用 `po/` 下的 gettext 翻译文件（`*.po` 与生成的 `.mo` 文件）。
-
-- 安装后运行时从系统 locale 目录加载翻译。
-- 开发态运行（`/build/oremind`）若存在 `/build/po`，会优先使用项目内翻译资源。
-
-### 同步翻译词条
-
-使用 `posync` 从当前源码字符串同步词条：
-
-```bash
-ninja -C /build posync
+```text
+hh:mm:ss e2.5 m3.5 g4.0
+    当前活动
 ```
 
-`posync` 会：
+评分保持默认值 3 时，该字段会被省略。
 
-- 为 `po/LINGUAS` 中每种语言补齐缺失消息
-- 移除源码中已不再使用的废弃消息
+## 构建
 
-### 构建翻译文件
+### 依赖
+
+Debian 系系统需要常规构建工具，以及 wxWidgets、SQLite、gettext 和本项目使用的
+`bas-c` / `bas-cpp` 开发包：
 
 ```bash
-ninja -C /build
+sudo apt install meson ninja-build pkg-config gettext sqlite3 libsqlite3-dev \
+    libwxgtk3.2-dev check
 ```
 
-### 快速测试语言
+同时确保 `bas-c` 和 `bas-cpp` 的开发包可以被 `pkg-config` 找到。
 
-建议优先使用 `LANGUAGE=<lang>`，在开发环境中选择更稳定：
+### 配置和编译
 
 ```bash
-LANGUAGE=ja /build/oremind -h
-LANGUAGE=zh_CN /build/oremind -h
+meson setup _build
+meson compile -C _build
 ```
 
-`LANG=<lang>.<encoding>` 是否生效取决于系统是否已生成对应 locale。
-
-## 安装 / 符号链接辅助命令
-
-常规安装：
+从构建目录运行：
 
 ```bash
-meson install -C /build
+_build/oremind
 ```
 
-调试符号链接工作流（在已配置的安装前缀下）：
+### 安装
 
 ```bash
-ninja -C /build install-symlinks
-ninja -C /build uninstall-symlinks
+meson install -C _build
+```
+
+本地开发时可以使用符号链接辅助目标：
+
+```bash
+meson compile -C _build install-symlinks
+meson compile -C _build uninstall-symlinks
+```
+
+## 翻译
+
+翻译文件在 `po/` 目录。普通 Meson 构建会生成 `.mo` 文件。
+
+快速检查语言：
+
+```bash
+LANGUAGE=zh_CN _build/oremind -h
+LANGUAGE=ja _build/oremind -h
+LANGUAGE=ko _build/oremind -h
 ```
 
 ## Debian 打包
@@ -120,6 +140,4 @@ dpkg-buildpackage -us -uc
 
 Copyright (C) 2026 Lenik <observer@bodz.net>
 
-采用 **AGPL-3.0-or-later** 许可。  
-本项目明确反对 AI 剥削与 AI 霸权，反对无脑 MIT 式许可证和政治愚蠢的 BSD 式许可证。  
-完整文本及项目补充条款见 `LICENSE`。
+本项目采用 **AGPL-3.0-or-later** 许可。完整文本和项目补充条款见 `LICENSE`。

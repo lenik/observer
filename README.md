@@ -1,116 +1,146 @@
-THIS FILE IS GENERATED FROM A TEMPLATE.
-Except for the project and program names, all content is placeholder text.
-Please rewrite this file to reflect the specific details of the current project.
-
 # observer
 
-`observer` is a Meson-based project template for small C/C++ command-line apps.
-`oremind` is one **example app** in this template; more apps can be added in the same repository.
+`observer` is a Linux desktop self-observation app built with C++17,
+wxWidgets, SQLite, and Meson.  The shipped executable is `oremind`.
 
-## Repository layout
+`oremind` stays in the background, shows a compact observation prompt
+immediately after startup, and then repeats at the configured interval.  The
+prompt is meant for a quick state check: one activity sentence plus optional
+energy, mood, and grounding scores.
 
-- `src/` - source code for apps and shared pieces
-- `tests/` - unit tests (`*_unit.c`) using the Check framework
-- `debian/` - Debian packaging metadata
-- `meson.build` - top-level build definition and helper targets
+## Features
 
-## Example app: `oremind`
+- Starts hidden and runs as a background desktop app.
+- Shows a wxWidgets dialog immediately, then repeats with `wxTimer`.
+- Uses a dark prompt UI with quote canvas, emoji score controls, keyboard
+  shortcuts, and slide/fade transitions.
+- Lets the interval be edited from the prompt; the interval unit label toggles
+  between minutes and seconds.
+- Saves non-empty, trimmed activity notes only.
+- Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
+- Stores observations in SQLite by default, or daily log files when the storage
+  path is a directory.
+- Exits after three consecutive Escape cancels.
 
-`oremind` is a cat-like utility:
-
-```bash
-oremind [OPTION]... [FILE]...
-```
-
-- If no `FILE` is provided, it reads from `stdin`.
-- If a `FILE` is `-`, it reads from `stdin` at that position.
-- Output is written to `stdout`.
-
-Supported options:
-
-- `-v`, `--verbose`
-- `-q`, `--quiet`
-- `-h`, `--help`
-- `--version`
-
-## Build and test
-
-### Build dependencies
+## Usage
 
 ```bash
-sudo apt install meson ninja-build gcc pkg-config check
+oremind [OPTION]...
 ```
 
-### Configure and build
-
-Use the absolute build directory `/build`:
+Common examples:
 
 ```bash
-meson setup /build
-ninja -C /build
+oremind
+oremind --theme light
+oremind --interval 0.5
+oremind --interval 0
+oremind --sqlite-db ~/.observer/observer.sqlite3
+oremind --sqlite-db ~/.observer/logs/
 ```
 
-### Run tests
+Options:
+
+- `-v`, `--verbose`: increase logging verbosity.
+- `-q`, `--quiet`: decrease logging verbosity.
+- `-h`, `--help`: show command-line help.
+- `-t`, `--theme light|dark`: select the prompt theme.
+- `-i`, `--interval NUM`: set the normal prompt interval in minutes. Fractional
+  values are accepted. `0` makes the startup prompt a one-shot run.
+- `-d`, `--sqlite-db PATH`: use `PATH` as the SQLite database file, or as a log
+  directory when it is an existing directory or ends with `/`.
+- `--version`: print version and license information.
+
+## Keyboard
+
+- `Enter`: submit. Empty activity text is not recorded.
+- `Escape`: cancel without recording. Three consecutive cancels exit the app.
+- `Ctrl+S`: snooze for 30 seconds.
+- `F1` / `F2`: decrease / increase energy by half a step.
+- `F3` / `F4`: decrease / increase mood by half a step.
+- `F5` / `F6`: decrease / increase grounding by half a step.
+
+## Storage
+
+The default SQLite database is:
+
+```text
+~/.observer/observer.sqlite3
+```
+
+The app creates the parent directory and database table automatically.  Default
+scores are stored as `NULL`.
+
+When `--sqlite-db` points to a directory, `oremind` writes daily logs:
+
+```text
+<datadir>/<yyyy-mm-dd>.log
+```
+
+Record format:
+
+```text
+hh:mm:ss e2.5 m3.5 g4.0
+    activity text
+```
+
+Any score still at the default value is omitted.
+
+## Build
+
+### Dependencies
+
+On Debian-like systems, install the usual build tools plus wxWidgets, SQLite,
+gettext, and the local `bas-c` / `bas-cpp` dependencies used by this project:
 
 ```bash
-meson test -C /build
+sudo apt install meson ninja-build pkg-config gettext sqlite3 libsqlite3-dev \
+    libwxgtk3.2-dev check
 ```
 
-Unit tests are auto-discovered from `tests/*_unit.c` and registered in Meson.
+Then make sure `bas-c` and `bas-cpp` development packages are available to
+`pkg-config`.
 
-## i18n (gettext)
-
-`oremind` uses gettext translations under `po/` (`*.po` + generated `.mo` files).
-
-- Installed runtime loads translations from system locale dir.
-- Dev runtime (`/build/oremind`) prefers project-local translations from `/build/po` if present.
-
-### Sync translation catalogs
-
-Use `posync` to update catalogs from current source strings:
+### Configure and compile
 
 ```bash
-ninja -C /build posync
+meson setup _build
+meson compile -C _build
 ```
 
-`posync` will:
-
-- add missing messages into each language from `po/LINGUAS`
-- remove obsolete messages no longer used in source
-
-### Build translation files
+Run the app from the build tree:
 
 ```bash
-ninja -C /build
+_build/oremind
 ```
 
-### Quick locale testing
-
-Prefer `LANGUAGE=<lang>` for predictable gettext selection in dev shells:
+### Install
 
 ```bash
-LANGUAGE=ja /build/oremind -h
-LANGUAGE=zh_CN /build/oremind -h
+meson install -C _build
 ```
 
-`LANG=<lang>.<encoding>` may depend on whether that locale is generated on your system.
-
-## Install / symlink helpers
-
-Normal install:
+For local development against the configured prefix:
 
 ```bash
-meson install -C /build
+meson compile -C _build install-symlinks
+meson compile -C _build uninstall-symlinks
 ```
 
-Debug symlink workflow (under configured prefix):
+## Translations
+
+Translations live under `po/`.  Build files generate `.mo` files as part of the
+normal Meson build.
+
+Quick language checks:
 
 ```bash
-ninja -C /build install-symlinks
-ninja -C /build uninstall-symlinks
+LANGUAGE=zh_CN _build/oremind -h
+LANGUAGE=ja _build/oremind -h
+LANGUAGE=ko _build/oremind -h
 ```
 
-## Debian package
+## Debian Package
 
 ```bash
 dpkg-buildpackage -us -uc
@@ -120,7 +150,5 @@ dpkg-buildpackage -us -uc
 
 Copyright (C) 2026 Lenik <observer@bodz.net>
 
-Licensed under **AGPL-3.0-or-later**.  
-This project explicitly opposes AI exploitation and AI hegemony, and rejects
-mindless MIT-style licensing and politically naive BSD-style licensing.  
-See `LICENSE` for the full text and supplemental project terms.
+Licensed under **AGPL-3.0-or-later**.  See `LICENSE` for the full text and
+supplemental project terms.

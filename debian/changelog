@@ -1,5 +1,14 @@
 observer (1.0.0) testing; urgency=medium
 
-  * Initial release
+  * Initial release of the oremind desktop self-observation reminder.
+  * Add wxWidgets background app flow with immediate startup prompt, timer-based
+    reminders, snooze handling, and three-Escape exit behavior.
+  * Add dark/light prompt themes, quote canvas, emoji score controls, keyboard
+    shortcuts, interval editing, and slide/fade prompt transitions.
+  * Add SQLite storage by default under ~/.observer/observer.sqlite3 and
+    directory-based daily text logs through --sqlite-db.
+  * Trim activity text, skip empty submissions, and omit default e/m/g scores
+    from persisted records.
+  * Add gettext catalogs, bash completion, manpage, and project documentation.
  
- -- Lenik (谢继雷) <lenik@bodz.net>  Wed, 04 Mar 2026 00:00:00 +0000
+ -- Lenik (谢继雷) <lenik@bodz.net>  Sat, 13 Jun 2026 19:54:27 +0800
