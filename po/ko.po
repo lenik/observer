@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 20:40+0800\n"
+"POT-Creation-Date: 2026-06-14 21:03+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -169,132 +169,132 @@ msgstr "Ctrl+Q 종료"
 msgid "seconds later"
 msgstr "초 후"
 
-#: src/StatisticsDialog.cpp:442
+#: src/StatisticsDialog.cpp:443
 msgid "Day statistics"
 msgstr "일별 통계"
 
-#: src/StatisticsDialog.cpp:445
+#: src/StatisticsDialog.cpp:446
 msgid "Week statistics"
 msgstr "주간 통계"
 
-#: src/StatisticsDialog.cpp:449
+#: src/StatisticsDialog.cpp:450
 msgid "Month statistics"
 msgstr "월별 통계"
 
-#: src/StatisticsDialog.cpp:453
+#: src/StatisticsDialog.cpp:454
 msgid "Year statistics"
 msgstr "연도 통계"
 
-#: src/StatisticsDialog.cpp:455 src/StatisticsDialog.cpp:1186
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1199
 msgid "Calendar"
 msgstr "달력"
 
-#: src/StatisticsDialog.cpp:628 src/StatisticsDialog.cpp:1196
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1209
 msgid "Month"
 msgstr "월"
 
-#: src/StatisticsDialog.cpp:697
+#: src/StatisticsDialog.cpp:699
 msgid "Prompted"
 msgstr "표시 시간"
 
-#: src/StatisticsDialog.cpp:700
+#: src/StatisticsDialog.cpp:702
 msgid "Submitted"
 msgstr "제출 시간"
 
-#: src/StatisticsDialog.cpp:703 src/StatisticsDialog.cpp:1157
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1170
 msgid "Duration"
 msgstr "지속 시간"
 
-#: src/StatisticsDialog.cpp:706
+#: src/StatisticsDialog.cpp:708
 msgid "Energy"
 msgstr "에너지"
 
-#: src/StatisticsDialog.cpp:709
+#: src/StatisticsDialog.cpp:711
 msgid "Mood"
 msgstr "기분"
 
-#: src/StatisticsDialog.cpp:712
+#: src/StatisticsDialog.cpp:714
 msgid "Grounding"
 msgstr "접지"
 
-#: src/StatisticsDialog.cpp:715
+#: src/StatisticsDialog.cpp:717
 msgid "Avg"
 msgstr "평균"
 
-#: src/StatisticsDialog.cpp:718
+#: src/StatisticsDialog.cpp:720
 msgid "Activity"
 msgstr "활동"
 
-#: src/StatisticsDialog.cpp:721
+#: src/StatisticsDialog.cpp:723
 msgid "Quote"
 msgstr "격언"
 
-#: src/StatisticsDialog.cpp:1090
+#: src/StatisticsDialog.cpp:1103
 msgid "No records"
 msgstr "기록 없음"
 
-#: src/StatisticsDialog.cpp:1156 src/StatisticsDialog.cpp:1477
-#: src/StatisticsDialog.cpp:1520
+#: src/StatisticsDialog.cpp:1169 src/StatisticsDialog.cpp:1521
+#: src/StatisticsDialog.cpp:1564
 msgid "Records"
 msgstr "기록"
 
-#: src/StatisticsDialog.cpp:1168
+#: src/StatisticsDialog.cpp:1181
 msgid "Statistics"
 msgstr "통계"
 
-#: src/StatisticsDialog.cpp:1190
+#: src/StatisticsDialog.cpp:1203
 msgid "Day"
 msgstr "낮"
 
-#: src/StatisticsDialog.cpp:1193
+#: src/StatisticsDialog.cpp:1206
 msgid "Week"
 msgstr "주"
 
-#: src/StatisticsDialog.cpp:1199
+#: src/StatisticsDialog.cpp:1212
 msgid "Year"
 msgstr "년"
 
-#: src/StatisticsDialog.cpp:1203
+#: src/StatisticsDialog.cpp:1216
 msgid "Today"
 msgstr "오늘"
 
-#: src/StatisticsDialog.cpp:1206
+#: src/StatisticsDialog.cpp:1219
 msgid "Previous"
 msgstr "이전"
 
-#: src/StatisticsDialog.cpp:1209
+#: src/StatisticsDialog.cpp:1222
 msgid "Next"
 msgstr "다음"
 
-#: src/StatisticsDialog.cpp:1213
+#: src/StatisticsDialog.cpp:1226
 msgid "Close"
 msgstr "닫기"
 
-#: src/StatisticsDialog.cpp:1225
+#: src/StatisticsDialog.cpp:1238
 msgid "Each Year"
 msgstr "매년"
 
-#: src/StatisticsDialog.cpp:1274 src/StatisticsDialog.cpp:1541
+#: src/StatisticsDialog.cpp:1287 src/StatisticsDialog.cpp:1585
 msgid "Top activities"
 msgstr "인기 활동"
 
-#: src/StatisticsDialog.cpp:1478 src/StatisticsDialog.cpp:1521
+#: src/StatisticsDialog.cpp:1522 src/StatisticsDialog.cpp:1565
 msgid "Empty notes"
 msgstr "빈 메모"
 
-#: src/StatisticsDialog.cpp:1479 src/StatisticsDialog.cpp:1522
+#: src/StatisticsDialog.cpp:1523 src/StatisticsDialog.cpp:1566
 msgid "Total prompt duration"
 msgstr "총 프롬프트 기간"
 
-#: src/StatisticsDialog.cpp:1481 src/StatisticsDialog.cpp:1524
+#: src/StatisticsDialog.cpp:1525 src/StatisticsDialog.cpp:1568
 msgid "Average energy"
 msgstr "평균 에너지"
 
-#: src/StatisticsDialog.cpp:1483 src/StatisticsDialog.cpp:1526
+#: src/StatisticsDialog.cpp:1527 src/StatisticsDialog.cpp:1570
 msgid "Average mood"
 msgstr "평균 기분"
 
-#: src/StatisticsDialog.cpp:1485 src/StatisticsDialog.cpp:1528
+#: src/StatisticsDialog.cpp:1529 src/StatisticsDialog.cpp:1572
 msgid "Average grounding"
 msgstr "평균 접지"
 

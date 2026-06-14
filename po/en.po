@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 20:40+0800\n"
+"POT-Creation-Date: 2026-06-14 21:03+0800\n"
 "PO-Revision-Date: 2026-06-13 16:33+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -175,132 +175,132 @@ msgstr "Ctrl+Q quit"
 msgid "seconds later"
 msgstr "seconds later"
 
-#: src/StatisticsDialog.cpp:442
+#: src/StatisticsDialog.cpp:443
 msgid "Day statistics"
 msgstr "Day statistics"
 
-#: src/StatisticsDialog.cpp:445
+#: src/StatisticsDialog.cpp:446
 msgid "Week statistics"
 msgstr "Week statistics"
 
-#: src/StatisticsDialog.cpp:449
+#: src/StatisticsDialog.cpp:450
 msgid "Month statistics"
 msgstr "Month statistics"
 
-#: src/StatisticsDialog.cpp:453
+#: src/StatisticsDialog.cpp:454
 msgid "Year statistics"
 msgstr "Year statistics"
 
-#: src/StatisticsDialog.cpp:455 src/StatisticsDialog.cpp:1186
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1199
 msgid "Calendar"
 msgstr "Calendar"
 
-#: src/StatisticsDialog.cpp:628 src/StatisticsDialog.cpp:1196
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1209
 msgid "Month"
 msgstr "Month"
 
-#: src/StatisticsDialog.cpp:697
+#: src/StatisticsDialog.cpp:699
 msgid "Prompted"
 msgstr "Prompted"
 
-#: src/StatisticsDialog.cpp:700
+#: src/StatisticsDialog.cpp:702
 msgid "Submitted"
 msgstr "Submitted"
 
-#: src/StatisticsDialog.cpp:703 src/StatisticsDialog.cpp:1157
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1170
 msgid "Duration"
 msgstr "Duration"
 
-#: src/StatisticsDialog.cpp:706
+#: src/StatisticsDialog.cpp:708
 msgid "Energy"
 msgstr "Energy"
 
-#: src/StatisticsDialog.cpp:709
+#: src/StatisticsDialog.cpp:711
 msgid "Mood"
 msgstr "Mood"
 
-#: src/StatisticsDialog.cpp:712
+#: src/StatisticsDialog.cpp:714
 msgid "Grounding"
 msgstr "Grounding"
 
-#: src/StatisticsDialog.cpp:715
+#: src/StatisticsDialog.cpp:717
 msgid "Avg"
 msgstr "Avg"
 
-#: src/StatisticsDialog.cpp:718
+#: src/StatisticsDialog.cpp:720
 msgid "Activity"
 msgstr "Activity"
 
-#: src/StatisticsDialog.cpp:721
+#: src/StatisticsDialog.cpp:723
 msgid "Quote"
 msgstr "Quote"
 
-#: src/StatisticsDialog.cpp:1090
+#: src/StatisticsDialog.cpp:1103
 msgid "No records"
 msgstr "No records"
 
-#: src/StatisticsDialog.cpp:1156 src/StatisticsDialog.cpp:1477
-#: src/StatisticsDialog.cpp:1520
+#: src/StatisticsDialog.cpp:1169 src/StatisticsDialog.cpp:1521
+#: src/StatisticsDialog.cpp:1564
 msgid "Records"
 msgstr "Records"
 
-#: src/StatisticsDialog.cpp:1168
+#: src/StatisticsDialog.cpp:1181
 msgid "Statistics"
 msgstr "Statistics"
 
-#: src/StatisticsDialog.cpp:1190
+#: src/StatisticsDialog.cpp:1203
 msgid "Day"
 msgstr "Day"
 
-#: src/StatisticsDialog.cpp:1193
+#: src/StatisticsDialog.cpp:1206
 msgid "Week"
 msgstr "Week"
 
-#: src/StatisticsDialog.cpp:1199
+#: src/StatisticsDialog.cpp:1212
 msgid "Year"
 msgstr "Year"
 
-#: src/StatisticsDialog.cpp:1203
+#: src/StatisticsDialog.cpp:1216
 msgid "Today"
 msgstr "Today"
 
-#: src/StatisticsDialog.cpp:1206
+#: src/StatisticsDialog.cpp:1219
 msgid "Previous"
 msgstr "Previous"
 
-#: src/StatisticsDialog.cpp:1209
+#: src/StatisticsDialog.cpp:1222
 msgid "Next"
 msgstr "Next"
 
-#: src/StatisticsDialog.cpp:1213
+#: src/StatisticsDialog.cpp:1226
 msgid "Close"
 msgstr "Close"
 
-#: src/StatisticsDialog.cpp:1225
+#: src/StatisticsDialog.cpp:1238
 msgid "Each Year"
 msgstr "Each Year"
 
-#: src/StatisticsDialog.cpp:1274 src/StatisticsDialog.cpp:1541
+#: src/StatisticsDialog.cpp:1287 src/StatisticsDialog.cpp:1585
 msgid "Top activities"
 msgstr "Top activities"
 
-#: src/StatisticsDialog.cpp:1478 src/StatisticsDialog.cpp:1521
+#: src/StatisticsDialog.cpp:1522 src/StatisticsDialog.cpp:1565
 msgid "Empty notes"
 msgstr "Empty notes"
 
-#: src/StatisticsDialog.cpp:1479 src/StatisticsDialog.cpp:1522
+#: src/StatisticsDialog.cpp:1523 src/StatisticsDialog.cpp:1566
 msgid "Total prompt duration"
 msgstr "Total prompt duration"
 
-#: src/StatisticsDialog.cpp:1481 src/StatisticsDialog.cpp:1524
+#: src/StatisticsDialog.cpp:1525 src/StatisticsDialog.cpp:1568
 msgid "Average energy"
 msgstr "Average energy"
 
-#: src/StatisticsDialog.cpp:1483 src/StatisticsDialog.cpp:1526
+#: src/StatisticsDialog.cpp:1527 src/StatisticsDialog.cpp:1570
 msgid "Average mood"
 msgstr "Average mood"
 
-#: src/StatisticsDialog.cpp:1485 src/StatisticsDialog.cpp:1528
+#: src/StatisticsDialog.cpp:1529 src/StatisticsDialog.cpp:1572
 msgid "Average grounding"
 msgstr "Average grounding"
 
