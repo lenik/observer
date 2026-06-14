@@ -1,5 +1,18 @@
 observer (1.0.2) testing; urgency=medium
 
+  * Fix statistics toolbar view switching by using check tools with manual
+    exclusivity, so Calendar and Day/Week/Month/Year stay one logical group
+    across the separator.
+  * Fix toolbar shortcut help for view buttons by passing wxNullBitmap before
+    shortHelp in AddCheckTool.
+  * Redesign the statistics calendar cells with Gregorian dates top-left, lunar
+    labels beneath them, and record counts with colour dots bottom-right.
+  * Paint calendar fills first and draw grid lines afterward as a separate line
+    set, keeping 1px borders consistent and omitting lines around empty cells.
+  * Highlight today with an orange fill and border, and show adjacent month
+    names in the calendar header navigation.
+  * Switch the statistics record table to wxGenericListCtrl for reliable
+    sorting and dark-theme rendering.
   * Record empty submissions and store both prompt and submit timestamps,
     including prompt duration in directory logs and SQLite rows.
   * Add a Ctrl-H modal statistics dialog with calendar, day, week, month, and
