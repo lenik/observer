@@ -33,6 +33,7 @@ private:
     void renderStatistics();
     void updateTitle();
     void updateToolbar();
+    void hookDisplaySurface(wxWindow* surface);
     void rebuildMetrics(const std::vector<Observation>& selected);
     void updateSelectedDaySummary();
     std::vector<Observation> selectedDayRecords() const;

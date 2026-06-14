@@ -1389,8 +1389,39 @@ StatisticsDialog::StatisticsDialog(wxWindow* parent, std::vector<Observation> ob
     Bind(wxEVT_TOOL, [this](wxCommandEvent&) { Close(); }, wxID_CLOSE);
     Bind(wxEVT_CHAR_HOOK, &StatisticsDialog::onCharHook, this);
 
+    hookDisplaySurface(daySummaryPanel_);
+    hookDisplaySurface(metricsPanel_);
+    hookDisplaySurface(calendar_);
+    hookDisplaySurface(chart_);
+    hookDisplaySurface(table_);
+    hookDisplaySurface(title_);
+    for (wxWindow* summaryLine : {
+             static_cast<wxWindow*>(daySummaryDate_),
+             static_cast<wxWindow*>(daySummaryRecords_),
+             static_cast<wxWindow*>(daySummaryEmpty_),
+             static_cast<wxWindow*>(daySummaryDuration_),
+             static_cast<wxWindow*>(daySummaryEnergy_),
+             static_cast<wxWindow*>(daySummaryMood_),
+             static_cast<wxWindow*>(daySummaryGrounding_) }) {
+        hookDisplaySurface(summaryLine);
+    }
+
     CentreOnParent();
+    SetFocus();
     render();
+}
+
+void StatisticsDialog::hookDisplaySurface(wxWindow* surface)
+{
+    if (surface == nullptr) {
+        return;
+    }
+    surface->SetCanFocus(false);
+    surface->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent& event) {
+        SetFocus();
+        event.Skip();
+    });
+    surface->Bind(wxEVT_CHAR_HOOK, &StatisticsDialog::onCharHook, this);
 }
 
 void StatisticsDialog::onCharHook(wxKeyEvent& event)
@@ -1600,6 +1631,10 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation>& selected)
         row->Add(icon, 0, wxRIGHT | wxALIGN_CENTER_VERTICAL, 10);
         row->Add(texts, 1, wxALIGN_CENTER_VERTICAL);
         panel->SetSizer(row);
+        hookDisplaySurface(panel);
+        hookDisplaySurface(icon);
+        hookDisplaySurface(valueText);
+        hookDisplaySurface(labelText);
         metricsSizer_->Add(panel, 1, wxRIGHT | wxEXPAND, 8);
     };
 
