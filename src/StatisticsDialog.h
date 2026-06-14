@@ -32,6 +32,7 @@ private:
     void renderCalendar();
     void renderStatistics();
     void updateTitle();
+    void updateToolbar();
     void rebuildMetrics(const std::vector<Observation>& selected);
     void updateSelectedDaySummary();
     std::vector<Observation> selectedDayRecords() const;
@@ -42,6 +43,7 @@ private:
     bool weekStartsMonday_ = true;
     ViewMode mode_ = ViewMode::Calendar;
     wxDateTime anchor_;
+    wxToolBar* toolbar_ = nullptr;
     wxStaticText* title_ = nullptr;
     wxCheckBox* eachYear_ = nullptr;
     ObservationCalendarPanel* calendar_ = nullptr;
