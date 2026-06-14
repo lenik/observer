@@ -24,8 +24,8 @@ private:
     void cleanupGlobalHotKey();
     void onHotKeyPoll(wxTimerEvent& event);
     void triggerPromptFromHotKey();
-    void scheduleNormal();
-    void scheduleSnooze();
+    void scheduleNextPrompt(int delayMs);
+    void handlePromptClosed(const ObserveResult& result);
     void showPrompt();
     void exitApp();
 

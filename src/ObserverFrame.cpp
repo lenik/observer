@@ -44,6 +44,9 @@ ObserverFrame::~ObserverFrame()
 void ObserverFrame::onTimer(wxTimerEvent& event)
 {
     (void)event;
+    if (promptOpen_) {
+        return;
+    }
     showPrompt();
 }
 
@@ -129,17 +132,16 @@ void ObserverFrame::triggerPromptFromHotKey()
     showPrompt();
 }
 
-void ObserverFrame::scheduleNormal()
+void ObserverFrame::scheduleNextPrompt(int delayMs)
 {
-    if (intervalSeconds_ <= 0.0) {
+    if (promptOpen_) {
         return;
     }
-    timer_.StartOnce(std::max(1, static_cast<int>(intervalSeconds_ * 1000.0)));
-}
-
-void ObserverFrame::scheduleSnooze()
-{
-    timer_.StartOnce(SnoozeIntervalMs);
+    timer_.Stop();
+    if (delayMs <= 0) {
+        return;
+    }
+    timer_.StartOnce(delayMs);
 }
 
 void ObserverFrame::exitApp()
@@ -148,6 +150,29 @@ void ObserverFrame::exitApp()
     if (wxTheApp != nullptr) {
         wxTheApp->ExitMainLoop();
     }
+}
+
+void ObserverFrame::handlePromptClosed(const ObserveResult& result)
+{
+    promptOpen_ = false;
+
+    if (result.kind == ObserveResultKind::Quit) {
+        exitApp();
+        return;
+    }
+    if (consecutiveSkips_ >= 3) {
+        exitApp();
+        return;
+    }
+    if (result.kind == ObserveResultKind::Snoozed) {
+        scheduleNextPrompt(SnoozeIntervalMs);
+        return;
+    }
+    if (intervalSeconds_ <= 0.0) {
+        exitApp();
+        return;
+    }
+    scheduleNextPrompt(std::max(1, static_cast<int>(intervalSeconds_ * 1000.0)));
 }
 
 void ObserverFrame::showPrompt()
@@ -193,17 +218,5 @@ void ObserverFrame::showPrompt()
         consecutiveSkips_ = 0;
     }
 
-    promptOpen_ = false;
-
-    if (result.kind == ObserveResultKind::Quit) {
-        exitApp();
-    } else if (consecutiveSkips_ >= 3) {
-        exitApp();
-    } else if (result.kind == ObserveResultKind::Snoozed) {
-        scheduleSnooze();
-    } else if (intervalSeconds_ <= 0.0) {
-        exitApp();
-    } else {
-        scheduleNormal();
-    }
+    handlePromptClosed(result);
 }
