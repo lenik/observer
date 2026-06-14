@@ -17,6 +17,7 @@ public:
     SqliteStore& operator=(const SqliteStore&) = delete;
 
     void save(const Observation& observation) override;
+    std::vector<Observation> loadAll() override;
     const std::string& path() const override;
 
     static std::string defaultDatabasePath();
@@ -24,8 +25,8 @@ public:
 private:
     void open();
     void initializeSchema();
-    bool schemaRequiresScores();
-    void migrateNullableScores();
+    bool schemaRequiresMigration();
+    void migrateSchema();
     static void ensureParentDirectory(const std::filesystem::path& path);
 
     sqlite3* db_ = nullptr;

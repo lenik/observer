@@ -10,6 +10,7 @@ public:
     explicit DataDirStore(std::string path);
 
     void save(const Observation& observation) override;
+    std::vector<Observation> loadAll() override;
     const std::string& path() const override;
 
     static bool shouldUseDataDir(const std::string& path);

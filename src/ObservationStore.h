@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 class ObservationStore {
 public:
@@ -14,6 +15,7 @@ public:
     ObservationStore& operator=(const ObservationStore&) = delete;
 
     virtual void save(const Observation& observation) = 0;
+    virtual std::vector<Observation> loadAll() = 0;
     virtual const std::string& path() const = 0;
 
 protected:

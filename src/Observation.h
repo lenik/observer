@@ -6,7 +6,8 @@
 inline constexpr double DefaultObservationScore = 3.0;
 
 struct Observation {
-    std::string createdAt;
+    std::string promptedAt;
+    std::string submittedAt;
     double energy;
     double mood;
     double grounding;
