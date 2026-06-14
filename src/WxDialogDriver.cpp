@@ -10,13 +10,13 @@ constexpr int ID_QUIT = wxID_HIGHEST + 2;
 }
 
 WxDialogDriver::WxDialogDriver(wxWindow* parent)
-    : parent_(parent)
+    : m_parent(parent)
 {
 }
 
 ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults& defaults)
 {
-    ObservationDialog dialog(parent_, defaults);
+    ObservationDialog dialog(m_parent, defaults);
     dialog.CallAfter(&ObservationDialog::animateIn);
     const int result = dialog.ShowModal();
 

@@ -29,8 +29,8 @@ private:
     void migrateSchema();
     static void ensureParentDirectory(const std::filesystem::path& path);
 
-    sqlite3* db_ = nullptr;
-    std::string path_;
+    sqlite3* m_db = nullptr;
+    std::string m_path;
 };
 
 #endif

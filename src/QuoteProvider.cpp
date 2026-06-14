@@ -5,7 +5,7 @@
 #include <chrono>
 
 QuoteProvider::QuoteProvider()
-    : quotes_({
+    : m_quotes({
           _("明天是今天的延续，今天是明天的提前。"),
           _("中低电量，也要推进一个最小动作。"),
           _("不要创造刺激，先创造价值。"),
@@ -107,23 +107,23 @@ QuoteProvider::QuoteProvider()
           _("今天只问三个数和一句话。"),
           _("你现在在哪里？你正在做什么？你还要不要回来？"),
       }),
-      rng_(static_cast<std::mt19937::result_type>(
+      m_rng(static_cast<std::mt19937::result_type>(
           std::chrono::high_resolution_clock::now().time_since_epoch().count()))
 {
 }
 
 std::string QuoteProvider::randomQuote()
 {
-    return quotes_[randomIndex()];
+    return m_quotes[randomIndex()];
 }
 
 std::size_t QuoteProvider::randomIndex()
 {
-    std::uniform_int_distribution<std::size_t> dist(0, quotes_.size() - 1);
-    return dist(rng_);
+    std::uniform_int_distribution<std::size_t> dist(0, m_quotes.size() - 1);
+    return dist(m_rng);
 }
 
 const std::vector<std::string>& QuoteProvider::quotes() const
 {
-    return quotes_;
+    return m_quotes;
 }

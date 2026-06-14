@@ -16,7 +16,7 @@ public:
     static bool shouldUseDataDir(const std::string& path);
 
 private:
-    std::string path_;
+    std::string m_path;
 };
 
 #endif

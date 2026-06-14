@@ -12,7 +12,7 @@ public:
     ObserveResult prompt(const ObservePromptDefaults& defaults) override;
 
 private:
-    wxWindow* parent_;
+    wxWindow* m_parent;
 };
 
 #endif

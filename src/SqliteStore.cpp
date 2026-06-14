@@ -102,17 +102,17 @@ constexpr const char* CreateSchemaSql =
 }
 
 SqliteStore::SqliteStore(std::string path)
-    : path_(std::move(path))
+    : m_path(std::move(path))
 {
-    ensureParentDirectory(path_);
+    ensureParentDirectory(m_path);
     open();
     initializeSchema();
 }
 
 SqliteStore::~SqliteStore()
 {
-    if (db_ != nullptr) {
-        sqlite3_close(db_);
+    if (m_db != nullptr) {
+        sqlite3_close(m_db);
     }
 }
 
@@ -124,8 +124,8 @@ void SqliteStore::save(const Observation& observation)
         "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     sqlite3_stmt* stmt = nullptr;
-    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        throw std::runtime_error(sqlite3_errmsg(db_));
+    if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw std::runtime_error(sqlite3_errmsg(m_db));
     }
 
     try {
@@ -138,7 +138,7 @@ void SqliteStore::save(const Observation& observation)
         bindText(stmt, 7, observation.quote);
 
         if (sqlite3_step(stmt) != SQLITE_DONE) {
-            throw std::runtime_error(sqlite3_errmsg(db_));
+            throw std::runtime_error(sqlite3_errmsg(m_db));
         }
     } catch (...) {
         sqlite3_finalize(stmt);
@@ -156,8 +156,8 @@ std::vector<Observation> SqliteStore::loadAll()
         "FROM observations ORDER BY prompted_at ASC, id ASC";
 
     sqlite3_stmt* stmt = nullptr;
-    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        throw std::runtime_error(sqlite3_errmsg(db_));
+    if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw std::runtime_error(sqlite3_errmsg(m_db));
     }
 
     std::vector<Observation> observations;
@@ -179,16 +179,16 @@ std::vector<Observation> SqliteStore::loadAll()
 
 const std::string& SqliteStore::path() const
 {
-    return path_;
+    return m_path;
 }
 
 void SqliteStore::open()
 {
-    if (sqlite3_open(path_.c_str(), &db_) != SQLITE_OK) {
-        std::string message = db_ != nullptr ? sqlite3_errmsg(db_) : "failed to open SQLite database";
-        if (db_ != nullptr) {
-            sqlite3_close(db_);
-            db_ = nullptr;
+    if (sqlite3_open(m_path.c_str(), &m_db) != SQLITE_OK) {
+        std::string message = m_db != nullptr ? sqlite3_errmsg(m_db) : "failed to open SQLite database";
+        if (m_db != nullptr) {
+            sqlite3_close(m_db);
+            m_db = nullptr;
         }
         throw std::runtime_error(message);
     }
@@ -196,7 +196,7 @@ void SqliteStore::open()
 
 void SqliteStore::initializeSchema()
 {
-    execSql(db_, CreateSchemaSql);
+    execSql(m_db, CreateSchemaSql);
     if (schemaRequiresMigration()) {
         migrateSchema();
     }
@@ -206,8 +206,8 @@ bool SqliteStore::schemaRequiresMigration()
 {
     const char* sql = "PRAGMA table_info(observations)";
     sqlite3_stmt* stmt = nullptr;
-    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        throw std::runtime_error(sqlite3_errmsg(db_));
+    if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw std::runtime_error(sqlite3_errmsg(m_db));
     }
 
     bool hasPromptedAt = false;
@@ -239,16 +239,16 @@ bool SqliteStore::schemaRequiresMigration()
 void SqliteStore::migrateSchema()
 {
     try {
-        execSql(db_, "BEGIN IMMEDIATE");
-        execSql(db_, "ALTER TABLE observations RENAME TO observations_old");
-        const bool oldHasCreatedAt = tableHasColumn(db_, "observations_old", "created_at");
-        const bool oldHasPromptedAt = tableHasColumn(db_, "observations_old", "prompted_at");
-        const bool oldHasSubmittedAt = tableHasColumn(db_, "observations_old", "submitted_at");
+        execSql(m_db, "BEGIN IMMEDIATE");
+        execSql(m_db, "ALTER TABLE observations RENAME TO observations_old");
+        const bool oldHasCreatedAt = tableHasColumn(m_db, "observations_old", "created_at");
+        const bool oldHasPromptedAt = tableHasColumn(m_db, "observations_old", "prompted_at");
+        const bool oldHasSubmittedAt = tableHasColumn(m_db, "observations_old", "submitted_at");
         const std::string promptedExpr = oldHasPromptedAt ? "prompted_at"
             : (oldHasCreatedAt ? "created_at" : "datetime('now')");
         const std::string submittedExpr = oldHasSubmittedAt ? "submitted_at"
             : (oldHasCreatedAt ? "created_at" : promptedExpr);
-        execSql(db_, CreateSchemaSql);
+        execSql(m_db, CreateSchemaSql);
         const std::string insertSql = std::string(
             "INSERT INTO observations (id, prompted_at, submitted_at, energy, mood, grounding, activity, quote) "
             "SELECT id, ") +
@@ -256,11 +256,11 @@ void SqliteStore::migrateSchema()
             submittedExpr + ", "
             "NULLIF(energy, 3.0), NULLIF(mood, 3.0), NULLIF(grounding, 3.0), "
             "activity, quote FROM observations_old";
-        execSql(db_, insertSql.c_str());
-        execSql(db_, "DROP TABLE observations_old");
-        execSql(db_, "COMMIT");
+        execSql(m_db, insertSql.c_str());
+        execSql(m_db, "DROP TABLE observations_old");
+        execSql(m_db, "COMMIT");
     } catch (...) {
-        sqlite3_exec(db_, "ROLLBACK", nullptr, nullptr, nullptr);
+        sqlite3_exec(m_db, "ROLLBACK", nullptr, nullptr, nullptr);
         throw;
     }
 }

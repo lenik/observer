@@ -23,12 +23,12 @@ int ignoreXError(Display*, XErrorEvent*)
 
 ObserverFrame::ObserverFrame()
     : wxFrame(nullptr, wxID_ANY, "Observer"),
-      timer_(this, PromptTimerId),
-      hotKeyTimer_(this, HotKeyTimerId)
+      m_timer(this, PromptTimerId),
+      m_hotKeyTimer(this, HotKeyTimerId)
 {
-    intervalSeconds_ = appConfig().intervalSeconds;
-    store_ = createObservationStore();
-    renderDriver_ = std::make_unique<WxDialogDriver>(this);
+    m_intervalSeconds = appConfig().intervalSeconds;
+    m_store = createObservationStore();
+    m_renderDriver = std::make_unique<WxDialogDriver>(this);
     Bind(wxEVT_TIMER, &ObserverFrame::onTimer, this, PromptTimerId);
     Bind(wxEVT_TIMER, &ObserverFrame::onHotKeyPoll, this, HotKeyTimerId);
     setupGlobalHotKey();
@@ -44,7 +44,7 @@ ObserverFrame::~ObserverFrame()
 void ObserverFrame::onTimer(wxTimerEvent& event)
 {
     (void)event;
-    if (promptOpen_) {
+    if (m_promptOpen) {
         return;
     }
     showPrompt();
@@ -52,16 +52,16 @@ void ObserverFrame::onTimer(wxTimerEvent& event)
 
 void ObserverFrame::setupGlobalHotKey()
 {
-#if defined(__WXGTK__)
-    hotKeyDisplay_ = XOpenDisplay(nullptr);
-    if (hotKeyDisplay_ == nullptr) {
+#if defined(m_m___WXGTK)
+    m_hotKeyDisplay = XOpenDisplay(nullptr);
+    if (m_hotKeyDisplay == nullptr) {
         return;
     }
 
-    hotKeyRoot_ = DefaultRootWindow(hotKeyDisplay_);
-    hotKeyModifiers_ = Mod4Mask | Mod1Mask;
-    hotKeyCode_ = XKeysymToKeycode(hotKeyDisplay_, XK_G);
-    if (hotKeyCode_ == 0) {
+    m_hotKeyRoot = DefaultRootWindow(m_hotKeyDisplay);
+    m_hotKeyModifiers = Mod4Mask | Mod1Mask;
+    m_hotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_G);
+    if (m_hotKeyCode == 0) {
         cleanupGlobalHotKey();
         return;
     }
@@ -69,44 +69,44 @@ void ObserverFrame::setupGlobalHotKey()
     const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
     XErrorHandler previousHandler = XSetErrorHandler(ignoreXError);
     for (unsigned int mask : masks) {
-        XGrabKey(hotKeyDisplay_, hotKeyCode_, hotKeyModifiers_ | mask, hotKeyRoot_,
+        XGrabKey(m_hotKeyDisplay, m_hotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
             True, GrabModeAsync, GrabModeAsync);
     }
-    XSync(hotKeyDisplay_, False);
+    XSync(m_hotKeyDisplay, False);
     XSetErrorHandler(previousHandler);
-    hotKeyRegistered_ = true;
-    hotKeyTimer_.Start(100);
+    m_hotKeyRegistered = true;
+    m_hotKeyTimer.Start(100);
 #endif
 }
 
 void ObserverFrame::cleanupGlobalHotKey()
 {
-#if defined(__WXGTK__)
-    if (hotKeyDisplay_ == nullptr) {
+#if defined(m_m___WXGTK)
+    if (m_hotKeyDisplay == nullptr) {
         return;
     }
 
-    if (hotKeyRegistered_) {
+    if (m_hotKeyRegistered) {
         const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
         for (unsigned int mask : masks) {
-            XUngrabKey(hotKeyDisplay_, hotKeyCode_, hotKeyModifiers_ | mask, hotKeyRoot_);
+            XUngrabKey(m_hotKeyDisplay, m_hotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
         }
-        hotKeyTimer_.Stop();
-        hotKeyRegistered_ = false;
+        m_hotKeyTimer.Stop();
+        m_hotKeyRegistered = false;
     }
-    XCloseDisplay(hotKeyDisplay_);
-    hotKeyDisplay_ = nullptr;
-    hotKeyRoot_ = 0;
-    hotKeyCode_ = 0;
-    hotKeyModifiers_ = 0;
+    XCloseDisplay(m_hotKeyDisplay);
+    m_hotKeyDisplay = nullptr;
+    m_hotKeyRoot = 0;
+    m_hotKeyCode = 0;
+    m_hotKeyModifiers = 0;
 #endif
 }
 
 void ObserverFrame::onHotKeyPoll(wxTimerEvent& event)
 {
     (void)event;
-#if defined(__WXGTK__)
-    if (hotKeyDisplay_ == nullptr) {
+#if defined(m_m___WXGTK)
+    if (m_hotKeyDisplay == nullptr) {
         return;
     }
 
@@ -114,8 +114,8 @@ void ObserverFrame::onHotKeyPoll(wxTimerEvent& event)
         XEvent xEvent;
         XNextEvent(hotKeyDisplay_, &xEvent);
         if (xEvent.type == KeyPress
-            && xEvent.xkey.keycode == hotKeyCode_
-            && (xEvent.xkey.state & hotKeyModifiers_) == hotKeyModifiers_) {
+            && xEvent.xkey.keycode == m_hotKeyCode
+            && (xEvent.xkey.state & m_hotKeyModifiers) == m_hotKeyModifiers) {
             triggerPromptFromHotKey();
         }
     }
@@ -124,24 +124,24 @@ void ObserverFrame::onHotKeyPoll(wxTimerEvent& event)
 
 void ObserverFrame::triggerPromptFromHotKey()
 {
-    if (promptOpen_) {
+    if (m_promptOpen) {
         return;
     }
 
-    timer_.Stop();
+    m_timer.Stop();
     showPrompt();
 }
 
 void ObserverFrame::scheduleNextPrompt(int delayMs)
 {
-    if (promptOpen_) {
+    if (m_promptOpen) {
         return;
     }
-    timer_.Stop();
+    m_timer.Stop();
     if (delayMs <= 0) {
         return;
     }
-    timer_.StartOnce(delayMs);
+    m_timer.StartOnce(delayMs);
 }
 
 void ObserverFrame::exitApp()
@@ -154,13 +154,13 @@ void ObserverFrame::exitApp()
 
 void ObserverFrame::handlePromptClosed(const ObserveResult& result)
 {
-    promptOpen_ = false;
+    m_promptOpen = false;
 
     if (result.kind == ObserveResultKind::Quit) {
         exitApp();
         return;
     }
-    if (consecutiveSkips_ >= 3) {
+    if (m_consecutiveSkips >= 3) {
         exitApp();
         return;
     }
@@ -168,54 +168,54 @@ void ObserverFrame::handlePromptClosed(const ObserveResult& result)
         scheduleNextPrompt(SnoozeIntervalMs);
         return;
     }
-    if (intervalSeconds_ <= 0.0) {
+    if (m_intervalSeconds <= 0.0) {
         exitApp();
         return;
     }
-    scheduleNextPrompt(std::max(1, static_cast<int>(intervalSeconds_ * 1000.0)));
+    scheduleNextPrompt(std::max(1, static_cast<int>(m_intervalSeconds * 1000.0)));
 }
 
 void ObserverFrame::showPrompt()
 {
-    if (promptOpen_) {
+    if (m_promptOpen) {
         return;
     }
 
-    promptOpen_ = true;
-    timer_.Stop();
+    m_promptOpen = true;
+    m_timer.Stop();
 
     ObservePromptDefaults defaults;
     defaults.energy = DefaultObservationScore;
     defaults.mood = DefaultObservationScore;
     defaults.grounding = DefaultObservationScore;
-    defaults.intervalSeconds = intervalSeconds_;
+    defaults.intervalSeconds = m_intervalSeconds;
     defaults.opacityPercent = appConfig().opacityPercent;
     defaults.weekStartsMonday = appConfig().weekStartsMonday;
     defaults.theme = appConfig().theme;
-    defaults.quotes = quoteProvider_.quotes();
-    defaults.quoteIndex = quoteProvider_.randomIndex();
+    defaults.quotes = m_quoteProvider.quotes();
+    defaults.quoteIndex = m_quoteProvider.randomIndex();
     defaults.quote = defaults.quotes[defaults.quoteIndex];
     try {
-        defaults.history = store_->loadAll();
+        defaults.history = m_store->loadAll();
     } catch (const std::exception& ex) {
         wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
     }
 
-    ObserveResult result = renderDriver_->prompt(defaults);
-    intervalSeconds_ = result.intervalSeconds;
+    ObserveResult result = m_renderDriver->prompt(defaults);
+    m_intervalSeconds = result.intervalSeconds;
 
     if (result.kind == ObserveResultKind::Submitted && result.observation.has_value()) {
         try {
-            store_->save(*result.observation);
+            m_store->save(*result.observation);
         } catch (const std::exception& ex) {
             wxMessageBox(wxString::FromUTF8(ex.what()), "Observer SQLite Error", wxOK | wxICON_ERROR, this);
         }
     }
 
     if (result.kind == ObserveResultKind::Skipped) {
-        ++consecutiveSkips_;
+        ++m_consecutiveSkips;
     } else {
-        consecutiveSkips_ = 0;
+        m_consecutiveSkips = 0;
     }
 
     handlePromptClosed(result);

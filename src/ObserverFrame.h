@@ -33,21 +33,21 @@ private:
     static constexpr int PromptTimerId = wxID_HIGHEST + 100;
     static constexpr int HotKeyTimerId = wxID_HIGHEST + 101;
 
-    wxTimer timer_;
-    wxTimer hotKeyTimer_;
+    wxTimer m_timer;
+    wxTimer m_hotKeyTimer;
 #if defined(__WXGTK__)
-    Display* hotKeyDisplay_ = nullptr;
-    Window hotKeyRoot_ = 0;
-    unsigned int hotKeyModifiers_ = 0;
-    int hotKeyCode_ = 0;
+    Display* m_hotKeyDisplay = nullptr;
+    Window m_hotKeyRoot = 0;
+    unsigned int m_hotKeyModifiers = 0;
+    int m_hotKeyCode = 0;
 #endif
-    std::unique_ptr<ObservationStore> store_;
-    QuoteProvider quoteProvider_;
-    std::unique_ptr<RenderDriver> renderDriver_;
-    double intervalSeconds_ = 120.0;
-    int consecutiveSkips_ = 0;
-    bool hotKeyRegistered_ = false;
-    bool promptOpen_ = false;
+    std::unique_ptr<ObservationStore> m_store;
+    QuoteProvider m_quoteProvider;
+    std::unique_ptr<RenderDriver> m_renderDriver;
+    double m_intervalSeconds = 120.0;
+    int m_consecutiveSkips = 0;
+    bool m_hotKeyRegistered = false;
+    bool m_promptOpen = false;
 };
 
 #endif

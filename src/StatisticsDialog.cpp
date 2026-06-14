@@ -664,17 +664,17 @@ class ObservationRecordTable : public wxGenericListCtrl {
 public:
     ObservationRecordTable(wxWindow* parent, bool darkTheme)
         : wxGenericListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL),
-          darkTheme_(darkTheme)
+          m_darkTheme(darkTheme)
     {
-        SetBackgroundColour(darkTheme_ ? wxColour(18, 21, 27) : wxColour(255, 255, 255));
-        SetForegroundColour(darkTheme_ ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
-        SetTextColour(darkTheme_ ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
+        SetBackgroundColour(m_darkTheme ? wxColour(18, 21, 27) : wxColour(255, 255, 255));
+        SetForegroundColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
+        SetTextColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
         Bind(wxEVT_LIST_COL_CLICK, &ObservationRecordTable::onColumnClick, this);
     }
 
     void setRecords(const std::vector<Observation>& records)
     {
-        records_ = records;
+        m_records = records;
         rebuild();
     }
 
@@ -726,8 +726,8 @@ private:
             label = "";
             break;
         }
-        if (column == sortColumn_) {
-            label += ascending_ ? wxString::FromUTF8(" ▲") : wxString::FromUTF8(" ▼");
+        if (column == m_sortColumn) {
+            label += m_ascending ? wxString::FromUTF8(" ▲") : wxString::FromUTF8(" ▼");
         }
         return label;
     }
@@ -752,7 +752,7 @@ private:
 
     int compare(const Observation& a, const Observation& b) const
     {
-        switch (sortColumn_) {
+        switch (m_sortColumn) {
         case Prompted:
             return a.promptedAt.compare(b.promptedAt);
         case Submitted:
@@ -780,13 +780,13 @@ private:
     {
         ClearAll();
         appendColumns();
-        std::vector<Observation> rows = records_;
+        std::vector<Observation> rows = m_records;
         std::sort(rows.begin(), rows.end(), [this](const Observation& a, const Observation& b) {
             const int result = compare(a, b);
             if (result == 0) {
                 return a.promptedAt > b.promptedAt;
             }
-            return ascending_ ? result < 0 : result > 0;
+            return m_ascending ? result < 0 : result > 0;
         });
 
         long index = 0;
@@ -800,7 +800,7 @@ private:
             SetItem(index, 6, wxString::FromUTF8(formatDouble(avg(observation)).c_str()));
             SetItem(index, 7, wxString::FromUTF8(trim(observation.activity).c_str()));
             SetItem(index, 8, wxString::FromUTF8(observation.quote.c_str()));
-            if (darkTheme_) {
+            if (m_darkTheme) {
                 SetItemTextColour(index, wxColour(232, 237, 244));
             }
             ++index;
@@ -810,27 +810,27 @@ private:
     void onColumnClick(wxListEvent& event)
     {
         const int column = event.GetColumn();
-        if (column == sortColumn_) {
-            ascending_ = !ascending_;
+        if (column == m_sortColumn) {
+            m_ascending = !m_ascending;
         } else {
-            sortColumn_ = column;
-            ascending_ = column != Average;
+            m_sortColumn = column;
+            m_ascending = column != Average;
         }
         rebuild();
     }
 
-    std::vector<Observation> records_;
-    bool darkTheme_;
-    int sortColumn_ = Average;
-    bool ascending_ = false;
+    std::vector<Observation> m_records;
+    bool m_darkTheme;
+    int m_sortColumn = Average;
+    bool m_ascending = false;
 };
 
 class ObservationCalendarPanel : public wxPanel {
 public:
     ObservationCalendarPanel(wxWindow* parent, bool darkTheme, bool weekStartsMonday)
         : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(620, 430)),
-          darkTheme_(darkTheme),
-          weekStartsMonday_(weekStartsMonday)
+          m_darkTheme(darkTheme),
+          m_weekStartsMonday(weekStartsMonday)
     {
         SetMinSize(wxSize(620, 430));
         SetMaxSize(wxSize(620, 430));
@@ -841,43 +841,43 @@ public:
 
     void setObservations(const std::vector<Observation>& observations)
     {
-        summaries_ = summarizeDays(observations);
+        m_summaries = summarizeDays(observations);
         Refresh();
     }
 
     void setMonth(wxDateTime date)
     {
-        anchor_ = startOfMonth(date);
+        m_anchor = startOfMonth(date);
         Refresh();
     }
 
     void setSelected(wxDateTime date)
     {
-        selected_ = startOfDay(date);
+        m_selected = startOfDay(date);
         Refresh();
     }
 
     void setDaySelectedHandler(std::function<void(wxDateTime)> handler)
     {
-        onDaySelected_ = std::move(handler);
+        m_onDaySelected = std::move(handler);
     }
 
     void setMonthChangedHandler(std::function<void(wxDateTime)> handler)
     {
-        onMonthChanged_ = std::move(handler);
+        m_onMonthChanged = std::move(handler);
     }
 
 private:
     void onPaint(wxPaintEvent&)
     {
-        cellRects_.clear();
+        m_cellRects.clear();
         wxAutoBufferedPaintDC dc(this);
         const wxSize size(620, 430);
-        const wxColour bg = darkTheme_ ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
-        const wxColour fg = darkTheme_ ? wxColour(229, 235, 244) : wxColour(31, 36, 44);
-        const wxColour muted = darkTheme_ ? wxColour(143, 153, 170) : wxColour(92, 99, 112);
-        const wxColour selectedBg = darkTheme_ ? wxColour(42, 51, 68) : wxColour(230, 239, 255);
-        const wxColour todayBg = darkTheme_ ? wxColour(72, 55, 28) : wxColour(255, 241, 210);
+        const wxColour bg = m_darkTheme ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
+        const wxColour fg = m_darkTheme ? wxColour(229, 235, 244) : wxColour(31, 36, 44);
+        const wxColour muted = m_darkTheme ? wxColour(143, 153, 170) : wxColour(92, 99, 112);
+        const wxColour selectedBg = m_darkTheme ? wxColour(42, 51, 68) : wxColour(230, 239, 255);
+        const wxColour todayBg = m_darkTheme ? wxColour(72, 55, 28) : wxColour(255, 241, 210);
         const wxColour todayBorder = wxColour(255, 183, 77);
         dc.SetBackground(wxBrush(bg));
         dc.Clear();
@@ -892,9 +892,9 @@ private:
         const int navH = 34;
         const int headerH = 26;
         const int cellW = std::max(1, (size.GetWidth() - margin * 2) / 7);
-        const wxDateTime first = startOfMonth(anchor_);
-        const int firstOffset = weekdayIndex(first, weekStartsMonday_);
-        const int weeks = (firstOffset + daysInMonth(anchor_) + 6) / 7;
+        const wxDateTime first = startOfMonth(m_anchor);
+        const int firstOffset = weekdayIndex(first, m_weekStartsMonday);
+        const int weeks = (firstOffset + daysInMonth(m_anchor) + 6) / 7;
         const int cellH = std::max(62, (size.GetHeight() - margin * 2 - navH - headerH) / std::max(1, weeks));
 
         wxFont navFont = GetFont();
@@ -902,26 +902,26 @@ private:
         navFont.SetWeight(wxFONTWEIGHT_BOLD);
         dc.SetFont(navFont);
         dc.SetTextForeground(fg);
-        prevRect_ = wxRect(margin, margin, 92, 26);
-        nextRect_ = wxRect(size.GetWidth() - margin - 92, margin, 92, 26);
-        wxDateTime prevMonth = anchor_;
+        m_prevRect = wxRect(margin, margin, 92, 26);
+        m_nextRect = wxRect(size.GetWidth() - margin - 92, margin, 92, 26);
+        wxDateTime prevMonth = m_anchor;
         prevMonth.Add(wxDateSpan::Months(-1));
-        wxDateTime nextMonth = anchor_;
+        wxDateTime nextMonth = m_anchor;
         nextMonth.Add(wxDateSpan::Months(1));
         const wxString prevTitle = wxString::FromUTF8("◀ ") + prevMonth.Format("%b");
-        const wxString monthTitle = anchor_.Format("%Y %b");
+        const wxString monthTitle = m_anchor.Format("%Y %b");
         const wxString nextTitle = nextMonth.Format("%b") + wxString::FromUTF8(" ▶");
         const wxSize titleExtent = dc.GetTextExtent(monthTitle);
-        titleRect_ = wxRect((size.GetWidth() - titleExtent.GetWidth()) / 2 - 16, margin,
+        m_titleRect = wxRect((size.GetWidth() - titleExtent.GetWidth()) / 2 - 16, margin,
             titleExtent.GetWidth() + 32, 26);
-        dc.DrawText(prevTitle, prevRect_.GetX() + 4, prevRect_.GetY() + 2);
+        dc.DrawText(prevTitle, m_prevRect.GetX() + 4, m_prevRect.GetY() + 2);
         const wxSize nextExtent = dc.GetTextExtent(nextTitle);
-        dc.DrawText(nextTitle, nextRect_.GetRight() - nextExtent.GetWidth(), nextRect_.GetY() + 2);
-        dc.DrawText(monthTitle, titleRect_.GetX() + 16, titleRect_.GetY() + 2);
+        dc.DrawText(nextTitle, m_nextRect.GetRight() - nextExtent.GetWidth(), m_nextRect.GetY() + 2);
+        dc.DrawText(monthTitle, m_titleRect.GetX() + 16, m_titleRect.GetY() + 2);
 
         const char* mondayFirst[] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
         const char* sundayFirst[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-        const char** weekdays = weekStartsMonday_ ? mondayFirst : sundayFirst;
+        const char** weekdays = m_weekStartsMonday ? mondayFirst : sundayFirst;
         dc.SetFont(weekdayFont);
         dc.SetTextForeground(muted);
         for (int i = 0; i < 7; ++i) {
@@ -941,9 +941,9 @@ private:
 
         const int gridY = margin + navH + headerH;
         const int gridRows = 6;
-        const int daysInCurrentMonth = daysInMonth(anchor_);
-        const wxColour gridColor = darkTheme_ ? wxColour(54, 60, 72) : wxColour(214, 220, 228);
-        const wxColour selectedBorder = darkTheme_
+        const int daysInCurrentMonth = daysInMonth(m_anchor);
+        const wxColour gridColor = m_darkTheme ? wxColour(54, 60, 72) : wxColour(214, 220, 228);
+        const wxColour selectedBorder = m_darkTheme
             ? wxColour(140, 148, 160)
             : wxColour(132, 140, 152);
         const auto cellHasDay = [&](int r, int c) -> bool {
@@ -969,17 +969,17 @@ private:
                 const int x = margin + col * cellW;
                 const int y = gridY + row * cellH;
                 const wxRect rect(x, y, cellW, cellH);
-                if (cellIndex < firstOffset || day.GetMonth() != anchor_.GetMonth()) {
+                if (cellIndex < firstOffset || day.GetMonth() != m_anchor.GetMonth()) {
                     dc.SetPen(*wxTRANSPARENT_PEN);
                     dc.SetBrush(wxBrush(bg));
                     dc.DrawRectangle(rect);
                     continue;
                 }
 
-                const bool isSelected = day.IsSameDate(selected_);
+                const bool isSelected = day.IsSameDate(m_selected);
                 const bool isToday = day.IsSameDate(today);
                 dayCells.push_back({ rect, day, isSelected, isToday, isHoliday(day) });
-                cellRects_.push_back({ rect, day });
+                m_cellRects.push_back({ rect, day });
 
                 if (isSelected) {
                     dc.SetPen(*wxTRANSPARENT_PEN);
@@ -1050,8 +1050,8 @@ private:
             wxString lunar = lunarLabel(cell.day);
             dc.DrawText(lunar, inner.GetX(), inner.GetY() + dayExtent.GetHeight() + 2);
 
-            const auto summary = summaries_.find(cell.day.FormatISODate().ToStdString());
-            if (summary != summaries_.end() && summary->second.records > 0) {
+            const auto summary = m_summaries.find(cell.day.FormatISODate().ToStdString());
+            if (summary != m_summaries.end() && summary->second.records > 0) {
                 const DaySummary& value = summary->second;
                 const double avg = (value.energySum + value.moodSum + value.groundingSum)
                     / (3.0 * std::max(1, value.records));
@@ -1079,32 +1079,32 @@ private:
     void onLeftDown(wxMouseEvent& event)
     {
         const wxPoint point = event.GetPosition();
-        if (prevRect_.Contains(point) || nextRect_.Contains(point)) {
-            anchor_.Add(wxDateSpan::Months(prevRect_.Contains(point) ? -1 : 1));
-            selected_ = anchor_;
+        if (m_prevRect.Contains(point) || m_nextRect.Contains(point)) {
+            m_anchor.Add(wxDateSpan::Months(m_prevRect.Contains(point) ? -1 : 1));
+            m_selected = m_anchor;
             Refresh();
-            if (onMonthChanged_) {
-                onMonthChanged_(selected_);
+            if (m_onMonthChanged) {
+                m_onMonthChanged(m_selected);
             }
             return;
         }
-        if (titleRect_.Contains(point)) {
-            wxDateTime chosen = chooseMonth(this, anchor_, darkTheme_);
-            anchor_ = startOfMonth(chosen);
-            selected_ = anchor_;
+        if (m_titleRect.Contains(point)) {
+            wxDateTime chosen = chooseMonth(this, m_anchor, m_darkTheme);
+            m_anchor = startOfMonth(chosen);
+            m_selected = m_anchor;
             Refresh();
-            if (onMonthChanged_) {
-                onMonthChanged_(selected_);
+            if (m_onMonthChanged) {
+                m_onMonthChanged(m_selected);
             }
             return;
         }
-        for (const auto& cell : cellRects_) {
+        for (const auto& cell : m_cellRects) {
             if (cell.rect.Contains(point)) {
-                selected_ = startOfDay(cell.date);
-                anchor_ = startOfMonth(cell.date);
+                m_selected = startOfDay(cell.date);
+                m_anchor = startOfMonth(cell.date);
                 Refresh();
-                if (onDaySelected_) {
-                    onDaySelected_(selected_);
+                if (m_onDaySelected) {
+                    m_onDaySelected(m_selected);
                 }
                 return;
             }
@@ -1116,24 +1116,24 @@ private:
         wxDateTime date;
     };
 
-    bool darkTheme_;
-    bool weekStartsMonday_;
-    wxDateTime anchor_ = startOfMonth(wxDateTime::Today());
-    wxDateTime selected_ = wxDateTime::Today();
-    std::map<std::string, DaySummary> summaries_;
-    std::vector<CalendarCell> cellRects_;
-    wxRect prevRect_;
-    wxRect titleRect_;
-    wxRect nextRect_;
-    std::function<void(wxDateTime)> onDaySelected_;
-    std::function<void(wxDateTime)> onMonthChanged_;
+    bool m_darkTheme;
+    bool m_weekStartsMonday;
+    wxDateTime m_anchor = startOfMonth(wxDateTime::Today());
+    wxDateTime m_selected = wxDateTime::Today();
+    std::map<std::string, DaySummary> m_summaries;
+    std::vector<CalendarCell> m_cellRects;
+    wxRect m_prevRect;
+    wxRect m_titleRect;
+    wxRect m_nextRect;
+    std::function<void(wxDateTime)> m_onDaySelected;
+    std::function<void(wxDateTime)> m_onMonthChanged;
 };
 
 class StatisticsChartPanel : public wxPanel {
 public:
     StatisticsChartPanel(wxWindow* parent, bool darkTheme)
         : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(-1, 220)),
-          darkTheme_(darkTheme)
+          m_darkTheme(darkTheme)
     {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         Bind(wxEVT_PAINT, &StatisticsChartPanel::onPaint, this);
@@ -1141,7 +1141,7 @@ public:
 
     void setBuckets(std::vector<ChartBucket> buckets)
     {
-        buckets_ = std::move(buckets);
+        m_buckets = std::move(buckets);
         Refresh();
     }
 
@@ -1150,9 +1150,9 @@ private:
     {
         wxAutoBufferedPaintDC dc(this);
         const wxSize size = GetClientSize();
-        const wxColour bg = darkTheme_ ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
-        const wxColour fg = darkTheme_ ? wxColour(225, 230, 238) : wxColour(40, 44, 52);
-        const wxColour grid = darkTheme_ ? wxColour(44, 49, 59) : wxColour(220, 224, 230);
+        const wxColour bg = m_darkTheme ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
+        const wxColour fg = m_darkTheme ? wxColour(225, 230, 238) : wxColour(40, 44, 52);
+        const wxColour grid = m_darkTheme ? wxColour(44, 49, 59) : wxColour(220, 224, 230);
         dc.SetBackground(wxBrush(bg));
         dc.Clear();
 
@@ -1172,7 +1172,7 @@ private:
             dc.DrawLine(left, y, left + plotW, y);
         }
 
-        if (buckets_.empty()) {
+        if (m_buckets.empty()) {
             dc.SetTextForeground(fg);
             dc.DrawText(wxString::FromUTF8(_("No records")), left + 12, top + 20);
             return;
@@ -1180,15 +1180,15 @@ private:
 
         int maxRecords = 1;
         long maxDuration = 1;
-        for (const ChartBucket& bucket : buckets_) {
+        for (const ChartBucket& bucket : m_buckets) {
             maxRecords = std::max(maxRecords, bucket.records);
             maxDuration = std::max(maxDuration, bucket.durationSeconds);
         }
 
-        const int bucketW = std::max(1, plotW / static_cast<int>(buckets_.size()));
+        const int bucketW = std::max(1, plotW / static_cast<int>(m_buckets.size()));
         const int barW = std::max(2, bucketW / 5);
-        for (std::size_t i = 0; i < buckets_.size(); ++i) {
-            const ChartBucket& bucket = buckets_[i];
+        for (std::size_t i = 0; i < m_buckets.size(); ++i) {
+            const ChartBucket& bucket = m_buckets[i];
             const int x = left + static_cast<int>(i) * bucketW + bucketW / 2;
             const int countH = static_cast<int>(std::round(plotH * bucket.records / static_cast<double>(maxRecords)));
             const int durationH = static_cast<int>(std::round(plotH * bucket.durationSeconds / static_cast<double>(maxDuration)));
@@ -1210,8 +1210,8 @@ private:
             bool hasPrevious = false;
             dc.SetPen(wxPen(color, 2));
             dc.SetBrush(wxBrush(color));
-            for (std::size_t i = 0; i < buckets_.size(); ++i) {
-                const ChartBucket& bucket = buckets_[i];
+            for (std::size_t i = 0; i < m_buckets.size(); ++i) {
+                const ChartBucket& bucket = m_buckets[i];
                 if (bucket.records <= 0) {
                     continue;
                 }
@@ -1247,137 +1247,137 @@ private:
         legend(wxColour(92, 214, 130), "G");
     }
 
-    bool darkTheme_;
-    std::vector<ChartBucket> buckets_;
+    bool m_darkTheme;
+    std::vector<ChartBucket> m_buckets;
 };
 
 StatisticsDialog::StatisticsDialog(wxWindow* parent, std::vector<Observation> observations, std::string theme, bool weekStartsMonday)
     : wxDialog(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition, wxSize(1040, 760),
           wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP),
-      observations_(std::move(observations)),
-      theme_("light"),
-      weekStartsMonday_(weekStartsMonday),
-      anchor_(wxDateTime::Today())
+      m_observations(std::move(observations)),
+      m_theme("light"),
+      m_weekStartsMonday(weekStartsMonday),
+      m_anchor(wxDateTime::Today())
 {
-    if (!observations_.empty()) {
-        anchor_ = toDateTime(observations_.back().promptedAt);
+    if (!m_observations.empty()) {
+        m_anchor = toDateTime(m_observations.back().promptedAt);
     }
 
-    const bool darkTheme = theme_ != "light";
+    const bool darkTheme = m_theme != "light";
     SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
     SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
 
     auto* root = new wxBoxSizer(wxVERTICAL);
-    toolbar_ = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+    m_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
         wxTB_HORIZONTAL | wxTB_TEXT | wxTB_FLAT);
-    toolbar_->AddCheckTool(ID_MENU_CALENDAR, wxString::FromUTF8(_("Calendar")),
+    m_toolbar->AddCheckTool(ID_MENU_CALENDAR, wxString::FromUTF8(_("Calendar")),
         wxArtProvider::GetBitmap(wxART_GO_HOME, wxART_TOOLBAR, wxSize(16, 16)),
         wxNullBitmap, wxString::FromUTF8("F1"));
-    toolbar_->AddSeparator();
-    toolbar_->AddCheckTool(ID_MENU_DAY, wxString::FromUTF8(_("Day")),
+    m_toolbar->AddSeparator();
+    m_toolbar->AddCheckTool(ID_MENU_DAY, wxString::FromUTF8(_("Day")),
         wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_TOOLBAR, wxSize(16, 16)),
         wxNullBitmap, wxString::FromUTF8("F5"));
-    toolbar_->AddCheckTool(ID_MENU_WEEK, wxString::FromUTF8(_("Week")),
+    m_toolbar->AddCheckTool(ID_MENU_WEEK, wxString::FromUTF8(_("Week")),
         wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(16, 16)),
         wxNullBitmap, wxString::FromUTF8("F6"));
-    toolbar_->AddCheckTool(ID_MENU_MONTH, wxString::FromUTF8(_("Month")),
+    m_toolbar->AddCheckTool(ID_MENU_MONTH, wxString::FromUTF8(_("Month")),
         wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, wxSize(16, 16)),
         wxNullBitmap, wxString::FromUTF8("F7"));
-    toolbar_->AddCheckTool(ID_MENU_YEAR, wxString::FromUTF8(_("Year")),
+    m_toolbar->AddCheckTool(ID_MENU_YEAR, wxString::FromUTF8(_("Year")),
         wxArtProvider::GetBitmap(wxART_HARDDISK, wxART_TOOLBAR, wxSize(16, 16)),
         wxNullBitmap, wxString::FromUTF8("F8"));
-    toolbar_->AddSeparator();
-    toolbar_->AddTool(ID_MENU_TODAY, wxString::FromUTF8(_("Today")),
+    m_toolbar->AddSeparator();
+    m_toolbar->AddTool(ID_MENU_TODAY, wxString::FromUTF8(_("Today")),
         wxArtProvider::GetBitmap(wxART_TICK_MARK, wxART_TOOLBAR, wxSize(16, 16)),
         wxString::FromUTF8("Ctrl+T"));
-    toolbar_->AddTool(ID_MENU_PREVIOUS, wxString::FromUTF8(_("Previous")),
+    m_toolbar->AddTool(ID_MENU_PREVIOUS, wxString::FromUTF8(_("Previous")),
         wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR, wxSize(16, 16)),
         wxString::FromUTF8("PageUp"));
-    toolbar_->AddTool(ID_MENU_NEXT, wxString::FromUTF8(_("Next")),
+    m_toolbar->AddTool(ID_MENU_NEXT, wxString::FromUTF8(_("Next")),
         wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, wxSize(16, 16)),
         wxString::FromUTF8("PageDown"));
-    toolbar_->AddSeparator();
-    toolbar_->AddTool(wxID_CLOSE, wxString::FromUTF8(_("Close")),
+    m_toolbar->AddSeparator();
+    m_toolbar->AddTool(wxID_CLOSE, wxString::FromUTF8(_("Close")),
         wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR, wxSize(16, 16)),
         wxString::FromUTF8("Esc"));
-    toolbar_->Realize();
+    m_toolbar->Realize();
 
     auto* header = new wxBoxSizer(wxHORIZONTAL);
-    title_ = new wxStaticText(this, wxID_ANY, "");
+    m_title = new wxStaticText(this, wxID_ANY, "");
     wxFont titleFont = GetFont();
     titleFont.SetPointSize(titleFont.GetPointSize() + 5);
     titleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    title_->SetFont(titleFont);
+    m_title->SetFont(titleFont);
 
-    eachYear_ = new wxCheckBox(this, wxID_ANY, wxString::FromUTF8(_("Each Year")));
-    eachYear_->SetValue(true);
+    m_eachYear = new wxCheckBox(this, wxID_ANY, wxString::FromUTF8(_("Each Year")));
+    m_eachYear->SetValue(true);
 
-    header->Add(title_, 1, wxALIGN_CENTER_VERTICAL);
-    header->Add(eachYear_, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 12);
+    header->Add(m_title, 1, wxALIGN_CENTER_VERTICAL);
+    header->Add(m_eachYear, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 12);
 
-    calendar_ = new ObservationCalendarPanel(this, darkTheme, weekStartsMonday_);
-    calendar_->setObservations(observations_);
-    calendar_->setSelected(anchor_);
-    calendar_->setDaySelectedHandler([this](wxDateTime date) {
-        anchor_ = date;
-        table_->setRecords(selectedDayRecords());
+    m_calendar = new ObservationCalendarPanel(this, darkTheme, m_weekStartsMonday);
+    m_calendar->setObservations(m_observations);
+    m_calendar->setSelected(m_anchor);
+    m_calendar->setDaySelectedHandler([this](wxDateTime date) {
+        m_anchor = date;
+        m_table->setRecords(selectedDayRecords());
         updateSelectedDaySummary();
         updateTitle();
     });
-    calendar_->setMonthChangedHandler([this](wxDateTime date) {
-        anchor_ = date;
-        table_->setRecords(selectedDayRecords());
+    m_calendar->setMonthChangedHandler([this](wxDateTime date) {
+        m_anchor = date;
+        m_table->setRecords(selectedDayRecords());
         updateSelectedDaySummary();
         updateTitle();
     });
 
-    daySummaryPanel_ = new wxPanel(this);
-    daySummaryPanel_->SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
+    m_daySummaryPanel = new wxPanel(this);
+    m_daySummaryPanel->SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
     auto* daySummarySizer = new wxBoxSizer(wxVERTICAL);
-    daySummaryDate_ = new wxStaticText(daySummaryPanel_, wxID_ANY, "");
+    m_daySummaryDate = new wxStaticText(m_daySummaryPanel, wxID_ANY, "");
     wxFont daySummaryTitleFont = GetFont();
     daySummaryTitleFont.SetPointSize(daySummaryTitleFont.GetPointSize() + 3);
     daySummaryTitleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    daySummaryDate_->SetFont(daySummaryTitleFont);
-    daySummaryDate_->SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
+    m_daySummaryDate->SetFont(daySummaryTitleFont);
+    m_daySummaryDate->SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
     auto addSummaryLine = [&](wxStaticText*& target) {
-        target = new wxStaticText(daySummaryPanel_, wxID_ANY, "");
+        target = new wxStaticText(m_daySummaryPanel, wxID_ANY, "");
         target->SetForegroundColour(darkTheme ? wxColour(226, 232, 240) : wxColour(24, 28, 34));
         daySummarySizer->Add(target, 0, wxBOTTOM, 8);
     };
-    daySummarySizer->Add(daySummaryDate_, 0, wxBOTTOM, 16);
-    addSummaryLine(daySummaryRecords_);
-    addSummaryLine(daySummaryEmpty_);
-    addSummaryLine(daySummaryDuration_);
-    addSummaryLine(daySummaryEnergy_);
-    addSummaryLine(daySummaryMood_);
-    addSummaryLine(daySummaryGrounding_);
-    daySummaryPanel_->SetSizer(daySummarySizer);
+    daySummarySizer->Add(m_daySummaryDate, 0, wxBOTTOM, 16);
+    addSummaryLine(m_daySummaryRecords);
+    addSummaryLine(m_daySummaryEmpty);
+    addSummaryLine(m_daySummaryDuration);
+    addSummaryLine(m_daySummaryEnergy);
+    addSummaryLine(m_daySummaryMood);
+    addSummaryLine(m_daySummaryGrounding);
+    m_daySummaryPanel->SetSizer(daySummarySizer);
 
-    metricsPanel_ = new wxPanel(this);
-    metricsSizer_ = new wxBoxSizer(wxHORIZONTAL);
-    metricsPanel_->SetSizer(metricsSizer_);
-    chart_ = new StatisticsChartPanel(this, darkTheme);
-    tableTitle_ = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("Top activities")));
+    m_metricsPanel = new wxPanel(this);
+    m_metricsSizer = new wxBoxSizer(wxHORIZONTAL);
+    m_metricsPanel->SetSizer(m_metricsSizer);
+    m_chart = new StatisticsChartPanel(this, darkTheme);
+    m_tableTitle = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("Top activities")));
     wxFont tableTitleFont = GetFont();
     tableTitleFont.SetPointSize(tableTitleFont.GetPointSize() + 2);
     tableTitleFont.SetWeight(wxFONTWEIGHT_BOLD);
-    tableTitle_->SetFont(tableTitleFont);
-    table_ = new ObservationRecordTable(this, darkTheme);
+    m_tableTitle->SetFont(tableTitleFont);
+    m_table = new ObservationRecordTable(this, darkTheme);
 
-    root->Add(toolbar_, 0, wxEXPAND);
+    root->Add(m_toolbar, 0, wxEXPAND);
     root->Add(header, 0, wxALL | wxEXPAND, 16);
     auto* calendarRow = new wxBoxSizer(wxHORIZONTAL);
-    calendarRow->Add(calendar_, 0, wxRIGHT, 18);
-    calendarRow->Add(daySummaryPanel_, 1, wxEXPAND);
+    calendarRow->Add(m_calendar, 0, wxRIGHT, 18);
+    calendarRow->Add(m_daySummaryPanel, 1, wxEXPAND);
     root->Add(calendarRow, 0, wxLEFT | wxRIGHT | wxEXPAND, 16);
-    root->Add(metricsPanel_, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
-    root->Add(chart_, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
-    root->Add(tableTitle_, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
-    root->Add(table_, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+    root->Add(m_metricsPanel, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+    root->Add(m_chart, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+    root->Add(m_tableTitle, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+    root->Add(m_table, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
     SetSizer(root);
 
-    eachYear_->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent&) { render(); });
+    m_eachYear->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent&) { render(); });
     Bind(wxEVT_TOOL, [this](wxCommandEvent&) { setMode(ViewMode::Calendar); }, ID_MENU_CALENDAR);
     Bind(wxEVT_TOOL, [this](wxCommandEvent&) { setMode(ViewMode::Day); }, ID_MENU_DAY);
     Bind(wxEVT_TOOL, [this](wxCommandEvent&) { setMode(ViewMode::Week); }, ID_MENU_WEEK);
@@ -1389,20 +1389,20 @@ StatisticsDialog::StatisticsDialog(wxWindow* parent, std::vector<Observation> ob
     Bind(wxEVT_TOOL, [this](wxCommandEvent&) { Close(); }, wxID_CLOSE);
     Bind(wxEVT_CHAR_HOOK, &StatisticsDialog::onCharHook, this);
 
-    hookDisplaySurface(daySummaryPanel_);
-    hookDisplaySurface(metricsPanel_);
-    hookDisplaySurface(calendar_);
-    hookDisplaySurface(chart_);
-    hookDisplaySurface(table_);
-    hookDisplaySurface(title_);
+    hookDisplaySurface(m_daySummaryPanel);
+    hookDisplaySurface(m_metricsPanel);
+    hookDisplaySurface(m_calendar);
+    hookDisplaySurface(m_chart);
+    hookDisplaySurface(m_table);
+    hookDisplaySurface(m_title);
     for (wxWindow* summaryLine : {
-             static_cast<wxWindow*>(daySummaryDate_),
-             static_cast<wxWindow*>(daySummaryRecords_),
-             static_cast<wxWindow*>(daySummaryEmpty_),
-             static_cast<wxWindow*>(daySummaryDuration_),
-             static_cast<wxWindow*>(daySummaryEnergy_),
-             static_cast<wxWindow*>(daySummaryMood_),
-             static_cast<wxWindow*>(daySummaryGrounding_) }) {
+             static_cast<wxWindow*>(m_daySummaryDate),
+             static_cast<wxWindow*>(m_daySummaryRecords),
+             static_cast<wxWindow*>(m_daySummaryEmpty),
+             static_cast<wxWindow*>(m_daySummaryDuration),
+             static_cast<wxWindow*>(m_daySummaryEnergy),
+             static_cast<wxWindow*>(m_daySummaryMood),
+             static_cast<wxWindow*>(m_daySummaryGrounding) }) {
         hookDisplaySurface(summaryLine);
     }
 
@@ -1440,20 +1440,20 @@ void StatisticsDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_LEFT || keyCode == WXK_RIGHT) {
-        if (mode_ == ViewMode::Calendar) {
-            anchor_.Add(wxDateSpan::Days(keyCode == WXK_LEFT ? -1 : 1));
+        if (m_mode == ViewMode::Calendar) {
+            m_anchor.Add(wxDateSpan::Days(keyCode == WXK_LEFT ? -1 : 1));
             renderCalendar();
         } else {
             const int direction = keyCode == WXK_LEFT ? -1 : 1;
-            int modeIndex = static_cast<int>(mode_) - static_cast<int>(ViewMode::Day);
+            int modeIndex = static_cast<int>(m_mode) - static_cast<int>(ViewMode::Day);
             modeIndex = (modeIndex + direction + 4) % 4;
             setMode(static_cast<ViewMode>(static_cast<int>(ViewMode::Day) + modeIndex));
         }
         return;
     }
     if (keyCode == WXK_UP || keyCode == WXK_DOWN) {
-        if (mode_ == ViewMode::Calendar) {
-            anchor_.Add(wxDateSpan::Days(keyCode == WXK_UP ? -7 : 7));
+        if (m_mode == ViewMode::Calendar) {
+            m_anchor.Add(wxDateSpan::Days(keyCode == WXK_UP ? -7 : 7));
             renderCalendar();
         } else {
             movePeriod(keyCode == WXK_UP ? -1 : 1);
@@ -1493,25 +1493,25 @@ void StatisticsDialog::onCharHook(wxKeyEvent& event)
 
 void StatisticsDialog::setMode(ViewMode mode)
 {
-    mode_ = mode;
+    m_mode = mode;
     render();
 }
 
 void StatisticsDialog::movePeriod(int delta)
 {
-    switch (mode_) {
+    switch (m_mode) {
     case ViewMode::Day:
-        anchor_.Add(wxDateSpan::Days(delta));
+        m_anchor.Add(wxDateSpan::Days(delta));
         break;
     case ViewMode::Week:
-        anchor_.Add(wxDateSpan::Weeks(delta));
+        m_anchor.Add(wxDateSpan::Weeks(delta));
         break;
     case ViewMode::Month:
     case ViewMode::Calendar:
-        anchor_.Add(wxDateSpan::Months(delta));
+        m_anchor.Add(wxDateSpan::Months(delta));
         break;
     case ViewMode::Year:
-        anchor_.Add(wxDateSpan::Years(delta));
+        m_anchor.Add(wxDateSpan::Years(delta));
         break;
     }
     render();
@@ -1519,7 +1519,7 @@ void StatisticsDialog::movePeriod(int delta)
 
 void StatisticsDialog::render()
 {
-    if (mode_ == ViewMode::Calendar) {
+    if (m_mode == ViewMode::Calendar) {
         renderCalendar();
     } else {
         renderStatistics();
@@ -1528,14 +1528,14 @@ void StatisticsDialog::render()
 
 void StatisticsDialog::updateTitle()
 {
-    const bool eachYear = eachYear_->GetValue();
-    title_->SetLabel(periodTitle(mode_, anchor_, eachYear));
-    eachYear_->Show(mode_ == ViewMode::Day || mode_ == ViewMode::Week || mode_ == ViewMode::Month);
+    const bool eachYear = m_eachYear->GetValue();
+    m_title->SetLabel(periodTitle(m_mode, m_anchor, eachYear));
+    m_eachYear->Show(m_mode == ViewMode::Day || m_mode == ViewMode::Week || m_mode == ViewMode::Month);
 }
 
 void StatisticsDialog::updateToolbar()
 {
-    if (toolbar_ == nullptr) {
+    if (m_toolbar == nullptr) {
         return;
     }
     const int viewIds[] = {
@@ -1546,11 +1546,11 @@ void StatisticsDialog::updateToolbar()
         ID_MENU_YEAR,
     };
     for (int viewId : viewIds) {
-        toolbar_->ToggleTool(viewId, false);
+        m_toolbar->ToggleTool(viewId, false);
     }
 
     int id = ID_MENU_CALENDAR;
-    switch (mode_) {
+    switch (m_mode) {
     case ViewMode::Calendar:
         id = ID_MENU_CALENDAR;
         break;
@@ -1567,29 +1567,29 @@ void StatisticsDialog::updateToolbar()
         id = ID_MENU_YEAR;
         break;
     }
-    toolbar_->ToggleTool(id, true);
+    m_toolbar->ToggleTool(id, true);
 }
 
 void StatisticsDialog::renderCalendar()
 {
-    calendar_->Show();
-    daySummaryPanel_->Show();
-    metricsPanel_->Hide();
-    chart_->Hide();
-    tableTitle_->Hide();
-    table_->Show();
-    calendar_->setMonth(anchor_);
-    calendar_->setSelected(anchor_);
+    m_calendar->Show();
+    m_daySummaryPanel->Show();
+    m_metricsPanel->Hide();
+    m_chart->Hide();
+    m_tableTitle->Hide();
+    m_table->Show();
+    m_calendar->setMonth(m_anchor);
+    m_calendar->setSelected(m_anchor);
     updateTitle();
     updateToolbar();
-    table_->setRecords(selectedDayRecords());
+    m_table->setRecords(selectedDayRecords());
     updateSelectedDaySummary();
     Layout();
 }
 
 void StatisticsDialog::rebuildMetrics(const std::vector<Observation>& selected)
 {
-    metricsSizer_->Clear(true);
+    m_metricsSizer->Clear(true);
 
     double energy = 0.0;
     double mood = 0.0;
@@ -1607,13 +1607,13 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation>& selected)
     }
 
     const double count = static_cast<double>(selected.size());
-    const bool darkTheme = theme_ != "light";
+    const bool darkTheme = m_theme != "light";
     const wxColour cardBg = darkTheme ? wxColour(27, 31, 39) : wxColour(255, 255, 255);
     const wxColour fg = darkTheme ? wxColour(232, 237, 244) : wxColour(32, 36, 44);
     const wxColour muted = darkTheme ? wxColour(160, 169, 184) : wxColour(92, 99, 112);
 
     auto addMetric = [&](const wxArtID& artId, const wxString& label, const wxString& value) {
-        auto* panel = new wxPanel(metricsPanel_);
+        auto* panel = new wxPanel(m_metricsPanel);
         panel->SetBackgroundColour(cardBg);
         auto* row = new wxBoxSizer(wxHORIZONTAL);
         auto* icon = new wxStaticBitmap(panel, wxID_ANY, wxArtProvider::GetBitmap(artId, wxART_OTHER, wxSize(24, 24)));
@@ -1635,7 +1635,7 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation>& selected)
         hookDisplaySurface(icon);
         hookDisplaySurface(valueText);
         hookDisplaySurface(labelText);
-        metricsSizer_->Add(panel, 1, wxRIGHT | wxEXPAND, 8);
+        m_metricsSizer->Add(panel, 1, wxRIGHT | wxEXPAND, 8);
     };
 
     addMetric(wxART_REPORT_VIEW, wxString::FromUTF8(_("Records")), wxString::Format("%zu", selected.size()));
@@ -1653,8 +1653,8 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation>& selected)
 std::vector<Observation> StatisticsDialog::selectedDayRecords() const
 {
     std::vector<Observation> selected;
-    for (const Observation& observation : observations_) {
-        if (sameDay(observation, anchor_)) {
+    for (const Observation& observation : m_observations) {
+        if (sameDay(observation, m_anchor)) {
             selected.push_back(observation);
         }
     }
@@ -1680,43 +1680,43 @@ void StatisticsDialog::updateSelectedDaySummary()
     }
 
     const double count = static_cast<double>(selected.size());
-    daySummaryDate_->SetLabel(anchor_.FormatISODate());
-    daySummaryRecords_->SetLabel(wxString::FromUTF8(_("Records")) + ": " + wxString::Format("%zu", selected.size()));
-    daySummaryEmpty_->SetLabel(wxString::FromUTF8(_("Empty notes")) + ": " + wxString::Format("%d", emptyCount));
-    daySummaryDuration_->SetLabel(wxString::FromUTF8(_("Total prompt duration")) + ": "
+    m_daySummaryDate->SetLabel(m_anchor.FormatISODate());
+    m_daySummaryRecords->SetLabel(wxString::FromUTF8(_("Records")) + ": " + wxString::Format("%zu", selected.size()));
+    m_daySummaryEmpty->SetLabel(wxString::FromUTF8(_("Empty notes")) + ": " + wxString::Format("%d", emptyCount));
+    m_daySummaryDuration->SetLabel(wxString::FromUTF8(_("Total prompt duration")) + ": "
         + wxString::FromUTF8(formatDuration(totalDuration).c_str()));
-    daySummaryEnergy_->SetLabel(wxString::FromUTF8(_("Average energy")) + ": "
+    m_daySummaryEnergy->SetLabel(wxString::FromUTF8(_("Average energy")) + ": "
         + (selected.empty() ? "-" : scoreWithEmoji(energyEmoji(energy / count), energy / count)));
-    daySummaryMood_->SetLabel(wxString::FromUTF8(_("Average mood")) + ": "
+    m_daySummaryMood->SetLabel(wxString::FromUTF8(_("Average mood")) + ": "
         + (selected.empty() ? "-" : scoreWithEmoji(moodEmoji(mood / count), mood / count)));
-    daySummaryGrounding_->SetLabel(wxString::FromUTF8(_("Average grounding")) + ": "
+    m_daySummaryGrounding->SetLabel(wxString::FromUTF8(_("Average grounding")) + ": "
         + (selected.empty() ? "-" : scoreWithEmoji(groundingEmoji(grounding / count), grounding / count)));
-    daySummaryPanel_->Layout();
+    m_daySummaryPanel->Layout();
 }
 
 void StatisticsDialog::renderStatistics()
 {
-    calendar_->Hide();
-    daySummaryPanel_->Hide();
-    metricsPanel_->Show();
-    chart_->Show();
-    tableTitle_->Show();
-    table_->Show();
-    tableTitle_->SetLabel(wxString::FromUTF8(_("Top activities")));
+    m_calendar->Hide();
+    m_daySummaryPanel->Hide();
+    m_metricsPanel->Show();
+    m_chart->Show();
+    m_tableTitle->Show();
+    m_table->Show();
+    m_tableTitle->SetLabel(wxString::FromUTF8(_("Top activities")));
     updateTitle();
     updateToolbar();
 
-    const bool eachYear = eachYear_->GetValue();
+    const bool eachYear = m_eachYear->GetValue();
     std::vector<Observation> selected;
-    for (const Observation& observation : observations_) {
-        if (samePeriod(observation, anchor_, mode_, eachYear, weekStartsMonday_)) {
+    for (const Observation& observation : m_observations) {
+        if (samePeriod(observation, m_anchor, m_mode, eachYear, m_weekStartsMonday)) {
             selected.push_back(observation);
         }
     }
 
-    std::vector<ChartBucket> buckets = makeBuckets(mode_, anchor_, eachYear, weekStartsMonday_);
+    std::vector<ChartBucket> buckets = makeBuckets(m_mode, m_anchor, eachYear, m_weekStartsMonday);
     for (const Observation& observation : selected) {
-        const int index = bucketIndex(observation, mode_, weekStartsMonday_);
+        const int index = bucketIndex(observation, m_mode, m_weekStartsMonday);
         if (index < 0 || index >= static_cast<int>(buckets.size())) {
             continue;
         }
@@ -1729,14 +1729,14 @@ void StatisticsDialog::renderStatistics()
     }
 
     rebuildMetrics(selected);
-    chart_->setBuckets(std::move(buckets));
-    table_->setRecords(selected);
-    metricsPanel_->Layout();
+    m_chart->setBuckets(std::move(buckets));
+    m_table->setRecords(selected);
+    m_metricsPanel->Layout();
     Layout();
 }
 
 void StatisticsDialog::goToday()
 {
-    anchor_ = wxDateTime::Today();
+    m_anchor = wxDateTime::Today();
     render();
 }

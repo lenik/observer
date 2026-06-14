@@ -146,15 +146,15 @@ std::string dateFromLogPath(const std::filesystem::path& path)
 }
 
 DataDirStore::DataDirStore(std::string path)
-    : path_(std::move(path))
+    : m_path(std::move(path))
 {
-    std::filesystem::create_directories(path_);
+    std::filesystem::create_directories(m_path);
 }
 
 void DataDirStore::save(const Observation& observation)
 {
-    std::filesystem::create_directories(path_);
-    const std::filesystem::path logPath = std::filesystem::path(path_) / (datePart(observation.promptedAt) + ".log");
+    std::filesystem::create_directories(m_path);
+    const std::filesystem::path logPath = std::filesystem::path(m_path) / (datePart(observation.promptedAt) + ".log");
 
     std::ofstream out(logPath, std::ios::app);
     if (!out) {
@@ -185,12 +185,12 @@ std::vector<Observation> DataDirStore::loadAll()
 {
     std::vector<Observation> observations;
     std::error_code ec;
-    if (!std::filesystem::is_directory(path_, ec)) {
+    if (!std::filesystem::is_directory(m_path, ec)) {
         return observations;
     }
 
     std::vector<std::filesystem::path> files;
-    for (const auto& entry : std::filesystem::directory_iterator(path_, ec)) {
+    for (const auto& entry : std::filesystem::directory_iterator(m_path, ec)) {
         if (entry.is_regular_file(ec) && entry.path().extension() == ".log") {
             files.push_back(entry.path());
         }
@@ -237,7 +237,7 @@ std::vector<Observation> DataDirStore::loadAll()
 
 const std::string& DataDirStore::path() const
 {
-    return path_;
+    return m_path;
 }
 
 bool DataDirStore::shouldUseDataDir(const std::string& path)
