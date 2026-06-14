@@ -12,8 +12,8 @@ configured interval.
 .PP
 Each prompt asks for a short activity note and optional energy, mood, and
 grounding scores.  The prompt can be submitted with Enter, cancelled with
-Escape, or snoozed for 30 seconds with Control-S.  Empty activity text is
-trimmed and not recorded.
+Escape, or snoozed for 30 seconds with Control-S.  Activity text is trimmed;
+empty activity submissions are recorded as empty notes.
 .PP
 By default records are stored in
 .IR ~/.observer/observer.sqlite3 .
@@ -63,6 +63,17 @@ An interval of
 .B 0
 shows the startup prompt and exits after submit or cancel.
 .TP
+.BR \-w ", " \-\-weekstart " " \fIMmSs\fR
+Set the calendar week start.  Use
+.B M
+or
+.B m
+for Monday, and
+.B S
+or
+.B s
+for Sunday.  The default is Monday.
+.TP
 .BR \-d ", " \-\-sqlite-db " " \fIPATH\fR
 Set the storage target.  If
 .I PATH
@@ -77,8 +88,8 @@ Print version and license information and exit successfully.
 .SH KEYBOARD
 .TP
 .B Enter
-Submit the current prompt.  If the activity field is empty after trimming, no
-record is saved.
+Submit the current prompt.  If the activity field is empty after trimming, an
+empty note is saved.
 .TP
 .B Escape
 Cancel the current prompt without saving.  Three consecutive Escape cancels
@@ -89,6 +100,9 @@ Snooze the prompt for 30 seconds.
 .TP
 .B Control-Q
 Quit the application from the prompt.
+.TP
+.B Control-H
+Open the statistics window from the prompt.
 .TP
 .B Mod4-Alt-G
 Show the prompt immediately while the application is waiting.  Mod4 is usually
@@ -105,6 +119,26 @@ Decrease or increase the mood score by half a step.
 .TP
 .BR F5 ", " F6
 Decrease or increase the grounding score by half a step.
+.SH STATISTICS
+.TP
+.B F1
+Show calendar view.
+.TP
+.BR F5 ", " F6 ", " F7 ", " F8
+Show day, week, month, or year statistics.
+.TP
+.B Escape
+Close the statistics window.
+.TP
+.BR PageUp ", " PageDown
+Move to the previous or next period in day, week, month, or year views.
+.PP
+In calendar view, select a date and click
+.BR Day ,
+.BR Week ,
+or
+.B Month
+to enter the corresponding statistics view.
 .SH STORAGE
 .SS SQLite
 The SQLite table is created automatically:
@@ -112,7 +146,8 @@ The SQLite table is created automatically:
 .nf
 CREATE TABLE IF NOT EXISTS observations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_at TEXT NOT NULL,
+    prompted_at TEXT NOT NULL,
+    submitted_at TEXT NOT NULL,
     energy REAL,
     mood REAL,
     grounding REAL,
@@ -127,10 +162,12 @@ Default scores are treated as unrecorded values and are stored as
 Directory logging writes one file per day.  A record looks like:
 .PP
 .nf
-hh:mm:ss e2.5 m3.5 g4.0
+hh:mm:ss e2.5 m3.5 g4.0 duration 1:23 submitted hh:mm:ss
     activity text
 .fi
 .PP
+The leading time is the prompt time; the submitted time appears after the
+duration field.
 Score fields that remain at the default value are omitted.
 .SH EXIT STATUS
 .TP

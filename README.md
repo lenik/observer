@@ -18,7 +18,7 @@ energy, mood, and grounding scores.
   between minutes and seconds.
 - Provides a clickable `Quit` label in the prompt footer.
 - Registers `Win+Alt+G` on X11 to show the prompt immediately while waiting.
-- Saves non-empty, trimmed activity notes only.
+- Saves every submitted prompt, including empty activity notes after trimming.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
   path is a directory.
@@ -55,21 +55,36 @@ Options:
   The default is `75`.
 - `-i`, `--interval NUM`: set the normal prompt interval in minutes. Fractional
   values are accepted. `0` makes the startup prompt a one-shot run.
+- `-w`, `--weekstart MmSs`: set the calendar week start. Use `M`/`m` for
+  Monday, or `S`/`s` for Sunday. The default is Monday.
 - `-d`, `--sqlite-db PATH`: use `PATH` as the SQLite database file, or as a log
   directory when it is an existing directory or ends with `/`.
 - `--version`: print version and license information.
 
 ## Keyboard
 
-- `Enter`: submit. Empty activity text is not recorded.
+- `Enter`: submit. Empty activity text is recorded as an empty note.
 - `Escape`: cancel without recording. Three consecutive cancels exit the app.
 - `Ctrl+S`: snooze for 30 seconds.
 - `Ctrl+Q`: quit from the prompt.
+- `Ctrl+H`: open the statistics window.
 - `Win+Alt+G`: show the prompt immediately while the app is waiting. This uses
   an X11 global hotkey on Linux.
 - `F1` / `F2`: decrease / increase energy by half a step.
 - `F3` / `F4`: decrease / increase mood by half a step.
 - `F5` / `F6`: decrease / increase grounding by half a step.
+
+## Statistics
+
+Open statistics from a prompt with `Ctrl+H`.
+
+- `F1`: calendar view.
+- `F5` / `F6` / `F7` / `F8`: day / week / month / year statistics.
+- `Esc`: close the statistics window.
+- `PageUp` / `PageDown`: move to the previous or next period in day, week,
+  month, or year views.
+- In calendar view, select a date and click `Day`, `Week`, or `Month` to enter
+  the corresponding statistics view.
 
 ## Storage
 
@@ -88,10 +103,11 @@ When `--sqlite-db` points to a directory, `oremind` writes daily logs:
 <datadir>/<yyyy-mm-dd>.log
 ```
 
-Record format:
+Record format.  The leading time is the prompt time; the submitted time follows
+the duration field.
 
 ```text
-hh:mm:ss e2.5 m3.5 g4.0
+hh:mm:ss e2.5 m3.5 g4.0 duration 1:23 submitted hh:mm:ss
     activity text
 ```
 
