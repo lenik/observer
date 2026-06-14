@@ -22,9 +22,6 @@ ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults& defaults)
 
     if (result == wxID_OK) {
         Observation observation = dialog.observation();
-        if (observation.activity.empty()) {
-            return ObserveResult{ObserveResultKind::Empty, std::nullopt, dialog.intervalSeconds()};
-        }
         return ObserveResult{ObserveResultKind::Submitted, observation, dialog.intervalSeconds()};
     }
 

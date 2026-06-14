@@ -123,6 +123,8 @@ void usage(FILE *out) {
     fputs(_("set final dialog opacity percentage, 0 to 100\n"), out);
     fputs("  -i, --interval NUM ", out);
     fputs(_("set prompt interval in minutes\n"), out);
+    fputs("  -w, --weekstart MmSs ", out);
+    fputs(_("set calendar week start: M/m for Monday, S/s for Sunday\n"), out);
     fputs("  -d, --sqlite-db PATH ", out);
     fputs(_("SQLite file path, or log directory when PATH is a directory\n"), out);
     fputs("      --version      ", out);
@@ -151,13 +153,14 @@ int main(int argc, char **argv) {
         {"theme", required_argument, NULL, 't'},
         {"opacity", required_argument, NULL, 'o'},
         {"interval", required_argument, NULL, 'i'},
+        {"weekstart", required_argument, NULL, 'w'},
         {"sqlite-db", required_argument, NULL, 'd'},
         {"version", no_argument, NULL, OPT_VERSION},
         {NULL, 0, NULL, 0},
     };
 
     for (;;) {
-        int c = getopt_long(argc, argv, "vqhl:t:o:i:d:", long_opts, NULL);
+        int c = getopt_long(argc, argv, "vqhl:t:o:i:w:d:", long_opts, NULL);
         if (c == -1) {
             break;
         }
@@ -179,11 +182,19 @@ int main(int argc, char **argv) {
             set_locale_env(optarg);
             break;
         case 't':
-            if (strcmp(optarg, "light") != 0 && strcmp(optarg, "dark") != 0) {
-                fprintf(stderr, _("invalid theme: %s\n"), optarg);
-                return 1;
+            {
+                if (optarg == nullptr || *optarg == '\0') {
+                    fprintf(stderr, _("expect theme name.\n"));
+                    return 1;
+                }
+                bool prefix_to_light = strstr("light", optarg) != NULL;
+                bool prefix_to_dark = strstr("dark", optarg) != NULL;
+                if (!prefix_to_light && !prefix_to_dark) {
+                    fprintf(stderr, _("invalid theme: %s\n"), optarg);
+                    return 1;
+                }
+                appConfig().theme = prefix_to_light ? "light" : "dark";
             }
-            appConfig().theme = optarg;
             break;
         case 'o': {
             char* end = nullptr;
@@ -207,6 +218,16 @@ int main(int argc, char **argv) {
             appConfig().intervalSeconds = intervalMinutes * 60.0;
             break;
         }
+        case 'w':
+            if (strcmp(optarg, "M") == 0 || strcmp(optarg, "m") == 0) {
+                appConfig().weekStartsMonday = true;
+            } else if (strcmp(optarg, "S") == 0 || strcmp(optarg, "s") == 0) {
+                appConfig().weekStartsMonday = false;
+            } else {
+                fprintf(stderr, _("invalid week start: %s\n"), optarg);
+                return 1;
+            }
+            break;
         case 'd':
             appConfig().storePath = optarg;
             break;

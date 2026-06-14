@@ -1,5 +1,7 @@
 #include "ObservationDialog.h"
 
+#include "StatisticsDialog.h"
+
 #include <bas/locale/i18n.h>
 
 #include <wx/dcbuffer.h>
@@ -147,24 +149,141 @@ public:
     }
 
 private:
+    static bool isWhitespace(wxUniChar ch)
+    {
+        const wxUint32 value = ch.GetValue();
+        return value == ' ' || value == '\t' || value == '\n' || value == '\r';
+    }
+
+    static bool isCjk(wxUniChar ch)
+    {
+        const wxUint32 value = ch.GetValue();
+        return (value >= 0x3400 && value <= 0x4dbf)
+            || (value >= 0x4e00 && value <= 0x9fff)
+            || (value >= 0xf900 && value <= 0xfaff)
+            || (value >= 0x3040 && value <= 0x30ff)
+            || (value >= 0xac00 && value <= 0xd7af);
+    }
+
+    static bool isWordChar(wxUniChar ch)
+    {
+        const wxUint32 value = ch.GetValue();
+        return (value >= 'A' && value <= 'Z')
+            || (value >= 'a' && value <= 'z')
+            || (value >= '0' && value <= '9')
+            || value == '\''
+            || value == '-';
+    }
+
+    static bool isClosingPunctuation(wxUniChar ch)
+    {
+        const wxUint32 value = ch.GetValue();
+        return value == '.' || value == ',' || value == ';' || value == ':' || value == '!'
+            || value == '?' || value == ')' || value == ']' || value == '}'
+            || value == 0x3002 || value == 0xff0c || value == 0xff1b || value == 0xff1a
+            || value == 0xff01 || value == 0xff1f || value == 0x3001 || value == 0x300d
+            || value == 0x300f || value == 0x3011 || value == 0xff09 || value == 0x201d
+            || value == 0x2019;
+    }
+
+    static wxString trimRight(wxString value)
+    {
+        value.Trim(true);
+        return value;
+    }
+
+    static wxString trimLeft(wxString value)
+    {
+        value.Trim(false);
+        return value;
+    }
+
+    std::vector<wxString> tokenize(const wxString& text)
+    {
+        std::vector<wxString> tokens;
+        for (std::size_t i = 0; i < text.length();) {
+            wxUniChar ch = text[i];
+            if (isWhitespace(ch)) {
+                if (!tokens.empty() && tokens.back() != " ") {
+                    tokens.push_back(" ");
+                }
+                ++i;
+                continue;
+            }
+
+            if (isWordChar(ch)) {
+                wxString token;
+                while (i < text.length() && isWordChar(text[i])) {
+                    token += text[i];
+                    ++i;
+                }
+                tokens.push_back(token);
+                continue;
+            }
+
+            wxString token;
+            token += ch;
+            tokens.push_back(token);
+            ++i;
+        }
+        return tokens;
+    }
+
+    bool fits(wxDC& dc, const wxString& text, int maxWidth)
+    {
+        int width = 0;
+        int height = 0;
+        dc.GetTextExtent(text, &width, &height);
+        return width <= maxWidth;
+    }
+
+    void pushLine(std::vector<wxString>& lines, wxString& current)
+    {
+        current = trimRight(current);
+        if (!current.empty()) {
+            lines.push_back(current);
+        }
+        current.clear();
+    }
+
     std::vector<wxString> wrapText(wxDC& dc, const wxString& text, int maxWidth)
     {
         std::vector<wxString> lines;
         wxString current;
-        for (std::size_t i = 0; i < text.length(); ++i) {
-            wxString candidate = current + text[i];
-            int width = 0;
-            int height = 0;
-            dc.GetTextExtent(candidate, &width, &height);
-            if (!current.empty() && width > maxWidth) {
-                lines.push_back(current);
-                current = text[i];
-            } else {
+        for (const wxString& token : tokenize(text)) {
+            wxString candidate = current + token;
+            if (fits(dc, candidate, maxWidth)) {
                 current = candidate;
+                continue;
+            }
+
+            const bool closingPunctuation = token.length() == 1 && isClosingPunctuation(token[0]);
+            if (closingPunctuation) {
+                if (!current.empty()) {
+                    current += token;
+                } else if (!lines.empty()) {
+                    lines.back() += token;
+                } else {
+                    current = token;
+                }
+                continue;
+            }
+
+            if (!current.empty()) {
+                pushLine(lines, current);
+                current = trimLeft(token);
+            } else {
+                for (std::size_t i = 0; i < token.length(); ++i) {
+                    wxString charCandidate = current + token[i];
+                    if (!current.empty() && !fits(dc, charCandidate, maxWidth)) {
+                        pushLine(lines, current);
+                    }
+                    current += token[i];
+                }
             }
         }
         if (!current.empty()) {
-            lines.push_back(current);
+            pushLine(lines, current);
         }
         if (lines.empty()) {
             lines.push_back("");
@@ -403,11 +522,17 @@ private:
 ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaults& defaults)
     : wxDialog(parent, wxID_ANY, "Observer", wxDefaultPosition, wxDefaultSize,
           wxRESIZE_BORDER | wxSTAY_ON_TOP),
-      quote_(defaults.quote)
+      quote_(defaults.quote),
+      promptedAt_(currentTimestamp()),
+      quoteRng_(static_cast<std::mt19937::result_type>(
+          std::chrono::high_resolution_clock::now().time_since_epoch().count()))
 {
     auto* root = new wxBoxSizer(wxVERTICAL);
     const bool darkTheme = defaults.theme != "light";
+    theme_ = defaults.theme;
     quotes_ = defaults.quotes;
+    history_ = defaults.history;
+    weekStartsMonday_ = defaults.weekStartsMonday;
     quoteIndex_ = defaults.quoteIndex;
     if (quotes_.empty()) {
         quotes_.push_back(quote_);
@@ -431,7 +556,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     const int blockGap = std::max(8, emHeight / 2);
 
     root->AddSpacer(blockGap);
-    quoteCanvas_ = new QuoteCanvas(this, quote_, darkTheme, [this]() { showNextQuote(); });
+    quoteCanvas_ = new QuoteCanvas(this, quote_, darkTheme, [this]() { showRandomQuote(); });
     root->Add(quoteCanvas_, 1, wxLEFT | wxRIGHT | wxEXPAND, outerMargin);
 
     auto* ratingRow = new wxBoxSizer(wxHORIZONTAL);
@@ -458,6 +583,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
         wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
     intervalCtrl_->SetForegroundColour(darkTheme ? wxColour(170, 176, 184) : wxColour(78, 84, 94));
     intervalCtrl_->SetBackgroundColour(darkTheme ? wxColour(28, 32, 39) : wxColour(235, 238, 242));
+    intervalCtrl_->SetToolTip(wxString::FromUTF8(_("Win+Alt+G wake immediately")));
 
     const wxColour promptBg = darkTheme ? wxColour(30, 34, 42) : wxColour(255, 255, 255);
     const wxColour promptFg = darkTheme ? wxColour(255, 255, 255) : wxColour(15, 18, 24);
@@ -521,40 +647,53 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     wxFont hintFont = GetFont();
     hintFont.SetPointSize(std::max(5, hintFont.GetPointSize() - 7));
     hintFont.SetStyle(wxFONTSTYLE_ITALIC);
+    const wxColour footerColour = darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116);
+    const wxColour actionColour = darkTheme ? wxColour(175, 183, 194) : wxColour(72, 80, 92);
+    auto makeLabel = [this, &hintFont](const wxString& text, const wxColour& colour) {
+        auto* label = new wxStaticText(this, wxID_ANY, text);
+        label->SetFont(hintFont);
+        label->SetForegroundColour(colour);
+        label->SetCursor(wxCursor(wxCURSOR_HAND));
+        return label;
+    };
+    auto makeSeparator = [this, &hintFont, footerColour]() {
+        auto* label = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("·"));
+        label->SetFont(hintFont);
+        label->SetForegroundColour(footerColour);
+        return label;
+    };
 
-    hintText_ = new wxStaticText(this, wxID_ANY,
-        wxString::FromUTF8(_("Press <Enter> to submit, <Escape> cancel. Next prompt after")));
-    hintText_->SetFont(hintFont);
-    hintText_->SetForegroundColour(darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116));
-    intervalUnitLabel_ = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("minutes.")));
-    intervalUnitLabel_->SetFont(hintFont);
-    intervalUnitLabel_->SetForegroundColour(darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116));
-    intervalUnitLabel_->SetCursor(wxCursor(wxCURSOR_HAND));
+    submitLabel_ = makeLabel(wxString::FromUTF8(_("Enter submit")), actionColour);
+    submitLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { submit(); });
+    skipLabel_ = makeLabel(wxString::FromUTF8(_("Esc skip")), actionColour);
+    skipLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { skip(); });
+    auto* historyLabel = makeLabel(wxString::FromUTF8(_("^H History")), actionColour);
+    historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { showStatistics(); });
+    nextPromptLabel_ = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
+    nextPromptLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
+    intervalUnitLabel_ = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
     intervalUnitLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
     intervalCtrl_->SetFont(hintFont);
-    auto* quitPrefix = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_(", or")));
-    quitPrefix->SetFont(hintFont);
-    quitPrefix->SetForegroundColour(darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116));
-    quitLabel_ = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("Quit.")));
-    quitLabel_->SetFont(hintFont);
-    quitLabel_->SetForegroundColour(darkTheme ? wxColour(175, 183, 194) : wxColour(72, 80, 92));
-    quitLabel_->SetCursor(wxCursor(wxCURSOR_HAND));
+    quitLabel_ = makeLabel(wxString::FromUTF8(_("Ctrl+Q quit")), actionColour);
     quitLabel_->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { quit(); });
 
     bottomRow->AddStretchSpacer(1);
-    bottomRow->Add(hintText_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(submitLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(skipLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(historyLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(nextPromptLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     bottomRow->Add(intervalCtrl_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(intervalUnitLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
-    bottomRow->Add(quitPrefix, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 6);
+    bottomRow->Add(intervalUnitLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     bottomRow->Add(quitLabel_, 0, wxALIGN_CENTER_VERTICAL);
     root->Add(bottomRow, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
     Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
     Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent&) { skip(); });
-    Bind(wxEVT_SIZE, [this, outerMargin](wxSizeEvent& event) {
-        if (hintText_ != nullptr) {
-            hintText_->Wrap(std::max(120, GetClientSize().GetWidth() - outerMargin * 2 - 170));
-        }
+    Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
         Refresh();
         event.Skip();
     });
@@ -585,6 +724,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
 Observation ObservationDialog::observation() const
 {
     return Observation{
+        promptedAt_,
         currentTimestamp(),
         energyRating_->value(),
         moodRating_->value(),
@@ -648,6 +788,10 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         quit();
         return;
     }
+    if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'H' || keyCode == 'h')) {
+        showStatistics();
+        return;
+    }
     event.Skip();
 }
 
@@ -671,12 +815,24 @@ void ObservationDialog::quit()
     finishWithResult(ID_QUIT);
 }
 
-void ObservationDialog::showNextQuote()
+void ObservationDialog::showStatistics()
+{
+    StatisticsDialog dialog(this, history_, theme_, weekStartsMonday_);
+    dialog.ShowModal();
+    activityCtrl_->SetFocus();
+}
+
+void ObservationDialog::showRandomQuote()
 {
     if (quotes_.empty()) {
         return;
     }
-    quoteIndex_ = (quoteIndex_ + 1) % quotes_.size();
+    std::uniform_int_distribution<std::size_t> dist(0, quotes_.size() - 1);
+    std::size_t nextIndex = dist(quoteRng_);
+    if (quotes_.size() > 1 && nextIndex == quoteIndex_) {
+        nextIndex = (nextIndex + 1) % quotes_.size();
+    }
+    quoteIndex_ = nextIndex;
     quote_ = quotes_[quoteIndex_];
     if (quoteCanvas_ != nullptr) {
         quoteCanvas_->setQuote(quote_);
@@ -692,7 +848,7 @@ void ObservationDialog::toggleIntervalUnit()
     const double seconds = intervalSeconds();
     intervalInSeconds_ = !intervalInSeconds_;
     intervalCtrl_->ChangeValue(formatIntervalValue(intervalInSeconds_ ? seconds : seconds / 60.0));
-    intervalUnitLabel_->SetLabel(wxString::FromUTF8(intervalInSeconds_ ? _("seconds.") : _("minutes.")));
+    intervalUnitLabel_->SetLabel(wxString::FromUTF8(intervalInSeconds_ ? _("seconds later") : _("minutes later")));
     Layout();
 }
 

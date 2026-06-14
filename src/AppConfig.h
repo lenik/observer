@@ -9,6 +9,7 @@ struct AppConfig {
     int opacityPercent = 75;
     double intervalSeconds = 300.0;
     std::string storePath;
+    bool weekStartsMonday = true;
 };
 
 AppConfig& appConfig();

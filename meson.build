@@ -67,7 +67,7 @@ bas_cpp_dep = dependency('bas-cpp', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
 x11_dep = dependency('x11', required: true)
-wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc'], required: true)
+wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
 
 lib_objects = []
 
@@ -249,6 +249,7 @@ foreach source : app_sources
           'src/ObserverApp.cpp',
           'src/ObserverFrame.cpp',
           'src/ObservationDialog.cpp',
+          'src/StatisticsDialog.cpp',
           'src/WxDialogDriver.cpp',
         ]
     endif

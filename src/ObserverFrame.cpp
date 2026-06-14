@@ -165,10 +165,16 @@ void ObserverFrame::showPrompt()
     defaults.grounding = DefaultObservationScore;
     defaults.intervalSeconds = intervalSeconds_;
     defaults.opacityPercent = appConfig().opacityPercent;
+    defaults.weekStartsMonday = appConfig().weekStartsMonday;
     defaults.theme = appConfig().theme;
     defaults.quotes = quoteProvider_.quotes();
     defaults.quoteIndex = quoteProvider_.randomIndex();
     defaults.quote = defaults.quotes[defaults.quoteIndex];
+    try {
+        defaults.history = store_->loadAll();
+    } catch (const std::exception& ex) {
+        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
+    }
 
     ObserveResult result = renderDriver_->prompt(defaults);
     intervalSeconds_ = result.intervalSeconds;
