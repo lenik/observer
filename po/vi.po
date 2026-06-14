@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
-"Report-Msgid-Bugs-To: observer@bodz.net\n"
-"POT-Creation-Date: 2026-06-13 21:57+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-14 20:40+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:99
+#: src/oremind.cpp:108
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,88 +19,101 @@ msgstr ""
 "Cách sử dụng: oremind [TÙY CHỌN]...\n"
 "Chạy lời nhắc tự quan sát trên màn hình ở chế độ nền.\n"
 
-#: src/oremind.cpp:104
+#: src/oremind.cpp:113
 msgid "repeat for more verbose loggings\n"
 msgstr "lap lai de hien thi nhieu nhat ky chi tiet hon\n"
 
-#: src/oremind.cpp:106
+#: src/oremind.cpp:115
 msgid "show less logging messages\n"
 msgstr "hien thi it thong diep nhat ky hon\n"
 
-#: src/oremind.cpp:108
+#: src/oremind.cpp:117
 msgid "display this help and exit\n"
 msgstr "hiển thị trợ giúp này và thoát\n"
 
-#: src/oremind.cpp:110
+#: src/oremind.cpp:119
 msgid "set UI locale, for example zh_CN, ja, ko, en\n"
 msgstr "đặt giao diện người dùng cục bộ, ví dụ zh_CN, ja, ko, en\n"
 
-#: src/oremind.cpp:112
+#: src/oremind.cpp:121
 msgid "set theme: light or dark\n"
 msgstr "đặt chủ đề: sáng hoặc tối\n"
 
-#: src/oremind.cpp:114
+#: src/oremind.cpp:123
 msgid "set final dialog opacity percentage, 0 to 100\n"
-msgstr ""
-"đặt phần trăm độ mờ cuối cùng của hộp thoại, từ 0 đến 100\n"
+msgstr "đặt phần trăm độ mờ cuối cùng của hộp thoại, từ 0 đến 100\n"
 
-#: src/oremind.cpp:116
+#: src/oremind.cpp:125
 msgid "set prompt interval in minutes\n"
 msgstr "đặt khoảng thời gian nhắc nhở tính bằng phút\n"
 
-#: src/oremind.cpp:118
+#: src/oremind.cpp:127
+msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
+msgstr "đặt ngày bắt đầu tuần của lịch: M/m là thứ Hai, S/s là Chủ nhật\n"
+
+#: src/oremind.cpp:129
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "Đường dẫn tệp SQLite hoặc thư mục nhật ký khi PATH là một thư mục\n"
 
-#: src/oremind.cpp:120
+#: src/oremind.cpp:131
 msgid "output version information and exit\n"
 msgstr "in thông tin phiên bản và thoát\n"
 
-#: src/oremind.cpp:122
+#: src/oremind.cpp:133
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Báo lỗi tới: <%s>\n"
 
-#: src/oremind.cpp:167
+#: src/oremind.cpp:179
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "locale không hợp lệ: %s\n"
 
-#: src/oremind.cpp:174
+#: src/oremind.cpp:187
+#, c-format
+msgid "expect theme name.\n"
+msgstr "cần tên chủ đề.\n"
+
+#: src/oremind.cpp:193
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "chủ đề không hợp lệ: %s\n"
 
-#: src/oremind.cpp:184
+#: src/oremind.cpp:204
+#, c-format
 msgid "invalid opacity: %s\n"
-msgstr ""
-"độ mờ không hợp lệ: %s\n"
+msgstr "độ mờ không hợp lệ: %s\n"
 
-#: src/oremind.cpp:195
+#: src/oremind.cpp:215
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "khoảng thời gian không hợp lệ: %s\n"
 
-#: src/oremind.cpp:206
+#: src/oremind.cpp:227
+#, c-format
+msgid "invalid week start: %s\n"
+msgstr "ngày bắt đầu tuần không hợp lệ: %s\n"
+
+#: src/oremind.cpp:236
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Bản quyền (C) %d %s\n"
 
-#: src/oremind.cpp:207
+#: src/oremind.cpp:237
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "Giấy phép AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:209
+#: src/oremind.cpp:239
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Đây là phần mềm tự do: bạn có thể sửa đổi và phân phối lại.\n"
 
-#: src/oremind.cpp:211
+#: src/oremind.cpp:241
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "Dự án này phản đối bóc lột AI và bá quyền AI.\n"
 
-#: src/oremind.cpp:212
+#: src/oremind.cpp:242
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -108,41 +121,182 @@ msgstr ""
 "Dự án này bác bỏ kiểu cấp phép MIT máy móc và kiểu cấp phép BSD ngây ngô về "
 "chính trị.\n"
 
-#: src/oremind.cpp:215
+#: src/oremind.cpp:245
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "KHÔNG CÓ BẤT KỲ BẢO HÀNH nào trong phạm vi luật cho phép.\n"
 
-#: src/ObservationDialog.cpp:441
+#: src/ObservationDialog.cpp:566
 msgid "energy"
 msgstr "năng lượng"
 
-#: src/ObservationDialog.cpp:445
+#: src/ObservationDialog.cpp:570
 msgid "mood"
 msgstr "tâm trạng"
 
-#: src/ObservationDialog.cpp:449
+#: src/ObservationDialog.cpp:574
 msgid "grounding"
 msgstr "nối đất"
 
-#: src/ObservationDialog.cpp:526
-msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
-msgstr "Nhấn <Enter> để gửi, <Escape> hủy. Lời nhắc tiếp theo sau"
+#: src/ObservationDialog.cpp:586
+msgid "Win+Alt+G wake immediately"
+msgstr "Win+Alt+G gọi ngay"
 
-#: src/ObservationDialog.cpp:529 src/ObservationDialog.cpp:691
-msgid "minutes."
-msgstr "phút."
+#: src/ObservationDialog.cpp:666
+msgid "Enter submit"
+msgstr "Enter gửi"
 
-#: src/ObservationDialog.cpp:535
-msgid ", or"
-msgstr ", hoặc"
+#: src/ObservationDialog.cpp:668
+msgid "Esc skip"
+msgstr "Esc bỏ qua"
 
-#: src/ObservationDialog.cpp:538
-msgid "Quit."
-msgstr "Thoát."
+#: src/ObservationDialog.cpp:670
+msgid "^H History"
+msgstr "^H Lịch sử"
 
-#: src/ObservationDialog.cpp:691
-msgid "seconds."
-msgstr "giây."
+#: src/ObservationDialog.cpp:672
+msgid "Next prompt"
+msgstr "Nhắc tiếp theo"
+
+#: src/ObservationDialog.cpp:674 src/ObservationDialog.cpp:851
+msgid "minutes later"
+msgstr "phút sau"
+
+#: src/ObservationDialog.cpp:677
+msgid "Ctrl+Q quit"
+msgstr "Ctrl+Q thoát"
+
+#: src/ObservationDialog.cpp:851
+msgid "seconds later"
+msgstr "giây sau"
+
+#: src/StatisticsDialog.cpp:442
+msgid "Day statistics"
+msgstr "Thống kê ngày"
+
+#: src/StatisticsDialog.cpp:445
+msgid "Week statistics"
+msgstr "Thống kê tuần"
+
+#: src/StatisticsDialog.cpp:449
+msgid "Month statistics"
+msgstr "Thống kê tháng"
+
+#: src/StatisticsDialog.cpp:453
+msgid "Year statistics"
+msgstr "Thống kê năm"
+
+#: src/StatisticsDialog.cpp:455 src/StatisticsDialog.cpp:1186
+msgid "Calendar"
+msgstr "Lịch"
+
+#: src/StatisticsDialog.cpp:628 src/StatisticsDialog.cpp:1196
+msgid "Month"
+msgstr "Tháng"
+
+#: src/StatisticsDialog.cpp:697
+msgid "Prompted"
+msgstr "Đã nhắc lúc"
+
+#: src/StatisticsDialog.cpp:700
+msgid "Submitted"
+msgstr "Đã gửi lúc"
+
+#: src/StatisticsDialog.cpp:703 src/StatisticsDialog.cpp:1157
+msgid "Duration"
+msgstr "Thời lượng"
+
+#: src/StatisticsDialog.cpp:706
+msgid "Energy"
+msgstr "Năng lượng"
+
+#: src/StatisticsDialog.cpp:709
+msgid "Mood"
+msgstr "Tâm trạng"
+
+#: src/StatisticsDialog.cpp:712
+msgid "Grounding"
+msgstr "Tiếp đất"
+
+#: src/StatisticsDialog.cpp:715
+msgid "Avg"
+msgstr "TB"
+
+#: src/StatisticsDialog.cpp:718
+msgid "Activity"
+msgstr "Hoạt động"
+
+#: src/StatisticsDialog.cpp:721
+msgid "Quote"
+msgstr "Trích dẫn"
+
+#: src/StatisticsDialog.cpp:1090
+msgid "No records"
+msgstr "Không có bản ghi"
+
+#: src/StatisticsDialog.cpp:1156 src/StatisticsDialog.cpp:1477
+#: src/StatisticsDialog.cpp:1520
+msgid "Records"
+msgstr "Hồ sơ"
+
+#: src/StatisticsDialog.cpp:1168
+msgid "Statistics"
+msgstr "Thống kê"
+
+#: src/StatisticsDialog.cpp:1190
+msgid "Day"
+msgstr "Ngày"
+
+#: src/StatisticsDialog.cpp:1193
+msgid "Week"
+msgstr "Tuần"
+
+#: src/StatisticsDialog.cpp:1199
+msgid "Year"
+msgstr "Năm"
+
+#: src/StatisticsDialog.cpp:1203
+msgid "Today"
+msgstr "Hôm nay"
+
+#: src/StatisticsDialog.cpp:1206
+msgid "Previous"
+msgstr "Trước"
+
+#: src/StatisticsDialog.cpp:1209
+msgid "Next"
+msgstr "Sau"
+
+#: src/StatisticsDialog.cpp:1213
+msgid "Close"
+msgstr "Đóng"
+
+#: src/StatisticsDialog.cpp:1225
+msgid "Each Year"
+msgstr "Mỗi năm"
+
+#: src/StatisticsDialog.cpp:1274 src/StatisticsDialog.cpp:1541
+msgid "Top activities"
+msgstr "Hoạt động hàng đầu"
+
+#: src/StatisticsDialog.cpp:1478 src/StatisticsDialog.cpp:1521
+msgid "Empty notes"
+msgstr "ghi chú trống"
+
+#: src/StatisticsDialog.cpp:1479 src/StatisticsDialog.cpp:1522
+msgid "Total prompt duration"
+msgstr "Tổng thời lượng nhắc nhở"
+
+#: src/StatisticsDialog.cpp:1481 src/StatisticsDialog.cpp:1524
+msgid "Average energy"
+msgstr "Năng lượng trung bình"
+
+#: src/StatisticsDialog.cpp:1483 src/StatisticsDialog.cpp:1526
+msgid "Average mood"
+msgstr "Tâm trạng trung bình"
+
+#: src/StatisticsDialog.cpp:1485 src/StatisticsDialog.cpp:1528
+msgid "Average grounding"
+msgstr "Nối đất trung bình"
 
 #: src/QuoteProvider.cpp:9
 msgid "明天是今天的延续，今天是明天的提前。"
@@ -574,6 +728,140 @@ msgstr "Hôm nay tôi chỉ hỏi ba số và một câu thôi."
 msgid "你现在在哪里？你正在做什么？你还要不要回来？"
 msgstr ""
 "Bây giờ bạn đang ở đâu? Bạn đang làm gì thế? Bạn có muốn quay lại không?"
+
+#~ msgid "View"
+#~ msgstr "Xem"
+
+#~ msgid "Navigate"
+#~ msgstr "Điều hướng"
+
+#~ msgid "Window"
+#~ msgstr "Cửa sổ"
+
+#~ msgid "New Year"
+#~ msgstr "Năm mới"
+
+#~ msgid "Valentine's Day"
+#~ msgstr "Valentine's Day"
+
+#~ msgid "Women's Day"
+#~ msgstr "Women's Day"
+
+#~ msgid "Qingming"
+#~ msgstr "Qingming"
+
+#~ msgid "Labor Day"
+#~ msgstr "Labor Day"
+
+#~ msgid "Children's Day"
+#~ msgstr "Children's Day"
+
+#~ msgid "National Day"
+#~ msgstr "National Day"
+
+#~ msgid "Christmas"
+#~ msgstr "Christmas"
+
+#~ msgid "Spring Festival"
+#~ msgstr "Spring Festival"
+
+#~ msgid "Lantern Festival"
+#~ msgstr "Lantern Festival"
+
+#~ msgid "Dragon Boat Festival"
+#~ msgstr "Dragon Boat Festival"
+
+#~ msgid "Qixi"
+#~ msgstr "Qixi"
+
+#~ msgid "Mid-Autumn Festival"
+#~ msgstr "Mid-Autumn Festival"
+
+#~ msgid "Double Ninth Festival"
+#~ msgstr "Double Ninth Festival"
+
+#~ msgid "Laba Festival"
+#~ msgstr "Laba Festival"
+
+#, c-format
+#~ msgid "Lunar %d/%d"
+#~ msgstr "Âm lịch %d/%d"
+
+#~ msgid "First lunar month"
+#~ msgstr "First lunar month"
+
+#~ msgid "Second lunar month"
+#~ msgstr "Second lunar month"
+
+#~ msgid "Third lunar month"
+#~ msgstr "Third lunar month"
+
+#~ msgid "Fourth lunar month"
+#~ msgstr "Fourth lunar month"
+
+#~ msgid "Fifth lunar month"
+#~ msgstr "Fifth lunar month"
+
+#~ msgid "Sixth lunar month"
+#~ msgstr "Sixth lunar month"
+
+#~ msgid "Seventh lunar month"
+#~ msgstr "Seventh lunar month"
+
+#~ msgid "Eighth lunar month"
+#~ msgstr "Eighth lunar month"
+
+#~ msgid "Ninth lunar month"
+#~ msgstr "Ninth lunar month"
+
+#~ msgid "Tenth lunar month"
+#~ msgstr "Tenth lunar month"
+
+#~ msgid "Eleventh lunar month"
+#~ msgstr "Eleventh lunar month"
+
+#~ msgid "Twelfth lunar month"
+#~ msgstr "Twelfth lunar month"
+
+#~ msgid "Leap "
+#~ msgstr "Leap "
+
+#~ msgid ""
+#~ "F1 calendar, F5/F6/F7/F8 day/week/month/year, PageUp/PageDown navigate, "
+#~ "Esc close"
+#~ msgstr ""
+#~ "Lịch F1, F5/F6/F7/F8 ngày/tuần/tháng/năm, điều hướng PageUp/PageDown, "
+#~ "đóng Esc"
+
+#~ msgid "Selected date"
+#~ msgstr "Ngày đã chọn"
+
+#~ msgid "Records on selected date"
+#~ msgstr "Ghi vào ngày đã chọn"
+
+#~ msgid "Click a date, then choose Day, Week, or Month."
+#~ msgstr "Bấm vào một ngày, sau đó chọn Ngày, Tuần hoặc Tháng."
+
+#~ msgid "(empty)"
+#~ msgstr "(trống)"
+
+#~ msgid "Period"
+#~ msgstr "Giai đoạn"
+
+#~ msgid "Hourly distribution"
+#~ msgstr "Phân phối hàng giờ"
+
+#~ msgid "PageUp/PageDown navigate, F1 calendar, Esc close"
+#~ msgstr "Điều hướng PageUp/PageDown, lịch F1, đóng Esc"
+
+#~ msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+#~ msgstr "Nhấn <Enter> để gửi, <Escape> hủy. Lời nhắc tiếp theo sau"
+
+#~ msgid ", or"
+#~ msgstr ", hoặc"
+
+#~ msgid "Quit."
+#~ msgstr "Thoát."
 
 #~ msgid ""
 #~ "Usage: oremind [OPTION]... [FILE]...\n"

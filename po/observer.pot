@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: observer 1.0.0\n"
-"Report-Msgid-Bugs-To: observer@bodz.net\n"
-"POT-Creation-Date: 2026-06-13 21:57+0800\n"
+"Project-Id-Version: observer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-14 20:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,131 +17,286 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:99
+#: src/oremind.cpp:108
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
 msgstr ""
 
-#: src/oremind.cpp:104
+#: src/oremind.cpp:113
 msgid "repeat for more verbose loggings\n"
 msgstr ""
 
-#: src/oremind.cpp:106
+#: src/oremind.cpp:115
 msgid "show less logging messages\n"
 msgstr ""
 
-#: src/oremind.cpp:108
+#: src/oremind.cpp:117
 msgid "display this help and exit\n"
 msgstr ""
 
-#: src/oremind.cpp:110
+#: src/oremind.cpp:119
 msgid "set UI locale, for example zh_CN, ja, ko, en\n"
 msgstr ""
 
-#: src/oremind.cpp:112
+#: src/oremind.cpp:121
 msgid "set theme: light or dark\n"
 msgstr ""
 
-#: src/oremind.cpp:114
+#: src/oremind.cpp:123
 msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr ""
 
-#: src/oremind.cpp:116
+#: src/oremind.cpp:125
 msgid "set prompt interval in minutes\n"
 msgstr ""
 
-#: src/oremind.cpp:118
+#: src/oremind.cpp:127
+msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
+msgstr ""
+
+#: src/oremind.cpp:129
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr ""
 
-#: src/oremind.cpp:120
+#: src/oremind.cpp:131
 msgid "output version information and exit\n"
 msgstr ""
 
-#: src/oremind.cpp:122
+#: src/oremind.cpp:133
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr ""
 
-#: src/oremind.cpp:167
+#: src/oremind.cpp:179
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr ""
 
-#: src/oremind.cpp:174
+#: src/oremind.cpp:187
+#, c-format
+msgid "expect theme name.\n"
+msgstr ""
+
+#: src/oremind.cpp:193
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr ""
 
-#: src/oremind.cpp:184
+#: src/oremind.cpp:204
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr ""
 
-#: src/oremind.cpp:195
+#: src/oremind.cpp:215
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr ""
 
-#: src/oremind.cpp:206
+#: src/oremind.cpp:227
+#, c-format
+msgid "invalid week start: %s\n"
+msgstr ""
+
+#: src/oremind.cpp:236
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr ""
 
-#: src/oremind.cpp:207
+#: src/oremind.cpp:237
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 
-#: src/oremind.cpp:209
+#: src/oremind.cpp:239
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr ""
 
-#: src/oremind.cpp:211
+#: src/oremind.cpp:241
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr ""
 
-#: src/oremind.cpp:212
+#: src/oremind.cpp:242
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
 msgstr ""
 
-#: src/oremind.cpp:215
+#: src/oremind.cpp:245
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 
-#: src/ObservationDialog.cpp:441
+#: src/ObservationDialog.cpp:566
 msgid "energy"
 msgstr ""
 
-#: src/ObservationDialog.cpp:445
+#: src/ObservationDialog.cpp:570
 msgid "mood"
 msgstr ""
 
-#: src/ObservationDialog.cpp:449
+#: src/ObservationDialog.cpp:574
 msgid "grounding"
 msgstr ""
 
-#: src/ObservationDialog.cpp:526
-msgid "Press <Enter> to submit, <Escape> cancel. Next prompt after"
+#: src/ObservationDialog.cpp:586
+msgid "Win+Alt+G wake immediately"
 msgstr ""
 
-#: src/ObservationDialog.cpp:529 src/ObservationDialog.cpp:691
-msgid "minutes."
+#: src/ObservationDialog.cpp:666
+msgid "Enter submit"
 msgstr ""
 
-#: src/ObservationDialog.cpp:535
-msgid ", or"
+#: src/ObservationDialog.cpp:668
+msgid "Esc skip"
 msgstr ""
 
-#: src/ObservationDialog.cpp:538
-msgid "Quit."
+#: src/ObservationDialog.cpp:670
+msgid "^H History"
 msgstr ""
 
-#: src/ObservationDialog.cpp:691
-msgid "seconds."
+#: src/ObservationDialog.cpp:672
+msgid "Next prompt"
+msgstr ""
+
+#: src/ObservationDialog.cpp:674 src/ObservationDialog.cpp:851
+msgid "minutes later"
+msgstr ""
+
+#: src/ObservationDialog.cpp:677
+msgid "Ctrl+Q quit"
+msgstr ""
+
+#: src/ObservationDialog.cpp:851
+msgid "seconds later"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:442
+msgid "Day statistics"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:445
+msgid "Week statistics"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:449
+msgid "Month statistics"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:453
+msgid "Year statistics"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:455 src/StatisticsDialog.cpp:1186
+msgid "Calendar"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:628 src/StatisticsDialog.cpp:1196
+msgid "Month"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:697
+msgid "Prompted"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:700
+msgid "Submitted"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:703 src/StatisticsDialog.cpp:1157
+msgid "Duration"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:706
+msgid "Energy"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:709
+msgid "Mood"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:712
+msgid "Grounding"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:715
+msgid "Avg"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:718
+msgid "Activity"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:721
+msgid "Quote"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1090
+msgid "No records"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1156 src/StatisticsDialog.cpp:1477
+#: src/StatisticsDialog.cpp:1520
+msgid "Records"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1168
+msgid "Statistics"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1190
+msgid "Day"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1193
+msgid "Week"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1199
+msgid "Year"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1203
+msgid "Today"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1206
+msgid "Previous"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1209
+msgid "Next"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1213
+msgid "Close"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1225
+msgid "Each Year"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1274 src/StatisticsDialog.cpp:1541
+msgid "Top activities"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1478 src/StatisticsDialog.cpp:1521
+msgid "Empty notes"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1479 src/StatisticsDialog.cpp:1522
+msgid "Total prompt duration"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1481 src/StatisticsDialog.cpp:1524
+msgid "Average energy"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1483 src/StatisticsDialog.cpp:1526
+msgid "Average mood"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1485 src/StatisticsDialog.cpp:1528
+msgid "Average grounding"
 msgstr ""
 
 #: src/QuoteProvider.cpp:9
