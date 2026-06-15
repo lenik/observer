@@ -4,6 +4,8 @@ observer (1.0.3) testing; urgency=medium
   * Wake the prompt from a tray left-click in addition to Win+Alt+G.
   * Add per-user single-instance detection; a second launch wakes the running
     instance, prints a warning, and exits.
+  * Add Win+Alt+H as an X11 global shortcut for opening statistics/history
+    while waiting.
   * Add -c/--cancel to configure how many consecutive prompt cancels exit the
     app.
   * Expand README statistics/history documentation to cover calendar summaries,

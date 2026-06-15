@@ -21,7 +21,8 @@ energy, mood, and grounding scores.
 - Lets the interval be edited from the prompt; the interval unit label toggles
   between minutes and seconds.
 - Provides a clickable `Quit` label in the prompt footer.
-- Registers `Win+Alt+G` on X11 to show the prompt immediately while waiting.
+- Registers `Win+Alt+G` on X11 to show the prompt immediately while waiting,
+  and `Win+Alt+H` to open statistics/history.
 - Saves every submitted prompt, including empty activity notes after trimming.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
@@ -78,6 +79,7 @@ Options:
 - `Ctrl+H`: open the statistics window.
 - `Win+Alt+G`: show the prompt immediately while the app is waiting. This uses
   an X11 global hotkey on Linux.
+- `Win+Alt+H`: open statistics/history immediately while the app is waiting.
 - `F1` / `F2`: decrease / increase energy by half a step.
 - `F3` / `F4`: decrease / increase mood by half a step.
 - `F5` / `F6`: decrease / increase grounding by half a step.
@@ -89,6 +91,7 @@ While `oremind` is running, it keeps a tray icon available:
 - Left-click the tray icon to show the prompt immediately.
 - Right-click the tray icon for `Wake`, `Statistics / History`, and `Quit`.
 - `Wake` is equivalent to `Win+Alt+G`.
+- `Statistics / History` is equivalent to `Win+Alt+H`.
 
 Starting `oremind` again does not create another background process.  The new
 process contacts the running instance, asks it to wake the prompt, prints this

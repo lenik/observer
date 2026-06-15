@@ -52,7 +52,8 @@ private:
     Display* m_hotKeyDisplay = nullptr;
     Window m_hotKeyRoot = 0;
     unsigned int m_hotKeyModifiers = 0;
-    int m_hotKeyCode = 0;
+    int m_promptHotKeyCode = 0;
+    int m_statsHotKeyCode = 0;
 #endif
     std::unique_ptr<ObservationStore> m_store;
     QuoteProvider m_quoteProvider;

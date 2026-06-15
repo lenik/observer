@@ -82,7 +82,7 @@ public:
     {
         auto* menu = new wxMenu();
         menu->Append(ID_TRAY_WAKE, wxString::FromUTF8(_("Wake")) + "\tWin+Alt+G");
-        menu->Append(ID_TRAY_STATS, wxString::FromUTF8(_("Statistics / History")));
+        menu->Append(ID_TRAY_STATS, wxString::FromUTF8(_("Statistics / History")) + "\tWin+Alt+H");
         menu->AppendSeparator();
         menu->Append(ID_TRAY_QUIT, wxString::FromUTF8(_("Quit")));
         return menu;
@@ -252,8 +252,9 @@ void ObserverFrame::setupGlobalHotKey()
 
     m_hotKeyRoot = DefaultRootWindow(m_hotKeyDisplay);
     m_hotKeyModifiers = Mod4Mask | Mod1Mask;
-    m_hotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_G);
-    if (m_hotKeyCode == 0) {
+    m_promptHotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_G);
+    m_statsHotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_H);
+    if (m_promptHotKeyCode == 0 || m_statsHotKeyCode == 0) {
         cleanupGlobalHotKey();
         return;
     }
@@ -261,7 +262,9 @@ void ObserverFrame::setupGlobalHotKey()
     const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
     XErrorHandler previousHandler = XSetErrorHandler(ignoreXError);
     for (unsigned int mask : masks) {
-        XGrabKey(m_hotKeyDisplay, m_hotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
+        XGrabKey(m_hotKeyDisplay, m_promptHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
+            True, GrabModeAsync, GrabModeAsync);
+        XGrabKey(m_hotKeyDisplay, m_statsHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
             True, GrabModeAsync, GrabModeAsync);
     }
     XSync(m_hotKeyDisplay, False);
@@ -281,7 +284,8 @@ void ObserverFrame::cleanupGlobalHotKey()
     if (m_hotKeyRegistered) {
         const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
         for (unsigned int mask : masks) {
-            XUngrabKey(m_hotKeyDisplay, m_hotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
+            XUngrabKey(m_hotKeyDisplay, m_promptHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
+            XUngrabKey(m_hotKeyDisplay, m_statsHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
         }
         m_hotKeyTimer.Stop();
         m_hotKeyRegistered = false;
@@ -289,7 +293,8 @@ void ObserverFrame::cleanupGlobalHotKey()
     XCloseDisplay(m_hotKeyDisplay);
     m_hotKeyDisplay = nullptr;
     m_hotKeyRoot = 0;
-    m_hotKeyCode = 0;
+    m_promptHotKeyCode = 0;
+    m_statsHotKeyCode = 0;
     m_hotKeyModifiers = 0;
 #endif
 }
@@ -306,9 +311,12 @@ void ObserverFrame::onHotKeyPoll(wxTimerEvent& event)
         XEvent xEvent;
         XNextEvent(m_hotKeyDisplay, &xEvent);
         if (xEvent.type == KeyPress
-            && xEvent.xkey.keycode == m_hotKeyCode
             && (xEvent.xkey.state & m_hotKeyModifiers) == m_hotKeyModifiers) {
-            triggerPromptFromHotKey();
+            if (xEvent.xkey.keycode == m_promptHotKeyCode) {
+                triggerPromptFromHotKey();
+            } else if (xEvent.xkey.keycode == m_statsHotKeyCode) {
+                showStatisticsDialog();
+            }
         }
     }
 #endif

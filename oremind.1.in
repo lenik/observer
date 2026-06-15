@@ -119,6 +119,9 @@ Open the statistics window from the prompt.
 Show the prompt immediately while the application is waiting.  Mod4 is usually
 the Windows or Super key.  This shortcut is registered through X11 on Linux.
 .TP
+.B Mod4-Alt-H
+Open statistics/history immediately while the application is waiting.
+.TP
 .B Quit
 Click the small Quit label in the prompt footer to exit the application.
 .TP
@@ -140,6 +143,11 @@ menu with
 .BR "Statistics / History" ,
 and
 .BR Quit .
+The
+.B Wake
+action is equivalent to Mod4-Alt-G, and
+.B Statistics / History
+is equivalent to Mod4-Alt-H.
 .SH STATISTICS
 .TP
 .B F1
