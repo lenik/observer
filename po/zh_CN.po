@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 13:18+0800\n"
+"POT-Creation-Date: 2026-06-15 13:41+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -204,35 +204,35 @@ msgstr "月统计"
 msgid "Year statistics"
 msgstr "年统计"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1273
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1403
 msgid "Calendar"
 msgstr "日历"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1283
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1413
 msgid "Month"
 msgstr "月"
 
 #: src/StatisticsDialog.cpp:699
 msgid "Prompted"
-msgstr "弹窗时间"
+msgstr "弹出"
 
 #: src/StatisticsDialog.cpp:702
 msgid "Submitted"
-msgstr "提交时间"
+msgstr "提交"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1244
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1372
 msgid "Duration"
 msgstr "时长"
 
-#: src/StatisticsDialog.cpp:708
+#: src/StatisticsDialog.cpp:708 src/StatisticsDialog.cpp:1373
 msgid "Energy"
 msgstr "能量"
 
-#: src/StatisticsDialog.cpp:711
+#: src/StatisticsDialog.cpp:711 src/StatisticsDialog.cpp:1374
 msgid "Mood"
 msgstr "心情"
 
-#: src/StatisticsDialog.cpp:714
+#: src/StatisticsDialog.cpp:714 src/StatisticsDialog.cpp:1375
 msgid "Grounding"
 msgstr "接地"
 
@@ -252,68 +252,76 @@ msgstr "格言"
 msgid "No records"
 msgstr "无记录"
 
-#: src/StatisticsDialog.cpp:1243 src/StatisticsDialog.cpp:1641
-#: src/StatisticsDialog.cpp:1684
+#: src/StatisticsDialog.cpp:1371 src/StatisticsDialog.cpp:1771
+#: src/StatisticsDialog.cpp:1814
 msgid "Records"
 msgstr "记录数"
 
-#: src/StatisticsDialog.cpp:1255
+#: src/StatisticsDialog.cpp:1376
+msgid "EMG avg"
+msgstr "EMG 平均"
+
+#: src/StatisticsDialog.cpp:1377
+msgid "Fit"
+msgstr "拟合"
+
+#: src/StatisticsDialog.cpp:1385
 msgid "Statistics"
 msgstr "统计"
 
-#: src/StatisticsDialog.cpp:1277
+#: src/StatisticsDialog.cpp:1407
 msgid "Day"
 msgstr "日"
 
-#: src/StatisticsDialog.cpp:1280
+#: src/StatisticsDialog.cpp:1410
 msgid "Week"
 msgstr "周"
 
-#: src/StatisticsDialog.cpp:1286
+#: src/StatisticsDialog.cpp:1416
 msgid "Year"
 msgstr "年"
 
-#: src/StatisticsDialog.cpp:1290
+#: src/StatisticsDialog.cpp:1420
 msgid "Today"
 msgstr "今天"
 
-#: src/StatisticsDialog.cpp:1293
+#: src/StatisticsDialog.cpp:1423
 msgid "Previous"
 msgstr "上一页"
 
-#: src/StatisticsDialog.cpp:1296
+#: src/StatisticsDialog.cpp:1426
 msgid "Next"
 msgstr "下一页"
 
-#: src/StatisticsDialog.cpp:1300
+#: src/StatisticsDialog.cpp:1430
 msgid "Close"
 msgstr "关闭"
 
-#: src/StatisticsDialog.cpp:1312
+#: src/StatisticsDialog.cpp:1442
 msgid "Each Year"
 msgstr "每年"
 
-#: src/StatisticsDialog.cpp:1361 src/StatisticsDialog.cpp:1705
+#: src/StatisticsDialog.cpp:1491 src/StatisticsDialog.cpp:1835
 msgid "Top activities"
 msgstr "高频活动"
 
-#: src/StatisticsDialog.cpp:1642 src/StatisticsDialog.cpp:1685
+#: src/StatisticsDialog.cpp:1772 src/StatisticsDialog.cpp:1815
 msgid "Empty notes"
 msgstr "空记录"
 
-#: src/StatisticsDialog.cpp:1643 src/StatisticsDialog.cpp:1686
+#: src/StatisticsDialog.cpp:1773 src/StatisticsDialog.cpp:1816
 msgid "Total prompt duration"
 msgstr "总弹窗时长"
 
-#: src/StatisticsDialog.cpp:1645 src/StatisticsDialog.cpp:1688
+#: src/StatisticsDialog.cpp:1775 src/StatisticsDialog.cpp:1818
 msgid "Average energy"
 msgstr "平均能量"
 
-#: src/StatisticsDialog.cpp:1647 src/StatisticsDialog.cpp:1690
+#: src/StatisticsDialog.cpp:1777 src/StatisticsDialog.cpp:1820
 msgid "Average mood"
 msgstr "平均心情"
 
-#: src/StatisticsDialog.cpp:1649 src/StatisticsDialog.cpp:1692
+#: src/StatisticsDialog.cpp:1779 src/StatisticsDialog.cpp:1822
 msgid "Average grounding"
 msgstr "平均接地"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 13:18+0800\n"
+"POT-Creation-Date: 2026-06-15 13:41+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -206,35 +206,35 @@ msgstr "Monataj statistikoj"
 msgid "Year statistics"
 msgstr "Jaraj statistikoj"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1273
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1403
 msgid "Calendar"
 msgstr "Kalendaro"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1283
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1413
 msgid "Month"
 msgstr "Monato"
 
 #: src/StatisticsDialog.cpp:699
 msgid "Prompted"
-msgstr "Montrita"
+msgstr "Montrado"
 
 #: src/StatisticsDialog.cpp:702
 msgid "Submitted"
-msgstr "Sendita"
+msgstr "Sendado"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1244
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1372
 msgid "Duration"
 msgstr "Daŭro"
 
-#: src/StatisticsDialog.cpp:708
+#: src/StatisticsDialog.cpp:708 src/StatisticsDialog.cpp:1373
 msgid "Energy"
 msgstr "Energio"
 
-#: src/StatisticsDialog.cpp:711
+#: src/StatisticsDialog.cpp:711 src/StatisticsDialog.cpp:1374
 msgid "Mood"
 msgstr "Humoro"
 
-#: src/StatisticsDialog.cpp:714
+#: src/StatisticsDialog.cpp:714 src/StatisticsDialog.cpp:1375
 msgid "Grounding"
 msgstr "Surteriĝo"
 
@@ -254,68 +254,76 @@ msgstr "Citaĵo"
 msgid "No records"
 msgstr "Neniu registro"
 
-#: src/StatisticsDialog.cpp:1243 src/StatisticsDialog.cpp:1641
-#: src/StatisticsDialog.cpp:1684
+#: src/StatisticsDialog.cpp:1371 src/StatisticsDialog.cpp:1771
+#: src/StatisticsDialog.cpp:1814
 msgid "Records"
 msgstr "Registroj"
 
-#: src/StatisticsDialog.cpp:1255
+#: src/StatisticsDialog.cpp:1376
+msgid "EMG avg"
+msgstr "EMG mez."
+
+#: src/StatisticsDialog.cpp:1377
+msgid "Fit"
+msgstr "Adapto"
+
+#: src/StatisticsDialog.cpp:1385
 msgid "Statistics"
 msgstr "Statistikoj"
 
-#: src/StatisticsDialog.cpp:1277
+#: src/StatisticsDialog.cpp:1407
 msgid "Day"
 msgstr "Tago"
 
-#: src/StatisticsDialog.cpp:1280
+#: src/StatisticsDialog.cpp:1410
 msgid "Week"
 msgstr "Semajno"
 
-#: src/StatisticsDialog.cpp:1286
+#: src/StatisticsDialog.cpp:1416
 msgid "Year"
 msgstr "Jaro"
 
-#: src/StatisticsDialog.cpp:1290
+#: src/StatisticsDialog.cpp:1420
 msgid "Today"
 msgstr "Hodiaŭ"
 
-#: src/StatisticsDialog.cpp:1293
+#: src/StatisticsDialog.cpp:1423
 msgid "Previous"
 msgstr "Antaŭa"
 
-#: src/StatisticsDialog.cpp:1296
+#: src/StatisticsDialog.cpp:1426
 msgid "Next"
 msgstr "Sekva"
 
-#: src/StatisticsDialog.cpp:1300
+#: src/StatisticsDialog.cpp:1430
 msgid "Close"
 msgstr "Fermi"
 
-#: src/StatisticsDialog.cpp:1312
+#: src/StatisticsDialog.cpp:1442
 msgid "Each Year"
 msgstr "Ĉiu jaro"
 
-#: src/StatisticsDialog.cpp:1361 src/StatisticsDialog.cpp:1705
+#: src/StatisticsDialog.cpp:1491 src/StatisticsDialog.cpp:1835
 msgid "Top activities"
 msgstr "Ĉefaj agadoj"
 
-#: src/StatisticsDialog.cpp:1642 src/StatisticsDialog.cpp:1685
+#: src/StatisticsDialog.cpp:1772 src/StatisticsDialog.cpp:1815
 msgid "Empty notes"
 msgstr "Malplenaj notoj"
 
-#: src/StatisticsDialog.cpp:1643 src/StatisticsDialog.cpp:1686
+#: src/StatisticsDialog.cpp:1773 src/StatisticsDialog.cpp:1816
 msgid "Total prompt duration"
 msgstr "Tuta prompta daŭro"
 
-#: src/StatisticsDialog.cpp:1645 src/StatisticsDialog.cpp:1688
+#: src/StatisticsDialog.cpp:1775 src/StatisticsDialog.cpp:1818
 msgid "Average energy"
 msgstr "Meza energio"
 
-#: src/StatisticsDialog.cpp:1647 src/StatisticsDialog.cpp:1690
+#: src/StatisticsDialog.cpp:1777 src/StatisticsDialog.cpp:1820
 msgid "Average mood"
 msgstr "Meza humoro"
 
-#: src/StatisticsDialog.cpp:1649 src/StatisticsDialog.cpp:1692
+#: src/StatisticsDialog.cpp:1779 src/StatisticsDialog.cpp:1822
 msgid "Average grounding"
 msgstr "Meza surteriĝo"
 
