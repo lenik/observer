@@ -9,6 +9,7 @@
 
 #include <wx/artprov.h>
 #include <wx/dcbuffer.h>
+#include <wx/graphics.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/toolbar.h>
@@ -20,6 +21,8 @@
 #include <ctime>
 #include <functional>
 #include <map>
+#include <memory>
+#include <type_traits>
 
 namespace {
 
@@ -41,6 +44,14 @@ struct ChartBucket {
     double energySum = 0.0;
     double moodSum = 0.0;
     double groundingSum = 0.0;
+};
+
+struct ChartSample {
+    double x = 0.0;
+    double energy = 0.0;
+    double mood = 0.0;
+    double grounding = 0.0;
+    std::string key;
 };
 
 struct DaySummary {
@@ -185,6 +196,28 @@ int bucketIndex(const Observation &observation, StatisticsDialog::ViewMode mode,
     return 0;
 }
 
+double sampleAxisX(const Observation &observation, StatisticsDialog::ViewMode mode,
+                   bool weekStartsMonday) {
+    const std::tm local = parseLocalTime(observation.promptedAt);
+    const double dayFraction =
+        (local.tm_hour * 3600.0 + local.tm_min * 60.0 + local.tm_sec) / 86400.0;
+    switch (mode) {
+    case StatisticsDialog::ViewMode::Day:
+        return dayFraction * 24.0;
+    case StatisticsDialog::ViewMode::Week:
+        return weekdayIndex(toDateTime(observation.promptedAt), weekStartsMonday) + dayFraction;
+    case StatisticsDialog::ViewMode::Month:
+    case StatisticsDialog::ViewMode::Year:
+    case StatisticsDialog::ViewMode::Calendar:
+        return bucketIndex(observation, mode, weekStartsMonday) + 0.5;
+    }
+    return 0.0;
+}
+
+std::string observationKey(const Observation &observation) {
+    return observation.promptedAt + "\n" + observation.submittedAt + "\n" + observation.activity;
+}
+
 wxString periodTitle(StatisticsDialog::ViewMode mode, wxDateTime anchor, bool eachYear) {
     switch (mode) {
     case StatisticsDialog::ViewMode::Day:
@@ -224,35 +257,212 @@ std::map<std::string, DaySummary> summarizeDays(const std::vector<Observation> &
     return summaries;
 }
 
+class WheelPickerPanel : public wxPanel {
+  public:
+    WheelPickerPanel(wxWindow *parent, std::vector<wxString> labels, int selected, bool darkTheme)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(170, 260)),
+          m_labels(std::move(labels)), m_selected(selected), m_darkTheme(darkTheme) {
+        SetMinSize(wxSize(150, 240));
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
+        Bind(wxEVT_PAINT, &WheelPickerPanel::onPaint, this);
+        Bind(wxEVT_MOUSEWHEEL, &WheelPickerPanel::onMouseWheel, this);
+        Bind(wxEVT_LEFT_DOWN, &WheelPickerPanel::onLeftDown, this);
+        Bind(wxEVT_LEFT_UP, &WheelPickerPanel::onLeftUp, this);
+        Bind(wxEVT_MOTION, &WheelPickerPanel::onMouseMove, this);
+        Bind(wxEVT_MOUSE_CAPTURE_LOST, &WheelPickerPanel::onMouseCaptureLost, this);
+        Bind(wxEVT_CHAR_HOOK, &WheelPickerPanel::onCharHook, this);
+    }
+
+    int selected() const { return m_selected; }
+
+    void setSelected(int selected) {
+        if (m_labels.empty()) {
+            m_selected = 0;
+            return;
+        }
+        m_selected = std::clamp(selected, 0, static_cast<int>(m_labels.size()) - 1);
+        Refresh();
+    }
+
+  private:
+    static constexpr int RowHeight = 40;
+
+    void move(int delta) { setSelected(m_selected + delta); }
+
+    void onPaint(wxPaintEvent &) {
+        wxAutoBufferedPaintDC dc(this);
+        const wxSize size = GetClientSize();
+        const wxColour bg = m_darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248);
+        const wxColour fg = m_darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38);
+        const wxColour muted = m_darkTheme ? wxColour(132, 142, 158) : wxColour(112, 118, 128);
+        const wxColour selectedBg = m_darkTheme ? wxColour(42, 49, 62) : wxColour(231, 237, 246);
+        const wxColour border = m_darkTheme ? wxColour(72, 82, 98) : wxColour(190, 198, 210);
+
+        dc.SetBackground(wxBrush(bg));
+        dc.Clear();
+
+        const int centerY = size.GetHeight() / 2;
+        wxRect selectedRect(8, centerY - RowHeight / 2, size.GetWidth() - 16, RowHeight);
+        dc.SetPen(wxPen(border));
+        dc.SetBrush(wxBrush(selectedBg));
+        dc.DrawRoundedRectangle(selectedRect, 10);
+
+        wxFont font = GetFont();
+        font.SetPointSize(font.GetPointSize() + 3);
+        wxFont selectedFont = font;
+        selectedFont.SetWeight(wxFONTWEIGHT_BOLD);
+
+        for (int offset = -4; offset <= 4; ++offset) {
+            const int index = m_selected + offset;
+            if (index < 0 || index >= static_cast<int>(m_labels.size())) {
+                continue;
+            }
+            const int y = centerY + offset * RowHeight - RowHeight / 2;
+            if (y > size.GetHeight() || y + RowHeight < 0) {
+                continue;
+            }
+
+            dc.SetFont(offset == 0 ? selectedFont : font);
+            dc.SetTextForeground(offset == 0 ? fg : muted);
+            const wxString &label = m_labels[index];
+            const wxSize extent = dc.GetTextExtent(label);
+            dc.DrawText(label, (size.GetWidth() - extent.GetWidth()) / 2,
+                        y + (RowHeight - extent.GetHeight()) / 2);
+        }
+    }
+
+    void onMouseWheel(wxMouseEvent &event) {
+        move(event.GetWheelRotation() > 0 ? -1 : 1);
+        SetFocus();
+    }
+
+    void onLeftDown(wxMouseEvent &event) {
+        SetFocus();
+        m_dragging = true;
+        m_dragMoved = false;
+        m_lastY = event.GetY();
+        m_dragRemainder = 0;
+        if (!HasCapture()) {
+            CaptureMouse();
+        }
+    }
+
+    void onLeftUp(wxMouseEvent &event) {
+        if (!m_dragMoved) {
+            const int centerY = GetClientSize().GetHeight() / 2;
+            const int offset =
+                static_cast<int>(std::round((event.GetY() - centerY) / static_cast<double>(RowHeight)));
+            move(offset);
+        }
+        m_dragging = false;
+        if (HasCapture()) {
+            ReleaseMouse();
+        }
+    }
+
+    void onMouseMove(wxMouseEvent &event) {
+        if (!m_dragging || !event.Dragging() || !event.LeftIsDown()) {
+            event.Skip();
+            return;
+        }
+        const int dy = event.GetY() - m_lastY;
+        m_lastY = event.GetY();
+        m_dragRemainder += dy;
+        if (std::abs(m_dragRemainder) >= RowHeight) {
+            const int steps = m_dragRemainder / RowHeight;
+            move(-steps);
+            m_dragRemainder -= steps * RowHeight;
+            m_dragMoved = true;
+        } else if (std::abs(m_dragRemainder) > 4) {
+            m_dragMoved = true;
+        }
+    }
+
+    void onMouseCaptureLost(wxMouseCaptureLostEvent &) { m_dragging = false; }
+
+    void onCharHook(wxKeyEvent &event) {
+        const int keyCode = event.GetKeyCode();
+        if (keyCode == WXK_UP) {
+            move(-1);
+            return;
+        }
+        if (keyCode == WXK_DOWN) {
+            move(1);
+            return;
+        }
+        event.Skip();
+    }
+
+    std::vector<wxString> m_labels;
+    int m_selected = 0;
+    bool m_darkTheme = false;
+    bool m_dragging = false;
+    bool m_dragMoved = false;
+    int m_lastY = 0;
+    int m_dragRemainder = 0;
+};
+
 wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, bool darkTheme) {
     wxDialog dialog(parent, wxID_ANY, wxString::FromUTF8(_("Month")), wxDefaultPosition,
-                    wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                    wxSize(420, 360), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
     dialog.SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
     dialog.SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
 
-    int selectedMonth = static_cast<int>(current.GetMonth());
-    auto *root = new wxBoxSizer(wxVERTICAL);
-    auto *year = new wxSpinCtrl(&dialog, wxID_ANY);
-    year->SetRange(1900, 2100);
-    year->SetValue(current.GetYear());
-    root->Add(year, 0, wxALL | wxEXPAND, 12);
-
-    auto *grid = new wxGridSizer(3, 4, 8, 8);
+    std::vector<wxString> years;
+    for (int year = 1900; year <= 2100; ++year) {
+        years.push_back(wxString::Format("%d", year));
+    }
+    std::vector<wxString> months;
     for (int month = 0; month < 12; ++month) {
         wxDateTime labelDate(1, static_cast<wxDateTime::Month>(month), current.GetYear());
-        auto *button = new wxButton(&dialog, wxID_ANY, labelDate.Format("%b"));
-        button->Bind(wxEVT_BUTTON, [&dialog, &selectedMonth, month](wxCommandEvent &) {
-            selectedMonth = month;
-            dialog.EndModal(wxID_OK);
-        });
-        grid->Add(button, 1, wxEXPAND);
+        months.push_back(labelDate.Format("%b"));
     }
-    root->Add(grid, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 12);
+
+    auto *root = new wxBoxSizer(wxVERTICAL);
+    auto *pickerRow = new wxBoxSizer(wxHORIZONTAL);
+    auto *yearPicker = new WheelPickerPanel(&dialog, years, current.GetYear() - 1900, darkTheme);
+    auto *monthPicker =
+        new WheelPickerPanel(&dialog, months, static_cast<int>(current.GetMonth()), darkTheme);
+    pickerRow->Add(yearPicker, 1, wxEXPAND | wxRIGHT, 10);
+    pickerRow->Add(monthPicker, 1, wxEXPAND | wxLEFT, 10);
+    root->Add(pickerRow, 1, wxALL | wxEXPAND, 16);
+
+    auto *buttons = new wxStdDialogButtonSizer();
+    auto *ok = new wxButton(&dialog, wxID_OK);
+    auto *cancel = new wxButton(&dialog, wxID_CANCEL);
+    buttons->AddButton(ok);
+    buttons->AddButton(cancel);
+    buttons->Realize();
+    root->Add(buttons, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+
+    dialog.Bind(wxEVT_CHAR_HOOK, [&](wxKeyEvent &event) {
+        const int keyCode = event.GetKeyCode();
+        if (keyCode == WXK_RETURN || keyCode == WXK_NUMPAD_ENTER) {
+            dialog.EndModal(wxID_OK);
+            return;
+        }
+        if (keyCode == WXK_ESCAPE) {
+            dialog.EndModal(wxID_CANCEL);
+            return;
+        }
+        if (keyCode == WXK_LEFT) {
+            yearPicker->SetFocus();
+            return;
+        }
+        if (keyCode == WXK_RIGHT) {
+            monthPicker->SetFocus();
+            return;
+        }
+        event.Skip();
+    });
+    ok->SetDefault();
     dialog.SetSizerAndFit(root);
     dialog.CentreOnParent();
+    yearPicker->SetFocus();
 
     if (dialog.ShowModal() == wxID_OK) {
-        return wxDateTime(1, static_cast<wxDateTime::Month>(selectedMonth), year->GetValue());
+        return wxDateTime(1, static_cast<wxDateTime::Month>(monthPicker->selected()),
+                          1900 + yearPicker->selected());
     }
     return current;
 }
@@ -269,11 +479,19 @@ class ObservationRecordTable : public wxGenericListCtrl {
         SetForegroundColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
         SetTextColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
         Bind(wxEVT_LIST_COL_CLICK, &ObservationRecordTable::onColumnClick, this);
+        Bind(wxEVT_LIST_ITEM_SELECTED, &ObservationRecordTable::onItemSelected, this);
     }
 
     void setRecords(const std::vector<Observation> &records) {
         m_records = records;
         rebuild();
+        if (m_onSelection) {
+            m_onSelection(nullptr);
+        }
+    }
+
+    void setSelectionHandler(std::function<void(const Observation *)> handler) {
+        m_onSelection = std::move(handler);
     }
 
   private:
@@ -374,8 +592,8 @@ class ObservationRecordTable : public wxGenericListCtrl {
     void rebuild() {
         ClearAll();
         appendColumns();
-        std::vector<Observation> rows = m_records;
-        std::sort(rows.begin(), rows.end(), [this](const Observation &a, const Observation &b) {
+        m_rows = m_records;
+        std::sort(m_rows.begin(), m_rows.end(), [this](const Observation &a, const Observation &b) {
             const int result = compare(a, b);
             if (result == 0) {
                 return a.promptedAt > b.promptedAt;
@@ -384,7 +602,7 @@ class ObservationRecordTable : public wxGenericListCtrl {
         });
 
         long index = 0;
-        for (const Observation &observation : rows) {
+        for (const Observation &observation : m_rows) {
             InsertItem(index, timeOfDay(observation.promptedAt));
             SetItem(index, 1, timeOfDay(observation.submittedAt));
             SetItem(index, 2,
@@ -414,7 +632,16 @@ class ObservationRecordTable : public wxGenericListCtrl {
         rebuild();
     }
 
+    void onItemSelected(wxListEvent &event) {
+        const long index = event.GetIndex();
+        if (m_onSelection && index >= 0 && index < static_cast<long>(m_rows.size())) {
+            m_onSelection(&m_rows[static_cast<std::size_t>(index)]);
+        }
+    }
+
     std::vector<Observation> m_records;
+    std::vector<Observation> m_rows;
+    std::function<void(const Observation *)> m_onSelection;
     bool m_darkTheme;
     int m_sortColumn = Average;
     bool m_ascending = false;
@@ -730,10 +957,16 @@ class StatisticsChartPanel : public wxPanel {
         Bind(wxEVT_MOUSE_CAPTURE_LOST, &StatisticsChartPanel::onMouseCaptureLost, this);
     }
 
-    void setBuckets(std::vector<ChartBucket> buckets) {
+    void setData(std::vector<ChartBucket> buckets, std::vector<ChartSample> samples) {
         m_buckets = std::move(buckets);
+        m_samples = std::move(samples);
         m_zoom = 1.0;
         m_pan = 0.0;
+        Refresh();
+    }
+
+    void setHighlightedSample(std::string key) {
+        m_highlightedSampleKey = std::move(key);
         Refresh();
     }
 
@@ -816,13 +1049,6 @@ class StatisticsChartPanel : public wxPanel {
         const wxColour fg = m_darkTheme ? wxColour(225, 230, 238) : wxColour(40, 44, 52);
         const wxColour grid = m_darkTheme ? wxColour(44, 49, 59) : wxColour(220, 224, 230);
 
-        auto faded = [&](const wxColour &color, double fgAlpha) {
-            double bgAlpha = 1 - fgAlpha;
-            return wxColour(
-                static_cast<unsigned char>(color.Red() * fgAlpha + bg.Red() * bgAlpha),
-                static_cast<unsigned char>(color.Green() * fgAlpha + bg.Green() * bgAlpha),
-                static_cast<unsigned char>(color.Blue() * fgAlpha + bg.Blue() * bgAlpha));
-        };
         dc.SetBackground(wxBrush(bg));
         dc.Clear();
 
@@ -859,9 +1085,11 @@ class StatisticsChartPanel : public wxPanel {
         const double bucketW =
             std::max(1.0, plotW * m_zoom / static_cast<double>(m_buckets.size()));
         const int barW = std::max(2, static_cast<int>(std::round(bucketW / 5.0)));
+        auto axisX = [&](double value) {
+            return left + static_cast<int>(std::round(m_pan + value * bucketW));
+        };
         auto bucketCenterX = [&](std::size_t index) {
-            return left + static_cast<int>(
-                              std::round(m_pan + (static_cast<double>(index) + 0.5) * bucketW));
+            return axisX(static_cast<double>(index) + 0.5);
         };
 
         dc.SetClippingRegion(left, top, plotW, plotH + bottom);
@@ -893,6 +1121,32 @@ class StatisticsChartPanel : public wxPanel {
             bool hasPrevious = false;
             dc.SetPen(wxPen(color, 2));
             dc.SetBrush(wxBrush(color));
+            if (!m_samples.empty()) {
+                for (const ChartSample &sample : m_samples) {
+                    const double value = std::clamp(valueFor(sample), 0.0, 5.0);
+                    const int x = axisX(sample.x);
+                    const int y = baseY - static_cast<int>(std::round(plotH * value / 5.0));
+                    if (hasPrevious) {
+                        dc.DrawLine(previous.x, previous.y, x, y);
+                    }
+                    const bool highlighted = !m_highlightedSampleKey.empty() &&
+                                             sample.key == m_highlightedSampleKey;
+                    if (highlighted) {
+                        dc.SetPen(wxPen(m_darkTheme ? wxColour(245, 248, 255)
+                                                    : wxColour(24, 28, 34),
+                                        2));
+                        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+                        dc.DrawCircle(x, y, 7);
+                        dc.SetPen(wxPen(color, 2));
+                        dc.SetBrush(wxBrush(color));
+                    }
+                    dc.DrawCircle(x, y, highlighted ? 4 : 3);
+                    previous = wxPoint(x, y);
+                    hasPrevious = true;
+                }
+                return;
+            }
+
             for (std::size_t i = 0; i < m_buckets.size(); ++i) {
                 const ChartBucket &bucket = m_buckets[i];
                 if (bucket.records <= 0) {
@@ -910,8 +1164,8 @@ class StatisticsChartPanel : public wxPanel {
             }
         };
 
-        auto pointFor = [&](std::size_t index, double value) {
-            const int x = bucketCenterX(index);
+        auto pointFor = [&](double xValue, double value) {
+            const int x = axisX(xValue);
             const int y =
                 baseY - static_cast<int>(std::round(plotH * std::clamp(value, 0.0, 5.0) / 5.0));
             return wxPoint(x, y);
@@ -921,19 +1175,35 @@ class StatisticsChartPanel : public wxPanel {
         std::vector<std::pair<double, double>> durationSamples;
         std::vector<std::pair<double, double>> avgSamples;
         std::vector<wxPoint> avgPoints;
+        if (!m_samples.empty()) {
+            for (const ChartSample &sample : m_samples) {
+                const double avg = (sample.energy + sample.mood + sample.grounding) / 3.0;
+                avgSamples.push_back({sample.x, avg});
+                avgPoints.push_back(pointFor(sample.x, avg));
+            }
+        } else {
+            for (std::size_t i = 0; i < m_buckets.size(); ++i) {
+                const ChartBucket &bucket = m_buckets[i];
+                if (bucket.records <= 0) {
+                    continue;
+                }
+                const double x = static_cast<double>(i) + 0.5;
+                const double avg = (bucket.energySum + bucket.moodSum + bucket.groundingSum) /
+                                   (3.0 * bucket.records);
+                avgSamples.push_back({x, avg});
+                avgPoints.push_back(pointFor(x, avg));
+            }
+        }
+
         for (std::size_t i = 0; i < m_buckets.size(); ++i) {
             const ChartBucket &bucket = m_buckets[i];
             if (bucket.records <= 0) {
                 continue;
             }
-            recordSamples.push_back(
-                {static_cast<double>(i), static_cast<double>(bucket.records) / maxRecords});
-            durationSamples.push_back({static_cast<double>(i),
+            const double x = static_cast<double>(i) + 0.5;
+            recordSamples.push_back({x, static_cast<double>(bucket.records) / maxRecords});
+            durationSamples.push_back({x,
                                        static_cast<double>(bucket.durationSeconds) / maxDuration});
-            const double avg =
-                (bucket.energySum + bucket.moodSum + bucket.groundingSum) / (3.0 * bucket.records);
-            avgSamples.push_back({static_cast<double>(i), avg});
-            avgPoints.push_back(pointFor(i, avg));
         }
 
         auto drawPolyline = [&](const std::vector<wxPoint> &points, const wxColour &color,
@@ -941,6 +1211,20 @@ class StatisticsChartPanel : public wxPanel {
             if (points.size() < 2) {
                 return;
             }
+            std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
+            if (gc) {
+                gc->Clip(left, top, plotW, plotH + bottom);
+                gc->SetPen(gc->CreatePen(wxPen(color, width)));
+                wxGraphicsPath path = gc->CreatePath();
+                path.MoveToPoint(points.front().x, points.front().y);
+                for (std::size_t i = 1; i < points.size(); ++i) {
+                    path.AddLineToPoint(points[i].x, points[i].y);
+                }
+                gc->StrokePath(path);
+                gc->ResetClip();
+                return;
+            }
+
             dc.SetPen(wxPen(color, width));
             for (std::size_t i = 1; i < points.size(); ++i) {
                 dc.DrawLine(points[i - 1], points[i]);
@@ -1026,7 +1310,7 @@ class StatisticsChartPanel : public wxPanel {
         };
 
         auto drawFitCurve = [&](const std::vector<std::pair<double, double>> &samples,
-                                const wxColour &color, auto yFor) {
+                                auto yFor, const wxColour &color, int width = 2) {
             if (samples.size() < 2) {
                 return;
             }
@@ -1038,17 +1322,39 @@ class StatisticsChartPanel : public wxPanel {
                 const double t = static_cast<double>(step) / steps;
                 const double x = minX + (maxX - minX) * t;
                 const double value = fitAt(samples, x);
-                const int px = left + static_cast<int>(std::round(m_pan + (x + 0.5) * bucketW));
+                const int px = axisX(x);
                 points.push_back(wxPoint(px, yFor(value)));
             }
-            drawPolyline(points, color, 2);
+            drawPolyline(points, color, width);
         };
 
-        drawLine([](const ChartBucket &bucket) { return bucket.energySum; },
-                 wxColour(255, 105, 180));
-        drawLine([](const ChartBucket &bucket) { return bucket.moodSum; }, wxColour(255, 235, 89));
-        drawLine([](const ChartBucket &bucket) { return bucket.groundingSum; },
-                 wxColour(92, 214, 130));
+        drawLine(
+            [](const auto &value) {
+                if constexpr (std::is_same_v<std::decay_t<decltype(value)>, ChartSample>) {
+                    return value.energy;
+                } else {
+                    return value.energySum;
+                }
+            },
+            wxColour(255, 105, 180));
+        drawLine(
+            [](const auto &value) {
+                if constexpr (std::is_same_v<std::decay_t<decltype(value)>, ChartSample>) {
+                    return value.mood;
+                } else {
+                    return value.moodSum;
+                }
+            },
+            wxColour(255, 235, 89));
+        drawLine(
+            [](const auto &value) {
+                if constexpr (std::is_same_v<std::decay_t<decltype(value)>, ChartSample>) {
+                    return value.grounding;
+                } else {
+                    return value.groundingSum;
+                }
+            },
+            wxColour(92, 214, 130));
         auto normalizedY = [&](double value) {
             return baseY - static_cast<int>(std::round(plotH * std::clamp(value, 0.0, 1.0)));
         };
@@ -1056,15 +1362,21 @@ class StatisticsChartPanel : public wxPanel {
             return baseY - static_cast<int>(std::round(plotH * std::clamp(value, 0.0, 5.0) / 5.0));
         };
 
-        const double alpha = 0.5;
-        const wxColour avgColor = faded(wxColour(160, 166, 176), alpha);
-        const wxColour recordFitColor = faded(wxColour(76, 142, 255), alpha);
-        const wxColour durationFitColor = faded(wxColour(255, 143, 36), alpha);
-        const wxColour avgFitColor = faded(wxColour(239, 73, 91), alpha);
-        drawPolyline(avgPoints, avgColor, 2);
-        drawFitCurve(recordSamples, recordFitColor, normalizedY);
-        drawFitCurve(durationSamples, durationFitColor, normalizedY);
-        drawFitCurve(avgSamples, avgFitColor, emgY);
+        auto translucent = [](const wxColour &color, double opacity) {
+            const unsigned char alphaByte =
+                static_cast<unsigned char>(std::round(std::clamp(opacity, 0.0, 1.0) * 255.0));
+            return wxColour(color.Red(), color.Green(), color.Blue(), alphaByte);
+        };
+        const double curveAlpha = 0.10;
+        const wxColour avgBaseColor(160, 166, 176);
+        const wxColour avgColor = translucent(avgBaseColor, curveAlpha);
+        const wxColour recordFitColor = translucent(wxColour(76, 142, 255), curveAlpha);
+        const wxColour durationFitColor = translucent(wxColour(255, 143, 36), curveAlpha);
+        const wxColour avgFitColor = translucent(wxColour(239, 73, 91), curveAlpha);
+        drawPolyline(avgPoints, avgColor, 4);
+        drawFitCurve(recordSamples, normalizedY, recordFitColor);
+        drawFitCurve(durationSamples, normalizedY, durationFitColor);
+        drawFitCurve(avgSamples, emgY, avgFitColor);
         dc.DestroyClippingRegion();
 
         dc.SetTextForeground(fg);
@@ -1081,11 +1393,13 @@ class StatisticsChartPanel : public wxPanel {
         legend(wxColour(255, 105, 180), wxString::FromUTF8(_("Energy")));
         legend(wxColour(255, 235, 89), wxString::FromUTF8(_("Mood")));
         legend(wxColour(92, 214, 130), wxString::FromUTF8(_("Grounding")));
-        legend(avgColor, wxString::FromUTF8(_("EMG avg")));
+        legend(avgBaseColor, wxString::FromUTF8(_("EMG avg")));
     }
 
     bool m_darkTheme;
     std::vector<ChartBucket> m_buckets;
+    std::vector<ChartSample> m_samples;
+    std::string m_highlightedSampleKey;
     double m_zoom = 1.0;
     double m_pan = 0.0;
     bool m_dragging = false;
@@ -1208,6 +1522,13 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, std::vector<Observation> ob
     tableTitleFont.SetWeight(wxFONTWEIGHT_BOLD);
     m_tableTitle->SetFont(tableTitleFont);
     m_table = new ObservationRecordTable(this, darkTheme);
+    m_table->setSelectionHandler([this](const Observation *observation) {
+        if (observation != nullptr && (m_mode == ViewMode::Day || m_mode == ViewMode::Week)) {
+            m_chart->setHighlightedSample(observationKey(*observation));
+            return;
+        }
+        m_chart->setHighlightedSample("");
+    });
 
     root->Add(m_toolbar, 0, wxEXPAND);
     root->Add(header, 0, wxALL | wxEXPAND, 16);
@@ -1550,6 +1871,7 @@ void StatisticsDialog::renderStatistics() {
     }
 
     std::vector<ChartBucket> buckets = makeBuckets(m_mode, m_anchor, eachYear, m_weekStartsMonday);
+    std::vector<ChartSample> samples;
     for (const Observation &observation : selected) {
         const int index = bucketIndex(observation, m_mode, m_weekStartsMonday);
         if (index < 0 || index >= static_cast<int>(buckets.size())) {
@@ -1561,10 +1883,20 @@ void StatisticsDialog::renderStatistics() {
         bucket.energySum += observation.energy;
         bucket.moodSum += observation.mood;
         bucket.groundingSum += observation.grounding;
+        if (m_mode == ViewMode::Day || m_mode == ViewMode::Week) {
+            samples.push_back({sampleAxisX(observation, m_mode, m_weekStartsMonday),
+                               observation.energy,
+                               observation.mood,
+                               observation.grounding,
+                               observationKey(observation)});
+        }
     }
+    std::sort(samples.begin(), samples.end(), [](const ChartSample &a, const ChartSample &b) {
+        return a.x < b.x;
+    });
 
     rebuildMetrics(selected);
-    m_chart->setBuckets(std::move(buckets));
+    m_chart->setData(std::move(buckets), std::move(samples));
     m_table->setRecords(selected);
     m_metricsPanel->Layout();
     Layout();
