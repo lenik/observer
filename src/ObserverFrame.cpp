@@ -370,7 +370,7 @@ void ObserverFrame::handlePromptClosed(const ObserveResult& result)
         exitApp();
         return;
     }
-    if (m_consecutiveSkips >= 3) {
+    if (m_consecutiveSkips >= appConfig().cancelExitCount) {
         exitApp();
         return;
     }

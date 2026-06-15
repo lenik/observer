@@ -7,6 +7,7 @@ struct AppConfig {
     std::string theme = "dark";
     std::string locale;
     int opacityPercent = 75;
+    int cancelExitCount = 3;
     double intervalSeconds = 300.0;
     std::string storePath;
     bool weekStartsMonday = true;

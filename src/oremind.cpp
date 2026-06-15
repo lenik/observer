@@ -121,6 +121,8 @@ void usage(FILE *out) {
     fputs(_("set theme: light or dark\n"), out);
     fputs("  -o, --opacity NUM  ", out);
     fputs(_("set final dialog opacity percentage, 0 to 100\n"), out);
+    fputs("  -c, --cancel NUM   ", out);
+    fputs(_("exit after NUM consecutive cancels\n"), out);
     fputs("  -i, --interval NUM ", out);
     fputs(_("set prompt interval in minutes\n"), out);
     fputs("  -w, --weekstart MmSs ", out);
@@ -152,6 +154,7 @@ int main(int argc, char **argv) {
         {"locale", required_argument, NULL, 'l'},
         {"theme", required_argument, NULL, 't'},
         {"opacity", required_argument, NULL, 'o'},
+        {"cancel", required_argument, NULL, 'c'},
         {"interval", required_argument, NULL, 'i'},
         {"weekstart", required_argument, NULL, 'w'},
         {"sqlite-db", required_argument, NULL, 'd'},
@@ -160,7 +163,7 @@ int main(int argc, char **argv) {
     };
 
     for (;;) {
-        int c = getopt_long(argc, argv, "vqhl:t:o:i:w:d:", long_opts, NULL);
+        int c = getopt_long(argc, argv, "vqhl:t:o:c:i:w:d:", long_opts, NULL);
         if (c == -1) {
             break;
         }
@@ -205,6 +208,17 @@ int main(int argc, char **argv) {
                 return 1;
             }
             appConfig().opacityPercent = static_cast<int>(opacity);
+            break;
+        }
+        case 'c': {
+            char* end = nullptr;
+            errno = 0;
+            long cancelCount = strtol(optarg, &end, 10);
+            if (errno != 0 || end == optarg || *end != '\0' || cancelCount < 1 || cancelCount > INT_MAX) {
+                fprintf(stderr, _("invalid cancel count: %s\n"), optarg);
+                return 1;
+            }
+            appConfig().cancelExitCount = static_cast<int>(cancelCount);
             break;
         }
         case 'i': {
