@@ -3,6 +3,7 @@
 #include "ObserverFrame.h"
 
 #include <exception>
+#include <cstdio>
 
 bool ObserverApp::OnInit()
 {
@@ -11,6 +12,11 @@ bool ObserverApp::OnInit()
     }
 
     SetExitOnFrameDelete(false);
+
+    if (ObserverFrame::notifyExistingInstance()) {
+        std::fprintf(stderr, "warning: oremind is already running; waking existing instance.\n");
+        return false;
+    }
 
     try {
         auto* frame = new ObserverFrame();
