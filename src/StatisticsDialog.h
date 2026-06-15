@@ -3,17 +3,18 @@
 
 #include "Observation.h"
 
-#include <string>
-#include <vector>
 #include <wx/checkbox.h>
 #include <wx/wx.h>
+
+#include <string>
+#include <vector>
 
 class ObservationCalendarPanel;
 class ObservationRecordTable;
 class StatisticsChartPanel;
 
 class StatisticsDialog : public wxDialog {
-public:
+  public:
     enum class ViewMode {
         Calendar,
         Day,
@@ -22,10 +23,11 @@ public:
         Year,
     };
 
-    StatisticsDialog(wxWindow* parent, std::vector<Observation> observations, std::string theme, bool weekStartsMonday);
+    StatisticsDialog(wxWindow *parent, std::vector<Observation> observations, std::string theme,
+                     bool weekStartsMonday);
 
-private:
-    void onCharHook(wxKeyEvent& event);
+  private:
+    void onCharHook(wxKeyEvent &event);
     void setMode(ViewMode mode);
     void movePeriod(int delta);
     void render();
@@ -33,8 +35,8 @@ private:
     void renderStatistics();
     void updateTitle();
     void updateToolbar();
-    void hookDisplaySurface(wxWindow* surface);
-    void rebuildMetrics(const std::vector<Observation>& selected);
+    void hookDisplaySurface(wxWindow *surface);
+    void rebuildMetrics(const std::vector<Observation> &selected);
     void updateSelectedDaySummary();
     std::vector<Observation> selectedDayRecords() const;
     void goToday();
@@ -44,23 +46,23 @@ private:
     bool m_weekStartsMonday = true;
     ViewMode m_mode = ViewMode::Calendar;
     wxDateTime m_anchor;
-    wxToolBar* m_toolbar = nullptr;
-    wxStaticText* m_title = nullptr;
-    wxCheckBox* m_eachYear = nullptr;
-    ObservationCalendarPanel* m_calendar = nullptr;
-    wxPanel* m_daySummaryPanel = nullptr;
-    wxStaticText* m_daySummaryDate = nullptr;
-    wxStaticText* m_daySummaryRecords = nullptr;
-    wxStaticText* m_daySummaryEmpty = nullptr;
-    wxStaticText* m_daySummaryDuration = nullptr;
-    wxStaticText* m_daySummaryEnergy = nullptr;
-    wxStaticText* m_daySummaryMood = nullptr;
-    wxStaticText* m_daySummaryGrounding = nullptr;
-    wxPanel* m_metricsPanel = nullptr;
-    wxBoxSizer* m_metricsSizer = nullptr;
-    StatisticsChartPanel* m_chart = nullptr;
-    wxStaticText* m_tableTitle = nullptr;
-    ObservationRecordTable* m_table = nullptr;
+    wxToolBar *m_toolbar = nullptr;
+    wxStaticText *m_title = nullptr;
+    wxCheckBox *m_eachYear = nullptr;
+    ObservationCalendarPanel *m_calendar = nullptr;
+    wxPanel *m_daySummaryPanel = nullptr;
+    wxStaticText *m_daySummaryDate = nullptr;
+    wxStaticText *m_daySummaryRecords = nullptr;
+    wxStaticText *m_daySummaryEmpty = nullptr;
+    wxStaticText *m_daySummaryDuration = nullptr;
+    wxStaticText *m_daySummaryEnergy = nullptr;
+    wxStaticText *m_daySummaryMood = nullptr;
+    wxStaticText *m_daySummaryGrounding = nullptr;
+    wxPanel *m_metricsPanel = nullptr;
+    wxBoxSizer *m_metricsSizer = nullptr;
+    StatisticsChartPanel *m_chart = nullptr;
+    wxStaticText *m_tableTitle = nullptr;
+    ObservationRecordTable *m_table = nullptr;
 };
 
 #endif

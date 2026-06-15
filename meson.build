@@ -139,6 +139,10 @@ lib_sources = [
   'src/ObservationStore.cpp',
   'src/QuoteProvider.cpp',
   'src/SqliteStore.cpp',
+  'src/lunar.cpp',
+  'src/formatting.cpp',
+  'src/emoji.cpp',
+  'src/calendar.cpp',
 ]
 
 lib_version = meson.project_version().split('-')[0]

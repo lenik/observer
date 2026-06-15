@@ -4,24 +4,25 @@
 #include "Observation.h"
 #include "RenderDriver.h"
 
-#include <random>
 #include <wx/stc/stc.h>
 #include <wx/textctrl.h>
 #include <wx/wx.h>
+
+#include <random>
 
 class QuoteCanvas;
 class RatingControl;
 
 class ObservationDialog : public wxDialog {
-public:
-    explicit ObservationDialog(wxWindow* parent, const ObservePromptDefaults& defaults);
+  public:
+    explicit ObservationDialog(wxWindow *parent, const ObservePromptDefaults &defaults);
 
     Observation observation() const;
     double intervalSeconds() const;
     void animateIn();
 
-private:
-    void onCharHook(wxKeyEvent& event);
+  private:
+    void onCharHook(wxKeyEvent &event);
     void submit();
     void skip();
     void snooze();
@@ -42,17 +43,17 @@ private:
     std::size_t m_quoteIndex = 0;
     std::mt19937 m_quoteRng;
     bool m_weekStartsMonday = true;
-    QuoteCanvas* m_quoteCanvas = nullptr;
-    RatingControl* m_energyRating = nullptr;
-    RatingControl* m_moodRating = nullptr;
-    RatingControl* m_groundingRating = nullptr;
-    wxTextCtrl* m_intervalCtrl = nullptr;
-    wxStaticText* m_intervalUnitLabel = nullptr;
-    wxStaticText* m_quitLabel = nullptr;
-    wxStaticText* m_submitLabel = nullptr;
-    wxStaticText* m_skipLabel = nullptr;
-    wxStaticText* m_nextPromptLabel = nullptr;
-    wxStyledTextCtrl* m_activityCtrl = nullptr;
+    QuoteCanvas *m_quoteCanvas = nullptr;
+    RatingControl *m_energyRating = nullptr;
+    RatingControl *m_moodRating = nullptr;
+    RatingControl *m_groundingRating = nullptr;
+    wxTextCtrl *m_intervalCtrl = nullptr;
+    wxStaticText *m_intervalUnitLabel = nullptr;
+    wxStaticText *m_quitLabel = nullptr;
+    wxStaticText *m_submitLabel = nullptr;
+    wxStaticText *m_skipLabel = nullptr;
+    wxStaticText *m_nextPromptLabel = nullptr;
+    wxStyledTextCtrl *m_activityCtrl = nullptr;
     wxPoint m_animationStartPosition;
     wxPoint m_animationFinalPosition;
     int m_finalOpacity = 178;
