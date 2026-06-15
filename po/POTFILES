@@ -1,4 +1,5 @@
 src/oremind.cpp
+src/ObserverFrame.cpp
 src/ObservationDialog.cpp
 src/StatisticsDialog.cpp
 src/QuoteProvider.cpp

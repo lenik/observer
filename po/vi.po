@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 21:03+0800\n"
+"POT-Creation-Date: 2026-06-15 13:18+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,76 +44,85 @@ msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr "đặt phần trăm độ mờ cuối cùng của hộp thoại, từ 0 đến 100\n"
 
 #: src/oremind.cpp:125
+msgid "exit after NUM consecutive cancels\n"
+msgstr "thoát sau NUM lần hủy liên tiếp\n"
+
+#: src/oremind.cpp:127
 msgid "set prompt interval in minutes\n"
 msgstr "đặt khoảng thời gian nhắc nhở tính bằng phút\n"
 
-#: src/oremind.cpp:127
+#: src/oremind.cpp:129
 msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
 msgstr "đặt ngày bắt đầu tuần của lịch: M/m là thứ Hai, S/s là Chủ nhật\n"
 
-#: src/oremind.cpp:129
+#: src/oremind.cpp:131
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "Đường dẫn tệp SQLite hoặc thư mục nhật ký khi PATH là một thư mục\n"
 
-#: src/oremind.cpp:131
+#: src/oremind.cpp:133
 msgid "output version information and exit\n"
 msgstr "in thông tin phiên bản và thoát\n"
 
-#: src/oremind.cpp:133
+#: src/oremind.cpp:135
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Báo lỗi tới: <%s>\n"
 
-#: src/oremind.cpp:179
+#: src/oremind.cpp:182
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "locale không hợp lệ: %s\n"
 
-#: src/oremind.cpp:187
+#: src/oremind.cpp:190
 #, c-format
 msgid "expect theme name.\n"
 msgstr "cần tên chủ đề.\n"
 
-#: src/oremind.cpp:193
+#: src/oremind.cpp:196
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "chủ đề không hợp lệ: %s\n"
 
-#: src/oremind.cpp:204
+#: src/oremind.cpp:207
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr "độ mờ không hợp lệ: %s\n"
 
-#: src/oremind.cpp:215
+#: src/oremind.cpp:218
+#, c-format
+msgid "invalid cancel count: %s\n"
+msgstr "số lần hủy không hợp lệ: %s\n"
+
+#: src/oremind.cpp:229
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "khoảng thời gian không hợp lệ: %s\n"
 
-#: src/oremind.cpp:227
+#: src/oremind.cpp:241
 #, c-format
 msgid "invalid week start: %s\n"
 msgstr "ngày bắt đầu tuần không hợp lệ: %s\n"
 
-#: src/oremind.cpp:236
+#: src/oremind.cpp:250
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Bản quyền (C) %d %s\n"
 
-#: src/oremind.cpp:237
+#: src/oremind.cpp:251
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "Giấy phép AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:239
+#: src/oremind.cpp:253
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Đây là phần mềm tự do: bạn có thể sửa đổi và phân phối lại.\n"
 
-#: src/oremind.cpp:241
+#: src/oremind.cpp:255
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "Dự án này phản đối bóc lột AI và bá quyền AI.\n"
 
-#: src/oremind.cpp:242
+#: src/oremind.cpp:256
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -121,9 +130,21 @@ msgstr ""
 "Dự án này bác bỏ kiểu cấp phép MIT máy móc và kiểu cấp phép BSD ngây ngô về "
 "chính trị.\n"
 
-#: src/oremind.cpp:245
+#: src/oremind.cpp:259
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "KHÔNG CÓ BẤT KỲ BẢO HÀNH nào trong phạm vi luật cho phép.\n"
+
+#: src/ObserverFrame.cpp:84
+msgid "Wake"
+msgstr "Đánh thức"
+
+#: src/ObserverFrame.cpp:85
+msgid "Statistics / History"
+msgstr "Thống kê / lịch sử"
+
+#: src/ObserverFrame.cpp:87
+msgid "Quit"
+msgstr "Thoát"
 
 #: src/ObservationDialog.cpp:566
 msgid "energy"
@@ -185,11 +206,11 @@ msgstr "Thống kê tháng"
 msgid "Year statistics"
 msgstr "Thống kê năm"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1199
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1273
 msgid "Calendar"
 msgstr "Lịch"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1209
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1283
 msgid "Month"
 msgstr "Tháng"
 
@@ -201,7 +222,7 @@ msgstr "Đã nhắc lúc"
 msgid "Submitted"
 msgstr "Đã gửi lúc"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1170
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1244
 msgid "Duration"
 msgstr "Thời lượng"
 
@@ -229,72 +250,72 @@ msgstr "Hoạt động"
 msgid "Quote"
 msgstr "Trích dẫn"
 
-#: src/StatisticsDialog.cpp:1103
+#: src/StatisticsDialog.cpp:1177
 msgid "No records"
 msgstr "Không có bản ghi"
 
-#: src/StatisticsDialog.cpp:1169 src/StatisticsDialog.cpp:1521
-#: src/StatisticsDialog.cpp:1564
+#: src/StatisticsDialog.cpp:1243 src/StatisticsDialog.cpp:1641
+#: src/StatisticsDialog.cpp:1684
 msgid "Records"
 msgstr "Hồ sơ"
 
-#: src/StatisticsDialog.cpp:1181
+#: src/StatisticsDialog.cpp:1255
 msgid "Statistics"
 msgstr "Thống kê"
 
-#: src/StatisticsDialog.cpp:1203
+#: src/StatisticsDialog.cpp:1277
 msgid "Day"
 msgstr "Ngày"
 
-#: src/StatisticsDialog.cpp:1206
+#: src/StatisticsDialog.cpp:1280
 msgid "Week"
 msgstr "Tuần"
 
-#: src/StatisticsDialog.cpp:1212
+#: src/StatisticsDialog.cpp:1286
 msgid "Year"
 msgstr "Năm"
 
-#: src/StatisticsDialog.cpp:1216
+#: src/StatisticsDialog.cpp:1290
 msgid "Today"
 msgstr "Hôm nay"
 
-#: src/StatisticsDialog.cpp:1219
+#: src/StatisticsDialog.cpp:1293
 msgid "Previous"
 msgstr "Trước"
 
-#: src/StatisticsDialog.cpp:1222
+#: src/StatisticsDialog.cpp:1296
 msgid "Next"
 msgstr "Sau"
 
-#: src/StatisticsDialog.cpp:1226
+#: src/StatisticsDialog.cpp:1300
 msgid "Close"
 msgstr "Đóng"
 
-#: src/StatisticsDialog.cpp:1238
+#: src/StatisticsDialog.cpp:1312
 msgid "Each Year"
 msgstr "Mỗi năm"
 
-#: src/StatisticsDialog.cpp:1287 src/StatisticsDialog.cpp:1585
+#: src/StatisticsDialog.cpp:1361 src/StatisticsDialog.cpp:1705
 msgid "Top activities"
 msgstr "Hoạt động hàng đầu"
 
-#: src/StatisticsDialog.cpp:1522 src/StatisticsDialog.cpp:1565
+#: src/StatisticsDialog.cpp:1642 src/StatisticsDialog.cpp:1685
 msgid "Empty notes"
 msgstr "ghi chú trống"
 
-#: src/StatisticsDialog.cpp:1523 src/StatisticsDialog.cpp:1566
+#: src/StatisticsDialog.cpp:1643 src/StatisticsDialog.cpp:1686
 msgid "Total prompt duration"
 msgstr "Tổng thời lượng nhắc nhở"
 
-#: src/StatisticsDialog.cpp:1525 src/StatisticsDialog.cpp:1568
+#: src/StatisticsDialog.cpp:1645 src/StatisticsDialog.cpp:1688
 msgid "Average energy"
 msgstr "Năng lượng trung bình"
 
-#: src/StatisticsDialog.cpp:1527 src/StatisticsDialog.cpp:1570
+#: src/StatisticsDialog.cpp:1647 src/StatisticsDialog.cpp:1690
 msgid "Average mood"
 msgstr "Tâm trạng trung bình"
 
-#: src/StatisticsDialog.cpp:1529 src/StatisticsDialog.cpp:1572
+#: src/StatisticsDialog.cpp:1649 src/StatisticsDialog.cpp:1692
 msgid "Average grounding"
 msgstr "Nối đất trung bình"
 
@@ -859,9 +880,6 @@ msgstr ""
 
 #~ msgid ", or"
 #~ msgstr ", hoặc"
-
-#~ msgid "Quit."
-#~ msgstr "Thoát."
 
 #~ msgid ""
 #~ "Usage: oremind [OPTION]... [FILE]...\n"

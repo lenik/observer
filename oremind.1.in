@@ -10,6 +10,10 @@ runs a small Linux desktop observer in the background.  It starts without a
 main window, immediately shows an observation prompt, and then repeats at the
 configured interval.
 .PP
+Only one instance is intended to run per user session.  When a second instance
+starts, it wakes the existing instance, prints a warning to standard error, and
+exits.
+.PP
 Each prompt asks for a short activity note and optional energy, mood, and
 grounding scores.  The prompt can be submitted with Enter, cancelled with
 Escape, or snoozed for 30 seconds with Control-S.  Activity text is trimmed;
@@ -57,6 +61,12 @@ to
 The default is
 .BR 75 .
 .TP
+.BR \-c ", " \-\-cancel " " \fINUM\fR
+Exit after
+.I NUM
+consecutive prompt cancels.  The default is
+.BR 3 .
+.TP
 .BR \-i ", " \-\-interval " " \fINUM\fR
 Set the normal prompt interval in minutes.  Fractional values are accepted.
 An interval of
@@ -92,8 +102,9 @@ Submit the current prompt.  If the activity field is empty after trimming, an
 empty note is saved.
 .TP
 .B Escape
-Cancel the current prompt without saving.  Three consecutive Escape cancels
-exit the application.
+Cancel the current prompt without saving.  By default, three consecutive
+Escape cancels exit the application; change this with
+.BR \-\-cancel .
 .TP
 .B Control-S
 Snooze the prompt for 30 seconds.
@@ -119,6 +130,16 @@ Decrease or increase the mood score by half a step.
 .TP
 .BR F5 ", " F6
 Decrease or increase the grounding score by half a step.
+.SH TRAY ICON
+.PP
+The tray icon stays visible while
+.B oremind
+runs.  Left-click the icon to show the prompt immediately.  Right-click opens a
+menu with
+.BR Wake ,
+.BR "Statistics / History" ,
+and
+.BR Quit .
 .SH STATISTICS
 .TP
 .B F1

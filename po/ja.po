@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 21:03+0800\n"
+"POT-Creation-Date: 2026-06-15 13:18+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,76 +44,85 @@ msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr "最終的なダイアログ不透明度を 0 から 100 の割合で設定します\n"
 
 #: src/oremind.cpp:125
+msgid "exit after NUM consecutive cancels\n"
+msgstr "NUM 回連続でキャンセルしたら終了します\n"
+
+#: src/oremind.cpp:127
 msgid "set prompt interval in minutes\n"
 msgstr "プロンプト間隔を分単位で設定します\n"
 
-#: src/oremind.cpp:127
+#: src/oremind.cpp:129
 msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
 msgstr "カレンダーの週開始日を設定します: M/m は月曜、S/s は日曜\n"
 
-#: src/oremind.cpp:129
+#: src/oremind.cpp:131
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "SQLite ファイルのパス。PATH がディレクトリならログ保存先\n"
 
-#: src/oremind.cpp:131
+#: src/oremind.cpp:133
 msgid "output version information and exit\n"
 msgstr "バージョン情報を表示して終了\n"
 
-#: src/oremind.cpp:133
+#: src/oremind.cpp:135
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "不具合報告先: <%s>\n"
 
-#: src/oremind.cpp:179
+#: src/oremind.cpp:182
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "無効なロケール: %s\n"
 
-#: src/oremind.cpp:187
+#: src/oremind.cpp:190
 #, c-format
 msgid "expect theme name.\n"
 msgstr "テーマ名が必要です。\n"
 
-#: src/oremind.cpp:193
+#: src/oremind.cpp:196
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "無効なテーマ: %s\n"
 
-#: src/oremind.cpp:204
+#: src/oremind.cpp:207
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr "無効な不透明度: %s\n"
 
-#: src/oremind.cpp:215
+#: src/oremind.cpp:218
+#, c-format
+msgid "invalid cancel count: %s\n"
+msgstr "無効なキャンセル回数: %s\n"
+
+#: src/oremind.cpp:229
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "無効な間隔: %s\n"
 
-#: src/oremind.cpp:227
+#: src/oremind.cpp:241
 #, c-format
 msgid "invalid week start: %s\n"
 msgstr "無効な週開始日: %s\n"
 
-#: src/oremind.cpp:236
+#: src/oremind.cpp:250
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Copyright (C) %d %s\n"
 
-#: src/oremind.cpp:237
+#: src/oremind.cpp:251
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "ライセンス AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:239
+#: src/oremind.cpp:253
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "これは自由ソフトウェアです。自由に変更および再配布できます。\n"
 
-#: src/oremind.cpp:241
+#: src/oremind.cpp:255
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "このプロジェクトは AI 搾取と AI 覇権に反対します。\n"
 
-#: src/oremind.cpp:242
+#: src/oremind.cpp:256
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -121,9 +130,21 @@ msgstr ""
 "このプロジェクトは無思慮な MIT 型ライセンスと政治的に幼稚な BSD 型ライセンス"
 "を拒否します。\n"
 
-#: src/oremind.cpp:245
+#: src/oremind.cpp:259
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "法律で認められる範囲で、一切の保証はありません。\n"
+
+#: src/ObserverFrame.cpp:84
+msgid "Wake"
+msgstr "呼び出す"
+
+#: src/ObserverFrame.cpp:85
+msgid "Statistics / History"
+msgstr "統計 / 履歴"
+
+#: src/ObserverFrame.cpp:87
+msgid "Quit"
+msgstr "終了"
 
 #: src/ObservationDialog.cpp:566
 msgid "energy"
@@ -185,11 +206,11 @@ msgstr "月の統計"
 msgid "Year statistics"
 msgstr "年の統計"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1199
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1273
 msgid "Calendar"
 msgstr "カレンダー"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1209
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1283
 msgid "Month"
 msgstr "月"
 
@@ -201,7 +222,7 @@ msgstr "表示時刻"
 msgid "Submitted"
 msgstr "送信時刻"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1170
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1244
 msgid "Duration"
 msgstr "時間"
 
@@ -229,72 +250,72 @@ msgstr "活動"
 msgid "Quote"
 msgstr "格言"
 
-#: src/StatisticsDialog.cpp:1103
+#: src/StatisticsDialog.cpp:1177
 msgid "No records"
 msgstr "記録なし"
 
-#: src/StatisticsDialog.cpp:1169 src/StatisticsDialog.cpp:1521
-#: src/StatisticsDialog.cpp:1564
+#: src/StatisticsDialog.cpp:1243 src/StatisticsDialog.cpp:1641
+#: src/StatisticsDialog.cpp:1684
 msgid "Records"
 msgstr "記録"
 
-#: src/StatisticsDialog.cpp:1181
+#: src/StatisticsDialog.cpp:1255
 msgid "Statistics"
 msgstr "統計"
 
-#: src/StatisticsDialog.cpp:1203
+#: src/StatisticsDialog.cpp:1277
 msgid "Day"
 msgstr "日"
 
-#: src/StatisticsDialog.cpp:1206
+#: src/StatisticsDialog.cpp:1280
 msgid "Week"
 msgstr "週"
 
-#: src/StatisticsDialog.cpp:1212
+#: src/StatisticsDialog.cpp:1286
 msgid "Year"
 msgstr "年"
 
-#: src/StatisticsDialog.cpp:1216
+#: src/StatisticsDialog.cpp:1290
 msgid "Today"
 msgstr "今日"
 
-#: src/StatisticsDialog.cpp:1219
+#: src/StatisticsDialog.cpp:1293
 msgid "Previous"
 msgstr "前へ"
 
-#: src/StatisticsDialog.cpp:1222
+#: src/StatisticsDialog.cpp:1296
 msgid "Next"
 msgstr "次へ"
 
-#: src/StatisticsDialog.cpp:1226
+#: src/StatisticsDialog.cpp:1300
 msgid "Close"
 msgstr "閉じる"
 
-#: src/StatisticsDialog.cpp:1238
+#: src/StatisticsDialog.cpp:1312
 msgid "Each Year"
 msgstr "毎年"
 
-#: src/StatisticsDialog.cpp:1287 src/StatisticsDialog.cpp:1585
+#: src/StatisticsDialog.cpp:1361 src/StatisticsDialog.cpp:1705
 msgid "Top activities"
 msgstr "人気のアクティビティ"
 
-#: src/StatisticsDialog.cpp:1522 src/StatisticsDialog.cpp:1565
+#: src/StatisticsDialog.cpp:1642 src/StatisticsDialog.cpp:1685
 msgid "Empty notes"
 msgstr "空のメモ"
 
-#: src/StatisticsDialog.cpp:1523 src/StatisticsDialog.cpp:1566
+#: src/StatisticsDialog.cpp:1643 src/StatisticsDialog.cpp:1686
 msgid "Total prompt duration"
 msgstr "プロンプトの合計時間"
 
-#: src/StatisticsDialog.cpp:1525 src/StatisticsDialog.cpp:1568
+#: src/StatisticsDialog.cpp:1645 src/StatisticsDialog.cpp:1688
 msgid "Average energy"
 msgstr "平均エネルギー"
 
-#: src/StatisticsDialog.cpp:1527 src/StatisticsDialog.cpp:1570
+#: src/StatisticsDialog.cpp:1647 src/StatisticsDialog.cpp:1690
 msgid "Average mood"
 msgstr "平均的な気分"
 
-#: src/StatisticsDialog.cpp:1529 src/StatisticsDialog.cpp:1572
+#: src/StatisticsDialog.cpp:1649 src/StatisticsDialog.cpp:1692
 msgid "Average grounding"
 msgstr "平均的な接地"
 
@@ -832,9 +853,6 @@ msgstr "この一分は、想像上の未来より重みがあります。"
 
 #~ msgid ", or"
 #~ msgstr "、または"
-
-#~ msgid "Quit."
-#~ msgstr "終了。"
 
 #~ msgid "What are you doing now?"
 #~ msgstr "今、何をしていますか？"

@@ -11,6 +11,10 @@ energy, mood, and grounding scores.
 ## Features
 
 - Starts hidden and runs as a background desktop app.
+- Shows a tray icon; left-click wakes the prompt, and the right-click menu can
+  wake, open statistics/history, or quit.
+- Detects an already running instance at startup, wakes it, prints a warning,
+  and exits instead of launching a second background process.
 - Shows a wxWidgets dialog immediately, then repeats with `wxTimer`.
 - Uses a dark prompt UI with quote canvas, emoji score controls, keyboard
   shortcuts, and slide/fade transitions.
@@ -37,6 +41,7 @@ oremind
 oremind --locale zh_CN
 oremind --theme light
 oremind --opacity 85
+oremind --cancel 5
 oremind --interval 0.5
 oremind --interval 0
 oremind --sqlite-db ~/.observer/observer.sqlite3
@@ -53,6 +58,8 @@ Options:
 - `-t`, `--theme light|dark`: select the prompt theme.
 - `-o`, `--opacity NUM`: set the final dialog opacity from `0` to `100`.
   The default is `75`.
+- `-c`, `--cancel NUM`: exit after `NUM` consecutive cancels. The default is
+  `3`.
 - `-i`, `--interval NUM`: set the normal prompt interval in minutes. Fractional
   values are accepted. `0` makes the startup prompt a one-shot run.
 - `-w`, `--weekstart MmSs`: set the calendar week start. Use `M`/`m` for
@@ -64,7 +71,8 @@ Options:
 ## Keyboard
 
 - `Enter`: submit. Empty activity text is recorded as an empty note.
-- `Escape`: cancel without recording. Three consecutive cancels exit the app.
+- `Escape`: cancel without recording. By default, three consecutive cancels
+  exit the app; change this with `--cancel`.
 - `Ctrl+S`: snooze for 30 seconds.
 - `Ctrl+Q`: quit from the prompt.
 - `Ctrl+H`: open the statistics window.
@@ -74,17 +82,53 @@ Options:
 - `F3` / `F4`: decrease / increase mood by half a step.
 - `F5` / `F6`: decrease / increase grounding by half a step.
 
+## Tray And Single Instance
+
+While `oremind` is running, it keeps a tray icon available:
+
+- Left-click the tray icon to show the prompt immediately.
+- Right-click the tray icon for `Wake`, `Statistics / History`, and `Quit`.
+- `Wake` is equivalent to `Win+Alt+G`.
+
+Starting `oremind` again does not create another background process.  The new
+process contacts the running instance, asks it to wake the prompt, prints this
+warning to standard error, and exits:
+
+```text
+warning: oremind is already running; waking existing instance.
+```
+
 ## Statistics
 
-Open statistics from a prompt with `Ctrl+H`.
+Open statistics/history from a prompt with `Ctrl+H`, or from the tray icon
+right-click menu.
+
+The statistics window has a toolbar for calendar, day, week, month, year,
+today, previous period, next period, and close actions.  The calendar view is a
+custom month grid with lunar day labels, common holiday highlighting, today and
+selected-day markers, and record dots with non-empty record counts.  Selecting a
+date shows the day's record count, empty-note count, total prompt duration, and
+average energy, mood, and grounding values beside the calendar.
+
+Day, week, month, and year views summarize records for the selected period.
+They show records, empty notes, total prompt duration, average energy, average
+mood, and average grounding.  A combined chart displays record count and prompt
+duration as bars, with energy, mood, and grounding lines drawn above them.  The
+record table below the chart reuses the same sortable history table used by the
+calendar view and includes prompted time, submitted time, duration, energy,
+mood, grounding, average score, activity, and quote.
+
+Statistics keyboard shortcuts:
 
 - `F1`: calendar view.
 - `F5` / `F6` / `F7` / `F8`: day / week / month / year statistics.
+- `Left` / `Right`: in calendar view, select the previous or next day; in
+  day/week/month/year views, cycle through those four statistic views.
+- `Up` / `Down`: in calendar view, select the previous or next week; in
+  day/week/month/year views, move to the previous or next period.
+- `PageUp` / `PageDown`: move to the previous or next period.
+- `Ctrl+T` or `Home`: return to today.
 - `Esc`: close the statistics window.
-- `PageUp` / `PageDown`: move to the previous or next period in day, week,
-  month, or year views.
-- In calendar view, select a date and click `Day`, `Week`, or `Month` to enter
-  the corresponding statistics view.
 
 ## Storage
 

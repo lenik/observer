@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 21:03+0800\n"
+"POT-Creation-Date: 2026-06-15 13:18+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,84 +44,105 @@ msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr "设置弹窗最终不透明度百分比，范围 0 到 100\n"
 
 #: src/oremind.cpp:125
+msgid "exit after NUM consecutive cancels\n"
+msgstr "连续取消 NUM 次后退出\n"
+
+#: src/oremind.cpp:127
 msgid "set prompt interval in minutes\n"
 msgstr "设置提示间隔，单位为分钟\n"
 
-#: src/oremind.cpp:127
+#: src/oremind.cpp:129
 msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
 msgstr "设置日历周起始日：M/m 表示周一，S/s 表示周日\n"
 
-#: src/oremind.cpp:129
+#: src/oremind.cpp:131
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "SQLite 文件路径；如果 PATH 是目录，则作为日志目录\n"
 
-#: src/oremind.cpp:131
+#: src/oremind.cpp:133
 msgid "output version information and exit\n"
 msgstr "输出版本信息并退出\n"
 
-#: src/oremind.cpp:133
+#: src/oremind.cpp:135
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "报告问题到：<%s>\n"
 
-#: src/oremind.cpp:179
+#: src/oremind.cpp:182
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "无效语言区域：%s\n"
 
-#: src/oremind.cpp:187
+#: src/oremind.cpp:190
 #, c-format
 msgid "expect theme name.\n"
 msgstr "需要主题名称。\n"
 
-#: src/oremind.cpp:193
+#: src/oremind.cpp:196
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "无效主题：%s\n"
 
-#: src/oremind.cpp:204
+#: src/oremind.cpp:207
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr "无效不透明度：%s\n"
 
-#: src/oremind.cpp:215
+#: src/oremind.cpp:218
+#, c-format
+msgid "invalid cancel count: %s\n"
+msgstr "无效取消次数：%s\n"
+
+#: src/oremind.cpp:229
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "无效间隔：%s\n"
 
-#: src/oremind.cpp:227
+#: src/oremind.cpp:241
 #, c-format
 msgid "invalid week start: %s\n"
 msgstr "无效周起始日：%s\n"
 
-#: src/oremind.cpp:236
+#: src/oremind.cpp:250
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "版权所有 (C) %d %s\n"
 
-#: src/oremind.cpp:237
+#: src/oremind.cpp:251
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "许可证 AGPL-3.0-or-later：<https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:239
+#: src/oremind.cpp:253
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "这是自由软件：你可以自由修改并重新分发。\n"
 
-#: src/oremind.cpp:241
+#: src/oremind.cpp:255
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "本项目反对 AI 剥削与 AI 霸权。\n"
 
-#: src/oremind.cpp:242
+#: src/oremind.cpp:256
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
 msgstr "本项目拒绝无脑 MIT 式许可和政治幼稚的 BSD 式许可。\n"
 
-#: src/oremind.cpp:245
+#: src/oremind.cpp:259
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "在法律允许范围内，不提供任何担保。\n"
+
+#: src/ObserverFrame.cpp:84
+msgid "Wake"
+msgstr "唤醒"
+
+#: src/ObserverFrame.cpp:85
+msgid "Statistics / History"
+msgstr "统计 / 历史"
+
+#: src/ObserverFrame.cpp:87
+msgid "Quit"
+msgstr "退出"
 
 #: src/ObservationDialog.cpp:566
 msgid "energy"
@@ -183,11 +204,11 @@ msgstr "月统计"
 msgid "Year statistics"
 msgstr "年统计"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1199
+#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1273
 msgid "Calendar"
 msgstr "日历"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1209
+#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1283
 msgid "Month"
 msgstr "月"
 
@@ -199,7 +220,7 @@ msgstr "弹窗时间"
 msgid "Submitted"
 msgstr "提交时间"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1170
+#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1244
 msgid "Duration"
 msgstr "时长"
 
@@ -227,72 +248,72 @@ msgstr "活动"
 msgid "Quote"
 msgstr "格言"
 
-#: src/StatisticsDialog.cpp:1103
+#: src/StatisticsDialog.cpp:1177
 msgid "No records"
 msgstr "无记录"
 
-#: src/StatisticsDialog.cpp:1169 src/StatisticsDialog.cpp:1521
-#: src/StatisticsDialog.cpp:1564
+#: src/StatisticsDialog.cpp:1243 src/StatisticsDialog.cpp:1641
+#: src/StatisticsDialog.cpp:1684
 msgid "Records"
 msgstr "记录数"
 
-#: src/StatisticsDialog.cpp:1181
+#: src/StatisticsDialog.cpp:1255
 msgid "Statistics"
 msgstr "统计"
 
-#: src/StatisticsDialog.cpp:1203
+#: src/StatisticsDialog.cpp:1277
 msgid "Day"
 msgstr "日"
 
-#: src/StatisticsDialog.cpp:1206
+#: src/StatisticsDialog.cpp:1280
 msgid "Week"
 msgstr "周"
 
-#: src/StatisticsDialog.cpp:1212
+#: src/StatisticsDialog.cpp:1286
 msgid "Year"
 msgstr "年"
 
-#: src/StatisticsDialog.cpp:1216
+#: src/StatisticsDialog.cpp:1290
 msgid "Today"
 msgstr "今天"
 
-#: src/StatisticsDialog.cpp:1219
+#: src/StatisticsDialog.cpp:1293
 msgid "Previous"
 msgstr "上一页"
 
-#: src/StatisticsDialog.cpp:1222
+#: src/StatisticsDialog.cpp:1296
 msgid "Next"
 msgstr "下一页"
 
-#: src/StatisticsDialog.cpp:1226
+#: src/StatisticsDialog.cpp:1300
 msgid "Close"
 msgstr "关闭"
 
-#: src/StatisticsDialog.cpp:1238
+#: src/StatisticsDialog.cpp:1312
 msgid "Each Year"
 msgstr "每年"
 
-#: src/StatisticsDialog.cpp:1287 src/StatisticsDialog.cpp:1585
+#: src/StatisticsDialog.cpp:1361 src/StatisticsDialog.cpp:1705
 msgid "Top activities"
 msgstr "高频活动"
 
-#: src/StatisticsDialog.cpp:1522 src/StatisticsDialog.cpp:1565
+#: src/StatisticsDialog.cpp:1642 src/StatisticsDialog.cpp:1685
 msgid "Empty notes"
 msgstr "空记录"
 
-#: src/StatisticsDialog.cpp:1523 src/StatisticsDialog.cpp:1566
+#: src/StatisticsDialog.cpp:1643 src/StatisticsDialog.cpp:1686
 msgid "Total prompt duration"
 msgstr "总弹窗时长"
 
-#: src/StatisticsDialog.cpp:1525 src/StatisticsDialog.cpp:1568
+#: src/StatisticsDialog.cpp:1645 src/StatisticsDialog.cpp:1688
 msgid "Average energy"
 msgstr "平均能量"
 
-#: src/StatisticsDialog.cpp:1527 src/StatisticsDialog.cpp:1570
+#: src/StatisticsDialog.cpp:1647 src/StatisticsDialog.cpp:1690
 msgid "Average mood"
 msgstr "平均心情"
 
-#: src/StatisticsDialog.cpp:1529 src/StatisticsDialog.cpp:1572
+#: src/StatisticsDialog.cpp:1649 src/StatisticsDialog.cpp:1692
 msgid "Average grounding"
 msgstr "平均接地"
 
@@ -824,9 +845,6 @@ msgstr "你现在在哪里？你正在做什么？你还要不要回来？"
 
 #~ msgid ", or"
 #~ msgstr "，或"
-
-#~ msgid "Quit."
-#~ msgstr "退出。"
 
 #~ msgid "What are you doing now?"
 #~ msgstr "现在在做什么？"

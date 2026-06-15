@@ -1,3 +1,16 @@
+observer (1.0.3) testing; urgency=medium
+
+  * Add a system tray icon with wake, statistics/history, and quit actions.
+  * Wake the prompt from a tray left-click in addition to Win+Alt+G.
+  * Add per-user single-instance detection; a second launch wakes the running
+    instance, prints a warning, and exits.
+  * Add -c/--cancel to configure how many consecutive prompt cancels exit the
+    app.
+  * Expand README statistics/history documentation to cover calendar summaries,
+    charts, sortable record tables, and navigation shortcuts.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Mon, 15 Jun 2026 10:30:00 +0800
+
 observer (1.0.2) testing; urgency=medium
 
   * Fix statistics toolbar view switching by using check tools with manual
