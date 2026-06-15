@@ -1,11 +1,29 @@
+observer (1.0.4) testing; urgency=medium
+
+  * Add Win+Alt+H as an X11 global shortcut for opening statistics/history
+    while waiting.
+  * Add statistics chart X-axis mouse wheel zooming and drag panning.
+  * Add subdued statistics trend overlays for record count, prompt duration,
+    and EMG average, and keep fitted trend lines out of the chart legend.
+  * Use real observation samples for day and week statistics chart score
+    points instead of hourly or daily aggregate points.
+  * Shorten statistics record-table time headers in translations, including
+    Chinese "弹出" and "提交".
+  * Split reusable statistics helpers into calendar, lunar, emoji, and locale
+    modules.
+  * Highlight day and week statistics chart samples when selecting records in
+    the record table.
+  * Replace the month chooser with an iOS-style two-column year/month picker
+    supporting mouse wheel, drag panning, keyboard, OK, and Cancel actions.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Mon, 15 Jun 2026 13:55:00 +0800
+
 observer (1.0.3) testing; urgency=medium
 
   * Add a system tray icon with wake, statistics/history, and quit actions.
   * Wake the prompt from a tray left-click in addition to Win+Alt+G.
   * Add per-user single-instance detection; a second launch wakes the running
     instance, prints a warning, and exits.
-  * Add Win+Alt+H as an X11 global shortcut for opening statistics/history
-    while waiting.
   * Add -c/--cancel to configure how many consecutive prompt cancels exit the
     app.
   * Expand README statistics/history documentation to cover calendar summaries,
