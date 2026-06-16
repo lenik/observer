@@ -11,6 +11,7 @@ bool ObserverApp::OnInit()
         return false;
     }
 
+    wxInitAllImageHandlers();
     SetExitOnFrameDelete(false);
 
     if (ObserverFrame::notifyExistingInstance()) {
