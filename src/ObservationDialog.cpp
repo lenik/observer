@@ -785,20 +785,16 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         m_groundingRating->adjust(0.5);
         return;
     }
+    if (keyCode == WXK_F8) {
+        snooze();
+        return;
+    }
     if (keyCode == WXK_ESCAPE) {
         skip();
         return;
     }
-    if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'S' || keyCode == 's')) {
-        snooze();
-        return;
-    }
     if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'Q' || keyCode == 'q')) {
         quit();
-        return;
-    }
-    if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'H' || keyCode == 'h')) {
-        showStatistics();
         return;
     }
     event.Skip();
