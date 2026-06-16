@@ -59,14 +59,16 @@ configure_file(
     configuration: config_h,
 )
 
-bas_c_dep = dependency('bas-c', required: true)
 bas_cpp_dep = dependency('bas-cpp', required: true)
+bas_ui_dep = dependency('bas-ui', required: true)
 
 # bas_c_static_dep = dependency('bas-c-static', required: true)
 # bas_cpp_static_dep = dependency('bas-cpp-static', required: true)
+# bas_ui_static_dep = dependency('bas-ui-static', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
 x11_dep = dependency('x11', required: true)
+dl_dep = dependency('dl')
 wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
 
 lib_objects = []
@@ -126,14 +128,17 @@ lib_inc = [
 
 lib_deps = [
     bas_cpp_dep,
+    bas_ui_dep,
     wx_dep, 
     x11_dep,
     sqlite_dep,
+    dl_dep,
 ]
 
 subdir('po')
 
 lib_sources = [
+  'src/AppIcon.cpp',
   'src/AppConfig.cpp',
   'src/DataDirStore.cpp',
   'src/ObservationStore.cpp',
@@ -151,6 +156,7 @@ lib_soversion = lib_version.split('.')[0]
 lib_observer = shared_library(
     'observer',
     lib_sources,
+    'src/module.cpp',
     lib_objects,
     cpp_args: cpp_args,
     cpp_pch: cpp_pch,
@@ -165,6 +171,7 @@ lib_observer = shared_library(
 lib_observer_static = static_library(
     'observer',
     lib_sources,
+    'src/module.cpp',
     lib_objects,
     cpp_args: cpp_args,
     cpp_pch: cpp_pch,
@@ -266,7 +273,7 @@ foreach source : app_sources
         cpp_pch: cpp_pch,
         include_directories: lib_inc,
         dependencies: lib_deps,
-        link_with: lib_observer_static,
+        link_with: lib_observer,
         install: true,
         install_dir: bindir,
     )
