@@ -451,18 +451,23 @@ wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, bool darkTheme) {
 class ObservationRecordTable : public wxGenericListCtrl {
   public:
     ObservationRecordTable(wxWindow *parent, bool darkTheme)
-        : wxGenericListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                            wxLC_REPORT | wxLC_SINGLE_SEL),
+        : wxGenericListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
           m_darkTheme(darkTheme) {
         SetBackgroundColour(m_darkTheme ? wxColour(18, 21, 27) : wxColour(255, 255, 255));
         SetForegroundColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
         SetTextColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
         Bind(wxEVT_LIST_COL_CLICK, &ObservationRecordTable::onColumnClick, this);
         Bind(wxEVT_LIST_ITEM_SELECTED, &ObservationRecordTable::onItemSelected, this);
+        Bind(wxEVT_LIST_ITEM_DESELECTED, &ObservationRecordTable::onItemDeselected, this);
         Bind(wxEVT_LIST_ITEM_ACTIVATED, &ObservationRecordTable::onItemActivated, this);
         Bind(wxEVT_LIST_KEY_DOWN, &ObservationRecordTable::onListKeyDown, this);
         Bind(wxEVT_RIGHT_DOWN, &ObservationRecordTable::onRightDown, this);
         Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &event) {
+            int flags = 0;
+            const long item = HitTest(event.GetPosition(), flags);
+            if (item == wxNOT_FOUND) {
+                clearSelection();
+            }
             SetFocus();
             event.Skip();
         });
@@ -480,6 +485,30 @@ class ObservationRecordTable : public wxGenericListCtrl {
 
     long selectedIndex() const {
         return GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    }
+
+    bool hasSelection() const {
+        return selectedIndex() >= 0;
+    }
+
+    std::vector<Observation> selectedRecords() const {
+        std::vector<Observation> records;
+        for (long item = GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED); item >= 0;
+             item = GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) {
+            if (item < static_cast<long>(m_rows.size())) {
+                records.push_back(m_rows[static_cast<std::size_t>(item)]);
+            }
+        }
+        return records;
+    }
+
+    void setPeriodNavigationHandler(std::function<void(int keyCode)> handler) {
+        m_onPeriodNavigation = std::move(handler);
+    }
+
+    void clearSelection() {
+        SetItemState(-1, 0, wxLIST_STATE_SELECTED);
+        notifySelectionChange();
     }
 
     void selectRow(long index) {
@@ -505,6 +534,10 @@ class ObservationRecordTable : public wxGenericListCtrl {
                            std::function<void(const Observation &)> onDelete) {
         m_onEdit = std::move(onEdit);
         m_onDelete = std::move(onDelete);
+    }
+
+    void setBulkDeleteHandler(std::function<void()> handler) {
+        m_onBulkDelete = std::move(handler);
     }
 
     const Observation *selectedRecord() const {
@@ -654,9 +687,23 @@ class ObservationRecordTable : public wxGenericListCtrl {
     }
 
     void onItemSelected(wxListEvent &event) {
-        const long index = event.GetIndex();
-        if (m_onSelection && index >= 0 && index < static_cast<long>(m_rows.size())) {
-            m_onSelection(&m_rows[static_cast<std::size_t>(index)]);
+        event.Skip();
+        notifySelectionChange();
+    }
+
+    void onItemDeselected(wxListEvent &event) {
+        event.Skip();
+        notifySelectionChange();
+    }
+
+    void notifySelectionChange() {
+        if (!m_onSelection) {
+            return;
+        }
+        if (const Observation *record = selectedRecord()) {
+            m_onSelection(record);
+        } else {
+            m_onSelection(nullptr);
         }
     }
 
@@ -675,9 +722,7 @@ class ObservationRecordTable : public wxGenericListCtrl {
             return;
         }
         SetItemState(item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-        if (m_onSelection) {
-            m_onSelection(&m_rows[static_cast<std::size_t>(item)]);
-        }
+        notifySelectionChange();
 
         wxMenu menu;
         if (m_onEdit) {
@@ -702,9 +747,19 @@ class ObservationRecordTable : public wxGenericListCtrl {
     void onListKeyDown(wxListEvent &event) {
         const int keyCode = event.GetKeyCode();
         if (keyCode == WXK_UP || keyCode == WXK_DOWN) {
+            if (!hasSelection()) {
+                if (m_onPeriodNavigation) {
+                    m_onPeriodNavigation(keyCode);
+                }
+                return;
+            }
+            if (wxGetKeyState(WXK_SHIFT) || wxGetKeyState(WXK_CONTROL)) {
+                event.Skip();
+                return;
+            }
             const long count = GetItemCount();
             if (count > 0) {
-                long selected = GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+                long selected = selectedIndex();
                 if (selected < 0) {
                     selected = 0;
                 } else {
@@ -714,15 +769,13 @@ class ObservationRecordTable : public wxGenericListCtrl {
                 SetItemState(-1, 0, wxLIST_STATE_SELECTED);
                 SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
                 EnsureVisible(selected);
-                if (m_onSelection && selected >= 0 && selected < static_cast<long>(m_rows.size())) {
-                    m_onSelection(&m_rows[static_cast<std::size_t>(selected)]);
-                }
+                notifySelectionChange();
             }
             return;
         }
-        if (keyCode == WXK_DELETE && m_onDelete) {
-            if (const Observation *record = selectedRecord()) {
-                m_onDelete(*record);
+        if (keyCode == WXK_DELETE) {
+            if (m_onBulkDelete) {
+                m_onBulkDelete();
             }
             return;
         }
@@ -734,6 +787,8 @@ class ObservationRecordTable : public wxGenericListCtrl {
     std::function<void(const Observation *)> m_onSelection;
     std::function<void(const Observation &)> m_onEdit;
     std::function<void(const Observation &)> m_onDelete;
+    std::function<void()> m_onBulkDelete;
+    std::function<void(int keyCode)> m_onPeriodNavigation;
     bool m_darkTheme;
     int m_sortColumn = Average;
     bool m_ascending = false;
@@ -1627,6 +1682,8 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     m_table->setRecordHandlers(
         [this](const Observation &observation) { editObservation(observation); },
         [this](const Observation &observation) { deleteObservation(observation); });
+    m_table->setBulkDeleteHandler([this]() { deleteSelectedObservations(); });
+    m_table->setPeriodNavigationHandler([this](int keyCode) { navigatePeriodFromTable(keyCode); });
 
     root->Add(m_toolbar, 0, wxEXPAND);
     root->Add(header, 0, wxALL | wxEXPAND, 16);
@@ -1690,9 +1747,7 @@ void StatisticsDialog::onCharHook(wxKeyEvent &event) {
         return;
     }
     if (keyCode == WXK_DELETE) {
-        if (const Observation *record = m_table->selectedRecord()) {
-            deleteObservation(*record);
-        }
+        deleteSelectedObservations();
         return;
     }
     if (event.ControlDown() && (keyCode == 'T' || keyCode == 't')) {
@@ -1716,7 +1771,8 @@ void StatisticsDialog::onCharHook(wxKeyEvent &event) {
         return;
     }
     if (keyCode == WXK_UP || keyCode == WXK_DOWN) {
-        if (m_table != nullptr && m_table->IsShown() && m_table->HasFocus()) {
+        const bool tableActive = m_table != nullptr && m_table->IsShown() && m_table->HasFocus();
+        if (tableActive && m_table->hasSelection()) {
             event.Skip();
             return;
         }
@@ -2142,6 +2198,35 @@ void StatisticsDialog::editObservation(const Observation &original) {
         m_store->update(original.id, dialog.observation());
     }
     refreshAfterMutation();
+}
+
+void StatisticsDialog::navigatePeriodFromTable(int keyCode) {
+    if (keyCode != WXK_UP && keyCode != WXK_DOWN) {
+        return;
+    }
+    if (m_mode == ViewMode::Calendar) {
+        m_anchor.Add(wxDateSpan::Days(keyCode == WXK_UP ? -7 : 7));
+        renderCalendar();
+        return;
+    }
+    movePeriod(keyCode == WXK_UP ? -1 : 1);
+}
+
+void StatisticsDialog::deleteSelectedObservations() {
+    if (m_table == nullptr || m_store == nullptr) {
+        return;
+    }
+
+    const std::vector<Observation> records = m_table->selectedRecords();
+    if (records.empty()) {
+        return;
+    }
+
+    long selectAfter = m_table->selectedIndex();
+    for (const Observation &observation : records) {
+        m_store->remove(observation.id);
+    }
+    refreshAfterMutation(selectAfter);
 }
 
 void StatisticsDialog::deleteObservation(const Observation &original) {

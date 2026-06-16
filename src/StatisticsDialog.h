@@ -47,6 +47,8 @@ class StatisticsDialog : public wxDialog {
     void goToday();
     void editObservation(const Observation &original);
     void deleteObservation(const Observation &original);
+    void deleteSelectedObservations();
+    void navigatePeriodFromTable(int keyCode);
     void refreshAfterMutation(long selectIndex = -1);
 
     ObservationStore *m_store = nullptr;
