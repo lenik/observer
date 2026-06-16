@@ -8,6 +8,7 @@
 #include <wx/textctrl.h>
 #include <wx/wx.h>
 
+#include <optional>
 #include <random>
 
 class QuoteCanvas;
@@ -39,11 +40,13 @@ class ObservationDialog : public wxDialog {
     std::string m_quote;
     std::string m_promptedAt;
     std::string m_theme;
+    std::optional<Observation> m_editing;
+    ObservationStore* m_store = nullptr;
     std::vector<std::string> m_quotes;
-    std::vector<Observation> m_history;
     std::size_t m_quoteIndex = 0;
     std::mt19937 m_quoteRng;
     bool m_weekStartsMonday = true;
+    bool m_editMode = false;
     QuoteCanvas *m_quoteCanvas = nullptr;
     RatingControl *m_energyRating = nullptr;
     RatingControl *m_moodRating = nullptr;

@@ -3,9 +3,12 @@
 
 #include "Observation.h"
 
+#include <cstdint>
 #include <optional>
 #include <string>
 #include <vector>
+
+class ObservationStore;
 
 enum class ObserveResultKind {
     Submitted,
@@ -24,8 +27,9 @@ struct ObservePromptDefaults {
     std::string theme = "dark";
     std::string quote;
     std::vector<std::string> quotes;
-    std::vector<Observation> history;
     std::size_t quoteIndex = 0;
+    ObservationStore* store = nullptr;
+    std::optional<Observation> editing;
 };
 
 struct ObserveResult {

@@ -1,6 +1,7 @@
 #include "ObservationDialog.h"
 
 #include "AppIcon.h"
+#include "ObservationStore.h"
 #include "StatisticsDialog.h"
 
 #include <bas/locale/i18n.h>
@@ -117,6 +118,22 @@ std::string trimmedUtf8(wxString text)
     text.Trim(false);
     wxCharBuffer buffer = text.utf8_str();
     return buffer.data() != nullptr ? std::string(buffer.data()) : std::string();
+}
+
+std::string activityForEdit(const std::string& activity)
+{
+    std::string result;
+    result.reserve(activity.size());
+    for (char ch : activity) {
+        if (ch == '\n' || ch == '\r') {
+            if (!result.empty() && result.back() != ' ') {
+                result.push_back(' ');
+            }
+            continue;
+        }
+        result.push_back(ch);
+    }
+    return result;
 }
 
 }
@@ -521,10 +538,16 @@ private:
 };
 
 ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaults& defaults)
-    : wxDialog(parent, wxID_ANY, "Observer", wxDefaultPosition, wxDefaultSize,
+    : wxDialog(parent, wxID_ANY,
+          defaults.editing.has_value() ? wxString::FromUTF8(_("Edit record")) : wxString("Observer"),
+          wxDefaultPosition, wxDefaultSize,
           wxRESIZE_BORDER | wxSTAY_ON_TOP),
-      m_quote(defaults.quote),
-      m_promptedAt(currentTimestamp()),
+      m_quote(defaults.editing.has_value() && !defaults.editing->quote.empty() ? defaults.editing->quote
+                                                                             : defaults.quote),
+      m_promptedAt(defaults.editing.has_value() ? defaults.editing->promptedAt : currentTimestamp()),
+      m_editing(defaults.editing),
+      m_editMode(defaults.editing.has_value()),
+      m_store(defaults.store),
       m_quoteRng(static_cast<std::mt19937::result_type>(
           std::chrono::high_resolution_clock::now().time_since_epoch().count()))
 {
@@ -532,7 +555,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     const bool darkTheme = defaults.theme != "light";
     m_theme = defaults.theme;
     m_quotes = defaults.quotes;
-    m_history = defaults.history;
+    m_store = defaults.store;
     m_weekStartsMonday = defaults.weekStartsMonday;
     m_quoteIndex = defaults.quoteIndex;
     const wxIcon appIcon = observerAppIcon(32);
@@ -637,6 +660,10 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     // 最后同步底层面板的底色，防止边缘出现闪烁、撕裂或白边
     m_activityCtrl->SetBackgroundColour(promptBg);
 
+    if (m_editMode && m_editing.has_value()) {
+        m_activityCtrl->SetText(wxString::FromUTF8(activityForEdit(m_editing->activity).c_str()));
+    }
+
     auto* promptInputRow = new wxBoxSizer(wxHORIZONTAL);
     promptInputRow->AddSpacer(promptMarginX);
     promptInputRow->Add(m_activityCtrl, 1, wxALIGN_CENTER_VERTICAL);
@@ -668,12 +695,15 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
         return label;
     };
 
-    m_submitLabel = makeLabel(wxString::FromUTF8(_("Enter submit")), actionColour);
+    m_submitLabel = makeLabel(wxString::FromUTF8(m_editMode ? _("Enter save") : _("Enter submit")), actionColour);
     m_submitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { submit(); });
-    m_skipLabel = makeLabel(wxString::FromUTF8(_("Esc skip")), actionColour);
+    m_skipLabel = makeLabel(wxString::FromUTF8(m_editMode ? _("Esc cancel") : _("Esc skip")), actionColour);
     m_skipLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { skip(); });
-    auto* historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
-    historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { showStatistics(); });
+    wxStaticText* historyLabel = nullptr;
+    if (!m_editMode) {
+        historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
+        historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { showStatistics(); });
+    }
     m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
     m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
     m_intervalUnitLabel = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
@@ -686,14 +716,18 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     bottomRow->Add(m_submitLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
     bottomRow->Add(m_skipLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(historyLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(m_nextPromptLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(m_intervalCtrl, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(m_intervalUnitLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
-    bottomRow->Add(m_quitLabel, 0, wxALIGN_CENTER_VERTICAL);
+    if (historyLabel != nullptr) {
+        bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(historyLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+    }
+    if (!m_editMode) {
+        bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(m_nextPromptLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(m_intervalCtrl, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(m_intervalUnitLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(makeSeparator(), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
+        bottomRow->Add(m_quitLabel, 0, wxALIGN_CENTER_VERTICAL);
+    }
     root->Add(bottomRow, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
     Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
@@ -728,15 +762,17 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
 
 Observation ObservationDialog::observation() const
 {
-    return Observation{
+    Observation result{
+        m_editing.has_value() ? m_editing->id : 0,
         m_promptedAt,
-        currentTimestamp(),
+        m_editing.has_value() ? m_editing->submittedAt : currentTimestamp(),
         m_energyRating->value(),
         m_moodRating->value(),
         m_groundingRating->value(),
         activityText(),
         m_quote,
     };
+    return result;
 }
 
 double ObservationDialog::intervalSeconds() const
@@ -758,7 +794,9 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         }
     }
     if (keyCode == WXK_F1) {
-        showStatistics();
+        if (!m_editMode) {
+            showStatistics();
+        }
         return;
     }
     if (keyCode == WXK_F2) {
@@ -786,7 +824,9 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_F8) {
-        snooze();
+        if (!m_editMode) {
+            snooze();
+        }
         return;
     }
     if (keyCode == WXK_ESCAPE) {
@@ -794,7 +834,9 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if ((event.ControlDown() || event.CmdDown()) && (keyCode == 'Q' || keyCode == 'q')) {
-        quit();
+        if (!m_editMode) {
+            quit();
+        }
         return;
     }
     event.Skip();
@@ -827,7 +869,7 @@ void ObservationDialog::showStatistics()
     }
 
     m_statisticsOpen = true;
-    StatisticsDialog dialog(this, m_history, m_theme, m_weekStartsMonday);
+    StatisticsDialog dialog(this, m_store, m_theme, m_weekStartsMonday, m_quotes);
     dialog.ShowModal();
     m_statisticsOpen = false;
     if (m_activityCtrl != nullptr) {
