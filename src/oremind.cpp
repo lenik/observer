@@ -9,7 +9,6 @@
 #include "oremind.h"
 
 #include "config.h"
-#include "lib.h"
 #include "AppConfig.h"
 #include "ObserverApp.h"
 

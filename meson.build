@@ -68,7 +68,6 @@ bas_ui_dep = dependency('bas-ui', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
 x11_dep = dependency('x11', required: true)
-dl_dep = dependency('dl')
 wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
 
 lib_objects = []
@@ -132,7 +131,6 @@ lib_deps = [
     wx_dep, 
     x11_dep,
     sqlite_dep,
-    dl_dep,
 ]
 
 subdir('po')
@@ -231,7 +229,6 @@ other_list = [
     'bulk.hpp',
     'c_pch.h',
     'cpp_pch.hpp',
-    'lib.h',
     'AppConfig.h',
 ]
 foreach f : other_files
