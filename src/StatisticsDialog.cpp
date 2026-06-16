@@ -40,6 +40,7 @@ enum {
 struct ChartBucket {
     wxString label;
     int records = 0;
+    int emgRecords = 0;
     long durationSeconds = 0;
     double energySum = 0.0;
     double moodSum = 0.0;
@@ -57,6 +58,7 @@ struct ChartSample {
 struct DaySummary {
     int records = 0;
     int nonEmptyRecords = 0;
+    int emgRecords = 0;
     double energySum = 0.0;
     double moodSum = 0.0;
     double groundingSum = 0.0;
@@ -250,9 +252,12 @@ std::map<std::string, DaySummary> summarizeDays(const std::vector<Observation> &
         if (!trim(observation.activity).empty()) {
             ++summary.nonEmptyRecords;
         }
-        summary.energySum += observation.energy;
-        summary.moodSum += observation.mood;
-        summary.groundingSum += observation.grounding;
+        if (!observationEmgMissing(observation)) {
+            ++summary.emgRecords;
+            summary.energySum += observation.energy;
+            summary.moodSum += observation.mood;
+            summary.groundingSum += observation.grounding;
+        }
     }
     return summaries;
 }
@@ -869,8 +874,10 @@ class ObservationCalendarPanel : public wxPanel {
             const auto summary = m_summaries.find(cell.day.FormatISODate().ToStdString());
             if (summary != m_summaries.end() && summary->second.records > 0) {
                 const DaySummary &value = summary->second;
-                const double avg = (value.energySum + value.moodSum + value.groundingSum) /
-                                   (3.0 * std::max(1, value.records));
+                const double avg = value.emgRecords > 0
+                    ? (value.energySum + value.moodSum + value.groundingSum) /
+                          (3.0 * value.emgRecords)
+                    : 0.0;
                 const bool hot = value.nonEmptyRecords > 3 && avg > 3.0;
                 const int dotRadius = 5;
                 const int dotGap = 4;
@@ -1149,10 +1156,10 @@ class StatisticsChartPanel : public wxPanel {
 
             for (std::size_t i = 0; i < m_buckets.size(); ++i) {
                 const ChartBucket &bucket = m_buckets[i];
-                if (bucket.records <= 0) {
+                if (bucket.emgRecords <= 0) {
                     continue;
                 }
-                const double value = std::clamp(valueFor(bucket) / bucket.records, 0.0, 5.0);
+                const double value = std::clamp(valueFor(bucket) / bucket.emgRecords, 0.0, 5.0);
                 const int x = bucketCenterX(i);
                 const int y = baseY - static_cast<int>(std::round(plotH * value / 5.0));
                 if (hasPrevious) {
@@ -1184,12 +1191,12 @@ class StatisticsChartPanel : public wxPanel {
         } else {
             for (std::size_t i = 0; i < m_buckets.size(); ++i) {
                 const ChartBucket &bucket = m_buckets[i];
-                if (bucket.records <= 0) {
+                if (bucket.emgRecords <= 0) {
                     continue;
                 }
                 const double x = static_cast<double>(i) + 0.5;
                 const double avg = (bucket.energySum + bucket.moodSum + bucket.groundingSum) /
-                                   (3.0 * bucket.records);
+                                   (3.0 * bucket.emgRecords);
                 avgSamples.push_back({x, avg});
                 avgPoints.push_back(pointFor(x, avg));
             }
@@ -1746,17 +1753,22 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) 
     double grounding = 0.0;
     long totalDuration = 0;
     int emptyCount = 0;
+    int emgCount = 0;
     for (const Observation &observation : selected) {
-        energy += observation.energy;
-        mood += observation.mood;
-        grounding += observation.grounding;
         totalDuration += durationSeconds(observation);
         if (trim(observation.activity).empty()) {
             ++emptyCount;
         }
+        if (observationEmgMissing(observation)) {
+            continue;
+        }
+        ++emgCount;
+        energy += observation.energy;
+        mood += observation.mood;
+        grounding += observation.grounding;
     }
 
-    const double count = static_cast<double>(selected.size());
+    const double emgAverageCount = static_cast<double>(emgCount);
     const bool darkTheme = m_theme != "light";
     const wxColour cardBg = darkTheme ? wxColour(27, 31, 39) : wxColour(255, 255, 255);
     const wxColour fg = darkTheme ? wxColour(232, 237, 244) : wxColour(32, 36, 44);
@@ -1796,11 +1808,11 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) 
     addMetric(wxART_TIP, wxString::FromUTF8(_("Total prompt duration")),
               wxString::FromUTF8(formatDuration(totalDuration).c_str()));
     addMetric(wxART_INFORMATION, wxString::FromUTF8(_("Average energy")),
-              selected.empty() ? "-" : wxString::FromUTF8(formatDouble(energy / count).c_str()));
+              emgCount == 0 ? "-" : wxString::FromUTF8(formatDouble(energy / emgAverageCount).c_str()));
     addMetric(wxART_INFORMATION, wxString::FromUTF8(_("Average mood")),
-              selected.empty() ? "-" : wxString::FromUTF8(formatDouble(mood / count).c_str()));
+              emgCount == 0 ? "-" : wxString::FromUTF8(formatDouble(mood / emgAverageCount).c_str()));
     addMetric(wxART_INFORMATION, wxString::FromUTF8(_("Average grounding")),
-              selected.empty() ? "-" : wxString::FromUTF8(formatDouble(grounding / count).c_str()));
+              emgCount == 0 ? "-" : wxString::FromUTF8(formatDouble(grounding / emgAverageCount).c_str()));
 }
 
 std::vector<Observation> StatisticsDialog::selectedDayRecords() const {
@@ -1820,17 +1832,22 @@ void StatisticsDialog::updateSelectedDaySummary() {
     double grounding = 0.0;
     long totalDuration = 0;
     int emptyCount = 0;
+    int emgCount = 0;
     for (const Observation &observation : selected) {
-        energy += observation.energy;
-        mood += observation.mood;
-        grounding += observation.grounding;
         totalDuration += durationSeconds(observation);
         if (trim(observation.activity).empty()) {
             ++emptyCount;
         }
+        if (observationEmgMissing(observation)) {
+            continue;
+        }
+        ++emgCount;
+        energy += observation.energy;
+        mood += observation.mood;
+        grounding += observation.grounding;
     }
 
-    const double count = static_cast<double>(selected.size());
+    const double emgAverageCount = static_cast<double>(emgCount);
     m_daySummaryDate->SetLabel(m_anchor.FormatISODate());
     m_daySummaryRecords->SetLabel(wxString::FromUTF8(_("Records")) + ": " +
                                   wxString::Format("%zu", selected.size()));
@@ -1840,14 +1857,15 @@ void StatisticsDialog::updateSelectedDaySummary() {
                                    wxString::FromUTF8(formatDuration(totalDuration).c_str()));
     m_daySummaryEnergy->SetLabel(
         wxString::FromUTF8(_("Average energy")) + ": " +
-        (selected.empty() ? "-" : scoreWithEmoji(energyEmoji(energy / count), energy / count)));
+        (emgCount == 0 ? "-" : scoreWithEmoji(energyEmoji(energy / emgAverageCount), energy / emgAverageCount)));
     m_daySummaryMood->SetLabel(
         wxString::FromUTF8(_("Average mood")) + ": " +
-        (selected.empty() ? "-" : scoreWithEmoji(moodEmoji(mood / count), mood / count)));
+        (emgCount == 0 ? "-" : scoreWithEmoji(moodEmoji(mood / emgAverageCount), mood / emgAverageCount)));
     m_daySummaryGrounding->SetLabel(
         wxString::FromUTF8(_("Average grounding")) + ": " +
-        (selected.empty() ? "-"
-                          : scoreWithEmoji(groundingEmoji(grounding / count), grounding / count)));
+        (emgCount == 0 ? "-"
+                       : scoreWithEmoji(groundingEmoji(grounding / emgAverageCount),
+                                        grounding / emgAverageCount)));
     m_daySummaryPanel->Layout();
 }
 
@@ -1880,15 +1898,18 @@ void StatisticsDialog::renderStatistics() {
         ChartBucket &bucket = buckets[index];
         ++bucket.records;
         bucket.durationSeconds += durationSeconds(observation);
-        bucket.energySum += observation.energy;
-        bucket.moodSum += observation.mood;
-        bucket.groundingSum += observation.grounding;
-        if (m_mode == ViewMode::Day || m_mode == ViewMode::Week) {
-            samples.push_back({sampleAxisX(observation, m_mode, m_weekStartsMonday),
-                               observation.energy,
-                               observation.mood,
-                               observation.grounding,
-                               observationKey(observation)});
+        if (!observationEmgMissing(observation)) {
+            ++bucket.emgRecords;
+            bucket.energySum += observation.energy;
+            bucket.moodSum += observation.mood;
+            bucket.groundingSum += observation.grounding;
+            if (m_mode == ViewMode::Day || m_mode == ViewMode::Week) {
+                samples.push_back({sampleAxisX(observation, m_mode, m_weekStartsMonday),
+                                   observation.energy,
+                                   observation.mood,
+                                   observation.grounding,
+                                   observationKey(observation)});
+            }
         }
     }
     std::sort(samples.begin(), samples.end(), [](const ChartSample &a, const ChartSample &b) {
