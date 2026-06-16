@@ -22,8 +22,8 @@ energy, mood, and grounding scores.
   between minutes and seconds.
 - Provides a clickable `Quit` label in the prompt footer.
 - Wakes from a desktop app launcher shortcut while waiting; single-instance
-  handling keeps one background process. Launch twice in quick succession to
-  open statistics/history.
+  handling keeps one background process. Launch again while the prompt is
+  open to show statistics/history.
 - Saves every submitted prompt, including empty activity notes after trimming.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
@@ -92,8 +92,8 @@ While `oremind` is running, it keeps a tray icon available:
 Configure a desktop app launcher shortcut to run `oremind` when you want to
 wake the prompt while waiting.  Only one background process is kept per user
 session, so repeated launches contact the running instance instead of starting
-another copy.  Launch `oremind` twice in quick succession to open
-statistics/history instead of the prompt.
+another copy.  Launch `oremind` again while the prompt is open to show
+statistics/history instead of waking a second prompt.
 
 Tray and window icons are loaded from bundled `assets/icon-256.png`.  On
 GTK/Linux, the icon is trimmed and converted to a 32-bit alpha bitmap before

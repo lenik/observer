@@ -140,7 +140,7 @@ when you want to wake the prompt while waiting.  Only one background process is
 kept per user session, so repeated launches contact the running instance
 instead of starting another copy.  Launch
 .B oremind
-twice in quick succession to open statistics/history instead of the prompt.
+again while the prompt is open to show statistics/history.
 .SH STATISTICS
 .TP
 .B F1
