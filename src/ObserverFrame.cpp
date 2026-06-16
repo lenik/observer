@@ -21,10 +21,6 @@
 #include <unistd.h>
 #include <wx/taskbar.h>
 
-#if defined(__WXGTK__)
-#include <X11/keysym.h>
-#endif
-
 namespace {
 
 enum {
@@ -81,8 +77,8 @@ public:
     wxMenu* CreatePopupMenu() override
     {
         auto* menu = new wxMenu();
-        menu->Append(ID_TRAY_WAKE, wxString::FromUTF8(_("Wake")) + "\tWin+Alt+G");
-        menu->Append(ID_TRAY_STATS, wxString::FromUTF8(_("Statistics / History")) + "\tWin+Alt+H");
+        menu->Append(ID_TRAY_WAKE, wxString::FromUTF8(_("Wake")));
+        menu->Append(ID_TRAY_STATS, wxString::FromUTF8(_("Statistics / History")));
         menu->AppendSeparator();
         menu->Append(ID_TRAY_QUIT, wxString::FromUTF8(_("Quit")));
         return menu;
@@ -92,30 +88,20 @@ private:
     ObserverFrame* m_frame;
 };
 
-#if defined(__WXGTK__)
-int ignoreXError(Display*, XErrorEvent*)
-{
-    return 0;
-}
-#endif
-
 }
 
 ObserverFrame::ObserverFrame()
     : wxFrame(nullptr, wxID_ANY, "Observer"),
       m_timer(this, PromptTimerId),
-      m_hotKeyTimer(this, HotKeyTimerId),
       m_ipcTimer(this, IpcTimerId)
 {
     m_intervalSeconds = appConfig().intervalSeconds;
     m_store = createObservationStore();
     m_renderDriver = std::make_unique<WxDialogDriver>(this);
     Bind(wxEVT_TIMER, &ObserverFrame::onTimer, this, PromptTimerId);
-    Bind(wxEVT_TIMER, &ObserverFrame::onHotKeyPoll, this, HotKeyTimerId);
     Bind(wxEVT_TIMER, &ObserverFrame::onIpcPoll, this, IpcTimerId);
     setupIpcServer();
     setupTrayIcon();
-    setupGlobalHotKey();
     const wxIcon appIcon = observerAppIcon(32);
     if (appIcon.IsOk()) {
         SetIcon(appIcon);
@@ -126,7 +112,6 @@ ObserverFrame::ObserverFrame()
 
 ObserverFrame::~ObserverFrame()
 {
-    cleanupGlobalHotKey();
     cleanupTrayIcon();
     cleanupIpcServer();
 }
@@ -236,100 +221,30 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
         const ssize_t n = ::read(client, buffer, sizeof(buffer) - 1);
         ::close(client);
         if (n > 0 && std::string(buffer, static_cast<std::size_t>(n)).find("WAKE") != std::string::npos) {
-            if (m_promptOpen) {
-                auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
-                if (driver != nullptr) {
-                    driver->showStatisticsIfActive();
-                }
-            } else {
-                wakePrompt();
-            }
+            handleExternalWake();
         }
     }
 }
 
-void ObserverFrame::setupGlobalHotKey()
+void ObserverFrame::handleExternalWake()
 {
-#if defined(__WXGTK__)
-    m_hotKeyDisplay = XOpenDisplay(nullptr);
-    if (m_hotKeyDisplay == nullptr) {
-        return;
-    }
-
-    m_hotKeyRoot = DefaultRootWindow(m_hotKeyDisplay);
-    m_hotKeyModifiers = Mod4Mask | Mod1Mask;
-    m_promptHotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_G);
-    m_statsHotKeyCode = XKeysymToKeycode(m_hotKeyDisplay, XK_H);
-    if (m_promptHotKeyCode == 0 || m_statsHotKeyCode == 0) {
-        cleanupGlobalHotKey();
-        return;
-    }
-
-    const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
-    XErrorHandler previousHandler = XSetErrorHandler(ignoreXError);
-    for (unsigned int mask : masks) {
-        XGrabKey(m_hotKeyDisplay, m_promptHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
-            True, GrabModeAsync, GrabModeAsync);
-        XGrabKey(m_hotKeyDisplay, m_statsHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot,
-            True, GrabModeAsync, GrabModeAsync);
-    }
-    XSync(m_hotKeyDisplay, False);
-    XSetErrorHandler(previousHandler);
-    m_hotKeyRegistered = true;
-    m_hotKeyTimer.Start(100);
-#endif
-}
-
-void ObserverFrame::cleanupGlobalHotKey()
-{
-#if defined(__WXGTK__)
-    if (m_hotKeyDisplay == nullptr) {
-        return;
-    }
-
-    if (m_hotKeyRegistered) {
-        const unsigned int masks[] = {0, LockMask, Mod2Mask, LockMask | Mod2Mask};
-        for (unsigned int mask : masks) {
-            XUngrabKey(m_hotKeyDisplay, m_promptHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
-            XUngrabKey(m_hotKeyDisplay, m_statsHotKeyCode, m_hotKeyModifiers | mask, m_hotKeyRoot);
+    if (m_promptOpen) {
+        auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
+        if (driver != nullptr) {
+            driver->showStatisticsIfActive();
         }
-        m_hotKeyTimer.Stop();
-        m_hotKeyRegistered = false;
-    }
-    XCloseDisplay(m_hotKeyDisplay);
-    m_hotKeyDisplay = nullptr;
-    m_hotKeyRoot = 0;
-    m_promptHotKeyCode = 0;
-    m_statsHotKeyCode = 0;
-    m_hotKeyModifiers = 0;
-#endif
-}
-
-void ObserverFrame::onHotKeyPoll(wxTimerEvent& event)
-{
-    (void)event;
-#if defined(__WXGTK__)
-    if (m_hotKeyDisplay == nullptr) {
         return;
     }
 
-    while (XPending(m_hotKeyDisplay) > 0) {
-        XEvent xEvent;
-        XNextEvent(m_hotKeyDisplay, &xEvent);
-        if (xEvent.type == KeyPress
-            && (xEvent.xkey.state & m_hotKeyModifiers) == m_hotKeyModifiers) {
-            if (xEvent.xkey.keycode == m_promptHotKeyCode) {
-                triggerPromptFromHotKey();
-            } else if (xEvent.xkey.keycode == m_statsHotKeyCode) {
-                showStatisticsDialog();
-            }
-        }
+    const wxLongLong now = wxGetLocalTimeMillis();
+    if (m_lastWakeMs > 0
+        && (now - m_lastWakeMs).ToLong() <= WakeDoubleTapMs) {
+        m_lastWakeMs = 0;
+        showStatisticsDialog();
+        return;
     }
-#endif
-}
 
-void ObserverFrame::triggerPromptFromHotKey()
-{
+    m_lastWakeMs = now;
     wakePrompt();
 }
 
