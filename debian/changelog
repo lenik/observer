@@ -1,3 +1,26 @@
+observer (1.0.5) testing; urgency=medium
+
+  * Ignore history statistics samples whose energy, mood, and grounding are all
+    still at the default score.
+  * Rename --sqlite-db to --database and raise the default --cancel to 5.
+  * Remap prompt shortcuts: F8 snoozes, F1 opens history, F2-F4 decrease
+    grounding/mood/energy, and remove Ctrl+H.
+  * Update README and man pages for the CLI and shortcut changes.
+  * Remove Win+Alt+G and Win+Alt+H X11 global hotkeys; wake through desktop
+    launcher shortcuts and single-instance IPC instead.
+  * Open statistics/history when oremind is launched twice in quick succession
+    while waiting.
+  * Remap prompt shortcuts: F1 opens history; F2-F4 decrease
+    grounding/mood/energy; F5-F7 increase energy/mood/grounding.
+  * Add Simplified Chinese man page and update English man page and README.
+  * Drop the direct libx11 build dependency.
+  * Fix GTK tray icon black borders by trimming icon backdrop padding and
+    adding a 32-bit alpha channel before creating wxIcon.
+  * Switch bundled app icons to icon-256.png and drop icon-light.png and
+    icon-dark.png.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Tue, 16 Jun 2026 18:00:00 +0800
+
 observer (1.0.4) testing; urgency=medium
 
   * Add Win+Alt+H as an X11 global shortcut for opening statistics/history

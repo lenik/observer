@@ -28,7 +28,7 @@ energy, mood, and grounding scores.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
   path is a directory.
-- Exits after three consecutive Escape cancels.
+- Exits after five consecutive Escape cancels.
 
 ## Usage
 
@@ -46,8 +46,8 @@ oremind --opacity 85
 oremind --cancel 5
 oremind --interval 0.5
 oremind --interval 0
-oremind --sqlite-db ~/.observer/observer.sqlite3
-oremind --sqlite-db ~/.observer/logs/
+oremind --database ~/.observer/observer.sqlite3
+oremind --database ~/.observer/logs/
 ```
 
 Options:
@@ -61,26 +61,26 @@ Options:
 - `-o`, `--opacity NUM`: set the final dialog opacity from `0` to `100`.
   The default is `75`.
 - `-c`, `--cancel NUM`: exit after `NUM` consecutive cancels. The default is
-  `3`.
+  `5`.
 - `-i`, `--interval NUM`: set the normal prompt interval in minutes. Fractional
   values are accepted. `0` makes the startup prompt a one-shot run.
 - `-w`, `--weekstart MmSs`: set the calendar week start. Use `M`/`m` for
   Monday, or `S`/`s` for Sunday. The default is Monday.
-- `-d`, `--sqlite-db PATH`: use `PATH` as the SQLite database file, or as a log
+- `-d`, `--database PATH`: use `PATH` as the SQLite database file, or as a log
   directory when it is an existing directory or ends with `/`.
 - `--version`: print version and license information.
 
 ## Keyboard
 
 - `Enter`: submit. Empty activity text is recorded as an empty note.
-- `Escape`: cancel without recording. By default, three consecutive cancels
+- `Escape`: cancel without recording. By default, five consecutive cancels
   exit the app; change this with `--cancel`.
-- `Ctrl+S`: snooze for 30 seconds.
+- `F8`: snooze for 30 seconds.
 - `Ctrl+Q`: quit from the prompt.
-- `Ctrl+H` / `F1`: open the statistics window.
-- `F2` / `F7`: decrease / increase grounding by half a step.
-- `F3` / `F6`: decrease / increase mood by half a step.
+- `F1`: open the statistics window.
 - `F4` / `F5`: decrease / increase energy by half a step.
+- `F3` / `F6`: decrease / increase mood by half a step.
+- `F2` / `F7`: decrease / increase grounding by half a step.
 
 ## Tray And Single Instance
 
@@ -110,7 +110,7 @@ warning: oremind is already running; waking existing instance.
 
 ## Statistics
 
-Open statistics/history from a prompt with `Ctrl+H` or `F1`, or from the tray icon
+Open statistics/history from a prompt with `F1`, or from the tray icon
 right-click menu.
 
 The statistics window has a toolbar for calendar, day, week, month, year,
@@ -151,7 +151,7 @@ The default SQLite database is:
 The app creates the parent directory and database table automatically.  Default
 scores are stored as `NULL`.
 
-When `--sqlite-db` points to a directory, `oremind` writes daily logs:
+When `--database` points to a directory, `oremind` writes daily logs:
 
 ```text
 <datadir>/<yyyy-mm-dd>.log

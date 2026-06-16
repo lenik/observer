@@ -19,8 +19,8 @@ wxWidgets、SQLite 和 Meson。当前可执行程序是 `oremind`。
   快速连续启动两次可打开统计 / 历史。
 - 提交前会 trim 活动文本；空内容也会作为空日志记录。
 - `energy`、`mood`、`grounding` 的默认值为 3，保持默认时视为未记录。
-- 默认写入 SQLite，也可以把 `--sqlite-db` 指向目录来写每日文本日志。
-- 连续 3 次按 Escape 取消后退出应用。
+- 默认写入 SQLite，也可以把 `--database` 指向目录来写每日文本日志。
+- 连续 5 次按 Escape 取消后退出应用。
 
 ## 使用
 
@@ -38,8 +38,8 @@ oremind --opacity 85
 oremind --cancel 5
 oremind --interval 0.5
 oremind --interval 0
-oremind --sqlite-db ~/.observer/observer.sqlite3
-oremind --sqlite-db ~/.observer/logs/
+oremind --database ~/.observer/observer.sqlite3
+oremind --database ~/.observer/logs/
 ```
 
 选项：
@@ -50,22 +50,22 @@ oremind --sqlite-db ~/.observer/logs/
 - `-l`, `--locale LOCALE`：在加载翻译前设置界面语言，例如 `en`、`zh_CN`、`zh_TW`、`ja`、`ko`、`fr` 或 `de`。
 - `-t`, `--theme light|dark`：选择浅色或深色主题。
 - `-o`, `--opacity NUM`：设置弹窗最终不透明度，范围 `0` 到 `100`，默认 `75`。
-- `-c`, `--cancel NUM`：连续取消 `NUM` 次后退出，默认 `3`。
+- `-c`, `--cancel NUM`：连续取消 `NUM` 次后退出，默认 `5`。
 - `-i`, `--interval NUM`：设置正常提醒间隔，单位为分钟，支持小数。`0` 表示启动弹窗后提交或取消即退出。
 - `-w`, `--weekstart MmSs`：设置日历周起始日。`M`/`m` 表示周一，`S`/`s` 表示周日，默认周一。
-- `-d`, `--sqlite-db PATH`：如果 `PATH` 是文件路径，则作为 SQLite 数据库；如果是已有目录或以 `/` 结尾，则作为日志目录。
+- `-d`, `--database PATH`：如果 `PATH` 是文件路径，则作为 SQLite 数据库；如果是已有目录或以 `/` 结尾，则作为日志目录。
 - `--version`：显示版本和许可证信息。
 
 ## 快捷键
 
 - `Enter`：提交。活动内容为空时记录为空日志。
-- `Escape`：取消且不记录。默认连续取消 3 次会退出应用，可用 `--cancel` 修改。
-- `Ctrl+S`：稍后 30 秒。
+- `Escape`：取消且不记录。默认连续取消 5 次会退出应用，可用 `--cancel` 修改。
+- `F8`：稍后 30 秒。
 - `Ctrl+Q`：在弹窗中退出应用。
-- `Ctrl+H` / `F1`：打开统计视图。
-- `F2` / `F7`：接地减 / 加半格。
-- `F3` / `F6`：心情减 / 加半格。
+- `F1`：打开统计视图。
 - `F4` / `F5`：能量减 / 加半格。
+- `F3` / `F6`：心情减 / 加半格。
+- `F2` / `F7`：接地减 / 加半格。
 
 ## 托盘和单实例
 
@@ -90,7 +90,7 @@ warning: oremind is already running; waking existing instance.
 
 ## 统计视图
 
-在弹窗中按 `Ctrl+H` 或 `F1`，或通过托盘图标右键菜单打开统计 / 历史。
+在弹窗中按 `F1`，或通过托盘图标右键菜单打开统计 / 历史。
 
 统计窗口顶部工具栏提供日历、日、周、月、年、今天、上一页、下一页和关闭操作。
 日历视图是自绘月历，包含农历日子、常见节假日高亮、今天和选中日标记，以及表示
@@ -122,7 +122,7 @@ warning: oremind is already running; waking existing instance.
 
 应用会自动创建父目录和表。默认评分会保存为 `NULL`。
 
-当 `--sqlite-db` 指向目录时，`oremind` 会写每日日志：
+当 `--database` 指向目录时，`oremind` 会写每日日志：
 
 ```text
 <datadir>/<yyyy-mm-dd>.log

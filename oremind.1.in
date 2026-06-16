@@ -16,7 +16,7 @@ exits.
 .PP
 Each prompt asks for a short activity note and optional energy, mood, and
 grounding scores.  The prompt can be submitted with Enter, cancelled with
-Escape, or snoozed for 30 seconds with Control-S.  Activity text is trimmed;
+Escape, or snoozed for 30 seconds with F8.  Activity text is trimmed;
 empty activity submissions are recorded as empty notes.
 .PP
 By default records are stored in
@@ -65,7 +65,7 @@ The default is
 Exit after
 .I NUM
 consecutive prompt cancels.  The default is
-.BR 3 .
+.BR 5 .
 .TP
 .BR \-i ", " \-\-interval " " \fINUM\fR
 Set the normal prompt interval in minutes.  Fractional values are accepted.
@@ -84,7 +84,7 @@ or
 .B s
 for Sunday.  The default is Monday.
 .TP
-.BR \-d ", " \-\-sqlite-db " " \fIPATH\fR
+.BR \-d ", " \-\-database " " \fIPATH\fR
 Set the storage target.  If
 .I PATH
 is a file path, it is used as the SQLite database.  If
@@ -102,11 +102,11 @@ Submit the current prompt.  If the activity field is empty after trimming, an
 empty note is saved.
 .TP
 .B Escape
-Cancel the current prompt without saving.  By default, three consecutive
+Cancel the current prompt without saving.  By default, five consecutive
 Escape cancels exit the application; change this with
 .BR \-\-cancel .
 .TP
-.B Control-S
+.B F8
 Snooze the prompt for 30 seconds.
 .TP
 .B Control-Q
@@ -114,9 +114,6 @@ Quit the application from the prompt.
 .TP
 .B F1
 Open the statistics window from the prompt.
-.TP
-.B Control-H
-Also opens the statistics window from the prompt.
 .TP
 .B Quit
 Click the small Quit label in the prompt footer to exit the application.
