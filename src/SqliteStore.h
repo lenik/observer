@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
 
 class SqliteStore : public ObservationStore {
 public:
@@ -16,11 +17,14 @@ public:
     SqliteStore(const SqliteStore&) = delete;
     SqliteStore& operator=(const SqliteStore&) = delete;
 
-    void save(const Observation& observation) override;
-    std::vector<Observation> loadAll() override;
     const std::string& path() const override;
 
     static std::string defaultDatabasePath();
+
+protected:
+    void readRows(std::vector<Observation>& rows) override;
+    void writeRows(const std::vector<Observation>& rows) override;
+    void appendRow(Observation& observation) override;
 
 private:
     void open();

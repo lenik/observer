@@ -102,6 +102,7 @@ Observation parseRecord(const std::string& date, const std::string& header, cons
     in >> promptedTime;
 
     Observation observation{
+        0,
         timestampFromParts(date, promptedTime.empty() ? "00:00:00" : promptedTime),
         timestampFromParts(date, promptedTime.empty() ? "00:00:00" : promptedTime),
         DefaultObservationScore,
@@ -138,29 +139,27 @@ Observation parseRecord(const std::string& date, const std::string& header, cons
     return observation;
 }
 
+int64_t promptedAtEpochMs(const std::string& promptedAt)
+{
+    std::tm local{};
+    if (!parseTimestamp(promptedAt, local)) {
+        return 0;
+    }
+    local.tm_isdst = -1;
+    const std::time_t seconds = std::mktime(&local);
+    if (seconds == static_cast<std::time_t>(-1)) {
+        return 0;
+    }
+    return static_cast<int64_t>(seconds) * 1000;
+}
+
 std::string dateFromLogPath(const std::filesystem::path& path)
 {
     return path.stem().string();
 }
 
-}
-
-DataDirStore::DataDirStore(std::string path)
-    : m_path(std::move(path))
+void writeObservation(std::ostream& out, const Observation& observation)
 {
-    std::filesystem::create_directories(m_path);
-}
-
-void DataDirStore::save(const Observation& observation)
-{
-    std::filesystem::create_directories(m_path);
-    const std::filesystem::path logPath = std::filesystem::path(m_path) / (datePart(observation.promptedAt) + ".log");
-
-    std::ofstream out(logPath, std::ios::app);
-    if (!out) {
-        throw std::runtime_error("failed to open log file: " + logPath.string());
-    }
-
     out << timePart(observation.promptedAt);
     appendScore(out, 'e', observation.energy);
     appendScore(out, 'm', observation.mood);
@@ -181,12 +180,37 @@ void DataDirStore::save(const Observation& observation)
     out << "\n";
 }
 
-std::vector<Observation> DataDirStore::loadAll()
+}
+
+DataDirStore::DataDirStore(std::string path)
+    : m_path(std::move(path))
 {
-    std::vector<Observation> observations;
+    std::filesystem::create_directories(m_path);
+}
+
+void DataDirStore::appendRow(Observation& observation)
+{
+    if (observation.id == 0) {
+        observation.id = promptedAtEpochMs(observation.promptedAt);
+    }
+
+    std::filesystem::create_directories(m_path);
+    const std::filesystem::path logPath = std::filesystem::path(m_path) / (datePart(observation.promptedAt) + ".log");
+
+    std::ofstream out(logPath, std::ios::app);
+    if (!out) {
+        throw std::runtime_error("failed to open log file: " + logPath.string());
+    }
+
+    writeObservation(out, observation);
+}
+
+void DataDirStore::readRows(std::vector<Observation>& rows)
+{
+    rows.clear();
     std::error_code ec;
     if (!std::filesystem::is_directory(m_path, ec)) {
-        return observations;
+        return;
     }
 
     std::vector<std::filesystem::path> files;
@@ -209,7 +233,7 @@ std::vector<Observation> DataDirStore::loadAll()
         std::string line;
         auto flush = [&]() {
             if (!header.empty()) {
-                observations.push_back(parseRecord(date, header, activityLines));
+                rows.push_back(parseRecord(date, header, activityLines));
                 header.clear();
                 activityLines.clear();
             }
@@ -232,7 +256,25 @@ std::vector<Observation> DataDirStore::loadAll()
         flush();
     }
 
-    return observations;
+    for (Observation& observation : rows) {
+        observation.id = promptedAtEpochMs(observation.promptedAt);
+    }
+}
+
+void DataDirStore::writeRows(const std::vector<Observation>& observations)
+{
+    std::filesystem::create_directories(m_path);
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator(m_path, ec)) {
+        if (entry.is_regular_file(ec) && entry.path().extension() == ".log") {
+            std::filesystem::remove(entry.path(), ec);
+        }
+    }
+
+    for (const Observation& observation : observations) {
+        Observation row = observation;
+        appendRow(row);
+    }
 }
 
 const std::string& DataDirStore::path() const

@@ -21,6 +21,13 @@ void bindDouble(sqlite3_stmt* stmt, int index, double value)
     }
 }
 
+void bindInt64(sqlite3_stmt* stmt, int index, int64_t value)
+{
+    if (sqlite3_bind_int64(stmt, index, value) != SQLITE_OK) {
+        throw std::runtime_error("failed to bind SQLite integer parameter");
+    }
+}
+
 void bindNull(sqlite3_stmt* stmt, int index)
 {
     if (sqlite3_bind_null(stmt, index) != SQLITE_OK) {
@@ -116,7 +123,7 @@ SqliteStore::~SqliteStore()
     }
 }
 
-void SqliteStore::save(const Observation& observation)
+void SqliteStore::appendRow(Observation& observation)
 {
     const char* sql =
         "INSERT INTO observations "
@@ -146,13 +153,14 @@ void SqliteStore::save(const Observation& observation)
     }
 
     sqlite3_finalize(stmt);
+    observation.id = sqlite3_last_insert_rowid(m_db);
 }
 
-std::vector<Observation> SqliteStore::loadAll()
+void SqliteStore::readRows(std::vector<Observation>& rows)
 {
     initializeSchema();
     const char* sql =
-        "SELECT prompted_at, submitted_at, energy, mood, grounding, activity, quote "
+        "SELECT id, prompted_at, submitted_at, energy, mood, grounding, activity, quote "
         "FROM observations ORDER BY prompted_at ASC, id ASC";
 
     sqlite3_stmt* stmt = nullptr;
@@ -163,18 +171,75 @@ std::vector<Observation> SqliteStore::loadAll()
     std::vector<Observation> observations;
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         observations.push_back(Observation{
-            columnText(stmt, 0),
+            sqlite3_column_int64(stmt, 0),
             columnText(stmt, 1),
-            columnScore(stmt, 2),
+            columnText(stmt, 2),
             columnScore(stmt, 3),
             columnScore(stmt, 4),
-            columnText(stmt, 5),
+            columnScore(stmt, 5),
             columnText(stmt, 6),
+            columnText(stmt, 7),
         });
     }
 
     sqlite3_finalize(stmt);
-    return observations;
+    rows = std::move(observations);
+}
+
+void SqliteStore::writeRows(const std::vector<Observation>& observations)
+{
+    initializeSchema();
+    try {
+        execSql(m_db, "BEGIN IMMEDIATE");
+        execSql(m_db, "DELETE FROM observations");
+
+        const char* sql =
+            "INSERT INTO observations "
+            "(id, prompted_at, submitted_at, energy, mood, grounding, activity, quote) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            throw std::runtime_error(sqlite3_errmsg(m_db));
+        }
+
+        int64_t nextId = 1;
+        for (const Observation& observation : observations) {
+            if (observation.id >= nextId) {
+                nextId = observation.id + 1;
+            }
+        }
+
+        for (Observation observation : observations) {
+            if (observation.id == 0) {
+                observation.id = nextId++;
+            }
+            sqlite3_reset(stmt);
+            sqlite3_clear_bindings(stmt);
+            bindInt64(stmt, 1, observation.id);
+            bindText(stmt, 2, observation.promptedAt);
+            bindText(stmt, 3, observation.submittedAt);
+            bindScore(stmt, 4, observation.energy);
+            bindScore(stmt, 5, observation.mood);
+            bindScore(stmt, 6, observation.grounding);
+            bindText(stmt, 7, observation.activity);
+            bindText(stmt, 8, observation.quote);
+
+            if (sqlite3_step(stmt) != SQLITE_DONE) {
+                throw std::runtime_error(sqlite3_errmsg(m_db));
+            }
+        }
+
+        sqlite3_finalize(stmt);
+        execSql(m_db,
+                "UPDATE sqlite_sequence SET seq = "
+                "(SELECT COALESCE(MAX(id), 0) FROM observations) "
+                "WHERE name = 'observations'");
+        execSql(m_db, "COMMIT");
+    } catch (...) {
+        sqlite3_exec(m_db, "ROLLBACK", nullptr, nullptr, nullptr);
+        throw;
+    }
 }
 
 const std::string& SqliteStore::path() const
