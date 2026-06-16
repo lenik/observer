@@ -160,7 +160,7 @@ msgid "grounding"
 msgstr ""
 
 #: src/ObservationDialog.cpp:586
-msgid "Win+Alt+G wake immediately"
+msgid "Launch oremind again to wake immediately"
 msgstr ""
 
 #: src/ObservationDialog.cpp:666

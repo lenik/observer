@@ -156,8 +156,8 @@ msgid "grounding"
 msgstr "接地"
 
 #: src/ObservationDialog.cpp:586
-msgid "Win+Alt+G wake immediately"
-msgstr "Win+Alt+G 立即喚醒"
+msgid "Launch oremind again to wake immediately"
+msgstr "再次啟動 oremind 可立即喚醒"
 
 #: src/ObservationDialog.cpp:666
 msgid "Enter submit"

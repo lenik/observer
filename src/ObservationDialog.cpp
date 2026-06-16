@@ -588,7 +588,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
         wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
     m_intervalCtrl->SetForegroundColour(darkTheme ? wxColour(170, 176, 184) : wxColour(78, 84, 94));
     m_intervalCtrl->SetBackgroundColour(darkTheme ? wxColour(28, 32, 39) : wxColour(235, 238, 242));
-    m_intervalCtrl->SetToolTip(wxString::FromUTF8(_("Win+Alt+G wake immediately")));
+    m_intervalCtrl->SetToolTip(wxString::FromUTF8(_("Launch oremind again to wake immediately")));
 
     const wxColour promptBg = darkTheme ? wxColour(30, 34, 42) : wxColour(255, 255, 255);
     const wxColour promptFg = darkTheme ? wxColour(255, 255, 255) : wxColour(15, 18, 24);
@@ -762,7 +762,7 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_F2) {
-        m_energyRating->adjust(-0.5);
+        m_groundingRating->adjust(-0.5);
         return;
     }
     if (keyCode == WXK_F3) {
@@ -770,7 +770,7 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_F4) {
-        m_groundingRating->adjust(-0.5);
+        m_energyRating->adjust(-0.5);
         return;
     }
     if (keyCode == WXK_F5) {
