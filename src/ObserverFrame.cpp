@@ -165,7 +165,7 @@ void ObserverFrame::onTimer(wxTimerEvent& event)
 void ObserverFrame::setupTrayIcon()
 {
     m_trayIcon = std::make_unique<ObserverTrayIcon>(this);
-    const wxIcon icon = observerAppIcon(22);
+    const wxIcon icon = observerAppIcon(32);
     if (icon.IsOk()) {
         m_trayIcon->SetIcon(icon, wxString::FromUTF8("Observer"));
     }
