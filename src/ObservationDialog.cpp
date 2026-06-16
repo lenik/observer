@@ -672,7 +672,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     m_submitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { submit(); });
     m_skipLabel = makeLabel(wxString::FromUTF8(_("Esc skip")), actionColour);
     m_skipLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { skip(); });
-    auto* historyLabel = makeLabel(wxString::FromUTF8(_("^H History")), actionColour);
+    auto* historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
     historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { showStatistics(); });
     m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
     m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
@@ -758,11 +758,11 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         }
     }
     if (keyCode == WXK_F1) {
-        m_energyRating->adjust(-0.5);
+        showStatistics();
         return;
     }
     if (keyCode == WXK_F2) {
-        m_energyRating->adjust(0.5);
+        m_energyRating->adjust(-0.5);
         return;
     }
     if (keyCode == WXK_F3) {
@@ -770,14 +770,18 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_F4) {
-        m_moodRating->adjust(0.5);
-        return;
-    }
-    if (keyCode == WXK_F5) {
         m_groundingRating->adjust(-0.5);
         return;
     }
+    if (keyCode == WXK_F5) {
+        m_energyRating->adjust(0.5);
+        return;
+    }
     if (keyCode == WXK_F6) {
+        m_moodRating->adjust(0.5);
+        return;
+    }
+    if (keyCode == WXK_F7) {
         m_groundingRating->adjust(0.5);
         return;
     }
