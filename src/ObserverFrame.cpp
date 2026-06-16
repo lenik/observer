@@ -1,6 +1,7 @@
 #include "ObserverFrame.h"
 
 #include "AppConfig.h"
+#include "AppIcon.h"
 #include "StatisticsDialog.h"
 #include "WxDialogDriver.h"
 
@@ -18,7 +19,6 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <wx/artprov.h>
 #include <wx/taskbar.h>
 
 #if defined(__WXGTK__)
@@ -116,6 +116,10 @@ ObserverFrame::ObserverFrame()
     setupIpcServer();
     setupTrayIcon();
     setupGlobalHotKey();
+    const wxIcon appIcon = observerAppIcon(32);
+    if (appIcon.IsOk()) {
+        SetIcon(appIcon);
+    }
     Hide();
     CallAfter(&ObserverFrame::showPrompt);
 }
@@ -161,13 +165,8 @@ void ObserverFrame::onTimer(wxTimerEvent& event)
 void ObserverFrame::setupTrayIcon()
 {
     m_trayIcon = std::make_unique<ObserverTrayIcon>(this);
-    wxBitmap bitmap = wxArtProvider::GetBitmap(wxART_TIP, wxART_OTHER, wxSize(22, 22));
-    if (!bitmap.IsOk()) {
-        bitmap = wxArtProvider::GetBitmap(wxART_INFORMATION, wxART_OTHER, wxSize(22, 22));
-    }
-    if (bitmap.IsOk()) {
-        wxIcon icon;
-        icon.CopyFromBitmap(bitmap);
+    const wxIcon icon = observerAppIcon(22);
+    if (icon.IsOk()) {
         m_trayIcon->SetIcon(icon, wxString::FromUTF8("Observer"));
     }
 }
@@ -237,7 +236,14 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
         const ssize_t n = ::read(client, buffer, sizeof(buffer) - 1);
         ::close(client);
         if (n > 0 && std::string(buffer, static_cast<std::size_t>(n)).find("WAKE") != std::string::npos) {
-            wakePrompt();
+            if (m_promptOpen) {
+                auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
+                if (driver != nullptr) {
+                    driver->showStatisticsIfActive();
+                }
+            } else {
+                wakePrompt();
+            }
         }
     }
 }

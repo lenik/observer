@@ -1,5 +1,6 @@
 #include "ObservationDialog.h"
 
+#include "AppIcon.h"
 #include "StatisticsDialog.h"
 
 #include <bas/locale/i18n.h>
@@ -534,6 +535,10 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     m_history = defaults.history;
     m_weekStartsMonday = defaults.weekStartsMonday;
     m_quoteIndex = defaults.quoteIndex;
+    const wxIcon appIcon = observerAppIcon(32);
+    if (appIcon.IsOk()) {
+        SetIcon(appIcon);
+    }
     if (m_quotes.empty()) {
         m_quotes.push_back(m_quote);
         m_quoteIndex = 0;
