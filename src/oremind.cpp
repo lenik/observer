@@ -126,7 +126,7 @@ void usage(FILE *out) {
     fputs(_("set prompt interval in minutes\n"), out);
     fputs("  -w, --weekstart MmSs ", out);
     fputs(_("set calendar week start: M/m for Monday, S/s for Sunday\n"), out);
-    fputs("  -d, --sqlite-db PATH ", out);
+    fputs("  -d, --database PATH ", out);
     fputs(_("SQLite file path, or log directory when PATH is a directory\n"), out);
     fputs("      --version      ", out);
     fputs(_("output version information and exit\n"), out);
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
         {"cancel", required_argument, NULL, 'c'},
         {"interval", required_argument, NULL, 'i'},
         {"weekstart", required_argument, NULL, 'w'},
-        {"sqlite-db", required_argument, NULL, 'd'},
+        {"database", required_argument, NULL, 'd'},
         {"version", no_argument, NULL, OPT_VERSION},
         {NULL, 0, NULL, 0},
     };

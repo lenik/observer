@@ -30,14 +30,14 @@ _oremind()
 			COMPREPLY=($(compgen -W 'M m S s' -- "$cur"))
 			return
 			;;
-		-d|--sqlite-db)
+		-d|--database)
 			_filedir
 			return
 			;;
 	esac
 
 	if [[ $cur == -* ]]; then
-		COMPREPLY=($(compgen -W '-v --verbose -q --quiet -h --help -l --locale -t --theme -o --opacity -c --cancel -i --interval -w --weekstart -d --sqlite-db --version' -- "$cur"))
+		COMPREPLY=($(compgen -W '-v --verbose -q --quiet -h --help -l --locale -t --theme -o --opacity -c --cancel -i --interval -w --weekstart -d --database --version' -- "$cur"))
 		return
 	fi
 
