@@ -21,6 +21,7 @@ class ObservationDialog : public wxDialog {
     double intervalSeconds() const;
     void animateIn();
     void showStatistics();
+    bool isStatisticsOpen() const { return m_statisticsOpen; }
 
   private:
     void onCharHook(wxKeyEvent &event);
@@ -60,6 +61,7 @@ class ObservationDialog : public wxDialog {
     bool m_hasTransparency = false;
     bool m_closing = false;
     bool m_intervalInSeconds = false;
+    bool m_statisticsOpen = false;
 };
 
 #endif

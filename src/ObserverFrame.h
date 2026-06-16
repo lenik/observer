@@ -36,7 +36,6 @@ private:
     static constexpr int SnoozeIntervalMs = 30000;
     static constexpr int PromptTimerId = wxID_HIGHEST + 100;
     static constexpr int IpcTimerId = wxID_HIGHEST + 101;
-    static constexpr long WakeDoubleTapMs = 500;
 
     wxTimer m_timer;
     wxTimer m_ipcTimer;
@@ -47,7 +46,6 @@ private:
     double m_intervalSeconds = 120.0;
     int m_ipcServerFd = -1;
     int m_consecutiveSkips = 0;
-    wxLongLong m_lastWakeMs = 0;
     bool m_promptOpen = false;
 };
 

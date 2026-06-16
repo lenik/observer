@@ -40,7 +40,7 @@ ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults& defaults)
 
 void WxDialogDriver::showStatisticsIfActive()
 {
-    if (m_activeDialog != nullptr) {
+    if (m_activeDialog != nullptr && !m_activeDialog->isStatisticsOpen()) {
         m_activeDialog->showStatistics();
     }
 }

@@ -228,24 +228,17 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
 
 void ObserverFrame::handleExternalWake()
 {
-    if (m_promptOpen) {
-        auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
-        if (driver != nullptr) {
-            driver->showStatisticsIfActive();
+    CallAfter([this]() {
+        if (m_promptOpen) {
+            auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
+            if (driver != nullptr) {
+                driver->showStatisticsIfActive();
+            }
+            return;
         }
-        return;
-    }
 
-    const wxLongLong now = wxGetLocalTimeMillis();
-    if (m_lastWakeMs > 0
-        && (now - m_lastWakeMs).ToLong() <= WakeDoubleTapMs) {
-        m_lastWakeMs = 0;
-        showStatisticsDialog();
-        return;
-    }
-
-    m_lastWakeMs = now;
-    wakePrompt();
+        wakePrompt();
+    });
 }
 
 void ObserverFrame::wakePrompt()

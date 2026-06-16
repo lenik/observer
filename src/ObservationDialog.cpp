@@ -822,9 +822,17 @@ void ObservationDialog::quit()
 
 void ObservationDialog::showStatistics()
 {
+    if (m_statisticsOpen) {
+        return;
+    }
+
+    m_statisticsOpen = true;
     StatisticsDialog dialog(this, m_history, m_theme, m_weekStartsMonday);
     dialog.ShowModal();
-    m_activityCtrl->SetFocus();
+    m_statisticsOpen = false;
+    if (m_activityCtrl != nullptr) {
+        m_activityCtrl->SetFocus();
+    }
 }
 
 void ObservationDialog::showRandomQuote()
