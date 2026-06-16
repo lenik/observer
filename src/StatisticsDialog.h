@@ -1,7 +1,7 @@
 #ifndef STATISTICS_DIALOG_H
 #define STATISTICS_DIALOG_H
 
-#include "Observation.h"
+#include "ObservationStore.h"
 
 #include <wx/checkbox.h>
 #include <wx/wx.h>
@@ -23,25 +23,34 @@ class StatisticsDialog : public wxDialog {
         Year,
     };
 
-    StatisticsDialog(wxWindow *parent, std::vector<Observation> observations, std::string theme,
-                     bool weekStartsMonday);
+    StatisticsDialog(wxWindow *parent, ObservationStore *store, std::string theme, bool weekStartsMonday,
+                     const std::vector<std::string> &quotes = {});
 
   private:
     void onCharHook(wxKeyEvent &event);
+    void onClose(wxCloseEvent &event);
     void setMode(ViewMode mode);
     void movePeriod(int delta);
     void render();
     void renderCalendar();
-    void renderStatistics();
+    void renderStatistics(long selectIndex = -1);
     void updateTitle();
     void updateToolbar();
     void hookDisplaySurface(wxWindow *surface);
     void rebuildMetrics(const std::vector<Observation> &selected);
     void updateSelectedDaySummary();
-    std::vector<Observation> selectedDayRecords() const;
+    void reloadTableRecords(long selectIndex = -1);
+    void reloadCalendarRecords();
+    std::vector<Observation> currentViewRows() const;
+    ObservationCriteria tableCriteria() const;
+    ObservationCriteria statisticsCriteria() const;
     void goToday();
+    void editObservation(const Observation &original);
+    void deleteObservation(const Observation &original);
+    void refreshAfterMutation(long selectIndex = -1);
 
-    std::vector<Observation> m_observations;
+    ObservationStore *m_store = nullptr;
+    std::vector<std::string> m_quotes;
     std::string m_theme;
     bool m_weekStartsMonday = true;
     ViewMode m_mode = ViewMode::Calendar;

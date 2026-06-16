@@ -257,7 +257,8 @@ void ObserverFrame::showStatisticsDialog()
         return;
     }
     try {
-        StatisticsDialog dialog(this, m_store->loadAll(), appConfig().theme, appConfig().weekStartsMonday);
+        StatisticsDialog dialog(this, m_store.get(), appConfig().theme, appConfig().weekStartsMonday,
+                                m_quoteProvider.quotes());
         dialog.ShowModal();
     } catch (const std::exception& ex) {
         wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
@@ -327,8 +328,9 @@ void ObserverFrame::showPrompt()
     defaults.quotes = m_quoteProvider.quotes();
     defaults.quoteIndex = m_quoteProvider.randomIndex();
     defaults.quote = defaults.quotes[defaults.quoteIndex];
+    defaults.store = m_store.get();
     try {
-        defaults.history = m_store->loadAll();
+        m_store->load({});
     } catch (const std::exception& ex) {
         wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
     }
