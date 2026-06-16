@@ -21,8 +21,9 @@ energy, mood, and grounding scores.
 - Lets the interval be edited from the prompt; the interval unit label toggles
   between minutes and seconds.
 - Provides a clickable `Quit` label in the prompt footer.
-- Registers `Win+Alt+G` on X11 to show the prompt immediately while waiting,
-  and `Win+Alt+H` to open statistics/history.
+- Wakes from a desktop app launcher shortcut while waiting; single-instance
+  handling keeps one background process. Launch twice in quick succession to
+  open statistics/history.
 - Saves every submitted prompt, including empty activity notes after trimming.
 - Treats default `energy`, `mood`, and `grounding` scores as unrecorded.
 - Stores observations in SQLite by default, or daily log files when the storage
@@ -76,13 +77,10 @@ Options:
   exit the app; change this with `--cancel`.
 - `Ctrl+S`: snooze for 30 seconds.
 - `Ctrl+Q`: quit from the prompt.
-- `Ctrl+H`: open the statistics window.
-- `Win+Alt+G`: show the prompt immediately while the app is waiting. This uses
-  an X11 global hotkey on Linux.
-- `Win+Alt+H`: open statistics/history immediately while the app is waiting.
-- `F1` / `F2`: decrease / increase energy by half a step.
-- `F3` / `F4`: decrease / increase mood by half a step.
-- `F5` / `F6`: decrease / increase grounding by half a step.
+- `Ctrl+H` / `F1`: open the statistics window.
+- `F2` / `F7`: decrease / increase grounding by half a step.
+- `F3` / `F6`: decrease / increase mood by half a step.
+- `F4` / `F5`: decrease / increase energy by half a step.
 
 ## Tray And Single Instance
 
@@ -90,8 +88,17 @@ While `oremind` is running, it keeps a tray icon available:
 
 - Left-click the tray icon to show the prompt immediately.
 - Right-click the tray icon for `Wake`, `Statistics / History`, and `Quit`.
-- `Wake` is equivalent to `Win+Alt+G`.
-- `Statistics / History` is equivalent to `Win+Alt+H`.
+
+Configure a desktop app launcher shortcut to run `oremind` when you want to
+wake the prompt while waiting.  Only one background process is kept per user
+session, so repeated launches contact the running instance instead of starting
+another copy.  Launch `oremind` twice in quick succession to open
+statistics/history instead of the prompt.
+
+Tray and window icons are loaded from bundled `assets/icon-256.png`.  On
+GTK/Linux, the icon is trimmed and converted to a 32-bit alpha bitmap before
+being shown in the status notifier, so the panel background shows through
+correctly instead of rendering black bars above and below the icon.
 
 Starting `oremind` again does not create another background process.  The new
 process contacts the running instance, asks it to wake the prompt, prints this
@@ -103,7 +110,7 @@ warning: oremind is already running; waking existing instance.
 
 ## Statistics
 
-Open statistics/history from a prompt with `Ctrl+H`, or from the tray icon
+Open statistics/history from a prompt with `Ctrl+H` or `F1`, or from the tray icon
 right-click menu.
 
 The statistics window has a toolbar for calendar, day, week, month, year,
@@ -165,14 +172,14 @@ Any score still at the default value is omitted.
 ### Dependencies
 
 On Debian-like systems, install the usual build tools plus wxWidgets, SQLite,
-gettext, and the local `bas-c` / `bas-cpp` dependencies used by this project:
+gettext, and the local `bas-cpp` / `bas-ui` dependencies used by this project:
 
 ```bash
 sudo apt install meson ninja-build pkg-config gettext sqlite3 libsqlite3-dev \
-    libwxgtk3.2-dev libx11-dev check
+    libwxgtk3.2-dev check
 ```
 
-Then make sure `bas-c` and `bas-cpp` development packages are available to
+Then make sure `bas-cpp` and `bas-ui` development packages are available to
 `pkg-config`.
 
 ### Configure and compile

@@ -15,8 +15,8 @@ wxWidgets、SQLite 和 Meson。当前可执行程序是 `oremind`。
 - 深色提示界面，包含格言 canvas、emoji 评分控件、快捷键和滑入淡入动画。
 - 可在弹窗右下角调整下一次间隔，点击单位可在分钟和秒之间切换。
 - 弹窗右下角提供可点击的 `Quit` 标签，用于直接退出。
-- 在 X11 下注册 `Win+Alt+G`，等待期间可立即弹出提示；`Win+Alt+H`
-  可直接打开统计 / 历史。
+- 等待期间可通过桌面应用启动器快捷键唤醒；单实例机制保证只有一个后台进程。
+  快速连续启动两次可打开统计 / 历史。
 - 提交前会 trim 活动文本；空内容也会作为空日志记录。
 - `energy`、`mood`、`grounding` 的默认值为 3，保持默认时视为未记录。
 - 默认写入 SQLite，也可以把 `--sqlite-db` 指向目录来写每日文本日志。
@@ -62,12 +62,10 @@ oremind --sqlite-db ~/.observer/logs/
 - `Escape`：取消且不记录。默认连续取消 3 次会退出应用，可用 `--cancel` 修改。
 - `Ctrl+S`：稍后 30 秒。
 - `Ctrl+Q`：在弹窗中退出应用。
-- `Ctrl+H`：打开统计视图。
-- `Win+Alt+G`：等待期间立即弹出提示。该快捷键在 Linux/X11 下注册。
-- `Win+Alt+H`：等待期间立即打开统计 / 历史。
-- `F1` / `F2`：能量减 / 加半格。
-- `F3` / `F4`：心情减 / 加半格。
-- `F5` / `F6`：接地减 / 加半格。
+- `Ctrl+H` / `F1`：打开统计视图。
+- `F2` / `F7`：接地减 / 加半格。
+- `F3` / `F6`：心情减 / 加半格。
+- `F4` / `F5`：能量减 / 加半格。
 
 ## 托盘和单实例
 
@@ -75,8 +73,13 @@ oremind --sqlite-db ~/.observer/logs/
 
 - 左键点击托盘图标，立即显示提示弹窗。
 - 右键点击托盘图标，菜单包含 `唤醒`、`统计 / 历史` 和 `退出`。
-- `唤醒` 等同于 `Win+Alt+G`。
-- `统计 / 历史` 等同于 `Win+Alt+H`。
+
+可在桌面环境中为 `oremind` 配置应用启动器快捷键，用于等待期间唤醒提示。
+单实例机制保证每个用户会话只保留一个后台进程，因此重复启动会通知已有实例，
+而不是再拉起一份。快速连续启动两次可打开统计 / 历史。
+
+托盘和窗口图标使用内置资源 `assets/icon-256.png`。在 GTK/Linux 下，显示前会
+裁掉图标留白并转换为带 alpha 通道的 32 位位图，避免状态栏出现上下黑边。
 
 再次启动 `oremind` 时，不会创建第二个后台进程。新进程会通知已有实例弹出提示，
 在标准错误输出以下 warning，然后退出：
@@ -87,7 +90,7 @@ warning: oremind is already running; waking existing instance.
 
 ## 统计视图
 
-在弹窗中按 `Ctrl+H`，或通过托盘图标右键菜单打开统计 / 历史。
+在弹窗中按 `Ctrl+H` 或 `F1`，或通过托盘图标右键菜单打开统计 / 历史。
 
 统计窗口顶部工具栏提供日历、日、周、月、年、今天、上一页、下一页和关闭操作。
 日历视图是自绘月历，包含农历日子、常见节假日高亮、今天和选中日标记，以及表示
@@ -139,14 +142,14 @@ hh:mm:ss e2.5 m3.5 g4.0 duration 1:23 submitted hh:mm:ss
 ### 依赖
 
 Debian 系系统需要常规构建工具，以及 wxWidgets、SQLite、gettext 和本项目使用的
-`bas-c` / `bas-cpp` 开发包：
+`bas-cpp` / `bas-ui` 开发包：
 
 ```bash
 sudo apt install meson ninja-build pkg-config gettext sqlite3 libsqlite3-dev \
-    libwxgtk3.2-dev libx11-dev check
+    libwxgtk3.2-dev check
 ```
 
-同时确保 `bas-c` 和 `bas-cpp` 的开发包可以被 `pkg-config` 找到。
+同时确保 `bas-cpp` 和 `bas-ui` 的开发包可以被 `pkg-config` 找到。
 
 ### 配置和编译
 
