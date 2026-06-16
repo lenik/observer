@@ -67,7 +67,6 @@ bas_ui_dep = dependency('bas-ui', required: true)
 # bas_ui_static_dep = dependency('bas-ui-static', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
-x11_dep = dependency('x11', required: true)
 wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
 
 lib_objects = []
@@ -128,8 +127,7 @@ lib_inc = [
 lib_deps = [
     bas_cpp_dep,
     bas_ui_dep,
-    wx_dep, 
-    x11_dep,
+    wx_dep,
     sqlite_dep,
 ]
 
@@ -237,7 +235,7 @@ endforeach
 
 install_subdir(
     'src',
-    install_dir: get_option('includedir'),
+    install_dir: get_option('includedir') / 'observer',
     exclude_files: other_list,
     strip_directory: true,
 )
@@ -310,6 +308,18 @@ configure_file(
     configuration: config_man,
     install: true,
     install_dir: mandir / 'man1',
+)
+
+zh_man_page = configure_file(
+    input: 'oremind.zh_CN.1.in',
+    output: 'oremind.zh_CN.1',
+    configuration: config_man,
+)
+
+install_data(
+    zh_man_page,
+    install_dir: mandir / 'zh_CN' / 'man1',
+    rename: 'oremind.1',
 )
 
 # look task: list what installed files looks like

@@ -1,0 +1,200 @@
+.TH oremind 1 "@PROJECT_YEAR@" "@PROJECT_VERSION@" "用户命令"
+.SH 名称
+oremind \- 桌面自我状态观察提醒
+.SH 概要
+.B oremind
+.RI [ 选项 ]...
+.SH 描述
+.B oremind
+是一个在后台运行的小型 Linux 桌面观察器。启动时不显示主窗口，会立即弹出
+一次观察提示，然后按设定间隔重复提醒。
+.PP
+每个用户会话只应运行一个实例。再次启动时，会唤醒已有实例，向标准错误输出
+警告后退出。
+.PP
+每次提示会要求输入一句活动说明，以及可选的能量、心情、接地评分。可用 Enter
+提交，Escape 取消，Control-S 稍后 30 秒。活动文本会 trim；空内容也会作为空
+记录保存。
+.PP
+默认记录保存在
+.IR ~/.observer/observer.sqlite3 。
+存储路径也可以指向目录，此时会改为写入每日文本日志。
+.SH 选项
+.TP
+.BR \-v ", " \-\-verbose
+增加日志详细程度，可重复指定。
+.TP
+.BR \-q ", " \-\-quiet
+减少日志输出。
+.TP
+.BR \-h ", " \-\-help
+显示用法摘要并正常退出。
+.TP
+.BR \-l ", " \-\-locale " " \fI语言\fR
+在加载翻译前设置界面语言。例如
+.BR en 、
+.BR zh_CN 、
+.BR zh_TW 、
+.BR ja 、
+.BR ko 、
+.BR fr
+和
+.BR de 。
+.TP
+.BR \-t ", " \-\-theme " " \fI主题\fR
+设置提示主题。支持
+.B light
+和
+.BR dark 。
+默认为
+.BR dark 。
+.TP
+.BR \-o ", " \-\-opacity " " \fI数值\fR
+设置弹窗最终不透明度，范围
+.B 0
+到
+.BR 100 。
+默认为
+.BR 75 。
+.TP
+.BR \-c ", " \-\-cancel " " \fI数值\fR
+连续取消
+.I 数值
+次后退出。默认为
+.BR 3 。
+.TP
+.BR \-i ", " \-\-interval " " \fI数值\fR
+设置正常提示间隔，单位为分钟，支持小数。间隔为
+.B 0
+时，启动提示提交或取消后即退出。
+.TP
+.BR \-w ", " \-\-weekstart " " \fIMmSs\fR
+设置日历周起始日。
+.B M
+或
+.B m
+表示周一，
+.B S
+或
+.B s
+表示周日。默认为周一。
+.TP
+.BR \-d ", " \-\-sqlite-db " " \fI路径\fR
+设置存储目标。若
+.I 路径
+为文件，则作为 SQLite 数据库；若为已有目录或以斜杠结尾，则写入名为
+.IR yyyy-mm-dd.log
+的每日日志文件。
+.TP
+.B \-\-version
+显示版本和许可证信息后正常退出。
+.SH 键盘
+.TP
+.B Enter
+提交当前提示。活动内容 trim 后为空时，保存为空记录。
+.TP
+.B Escape
+取消当前提示且不保存。默认连续取消三次会退出应用，可用
+.BR \-\-cancel
+修改。
+.TP
+.B Control-S
+将提示稍后 30 秒。
+.TP
+.B Control-Q
+从提示弹窗退出应用。
+.TP
+.B F1
+从提示弹窗打开统计窗口。
+.TP
+.B Control-H
+同样从提示弹窗打开统计窗口。
+.TP
+.B Quit
+点击提示页脚中的 Quit 标签退出应用。
+.TP
+.BR F2 ", " F3 ", " F4
+分别将接地、心情、能量评分降低半格。
+.TP
+.BR F5 ", " F6 ", " F7
+分别将能量、心情、接地评分提高半格。
+.SH 托盘图标
+.PP
+.B oremind
+运行时会保留托盘图标。左键点击立即显示提示；右键打开
+.BR 唤醒 、
+.BR "统计 / 历史"
+和
+.BR 退出
+菜单。
+.PP
+可在桌面环境中为
+.B oremind
+配置应用启动器快捷键，用于等待期间唤醒提示。单实例机制保证每个用户会话只
+保留一个后台进程，因此重复启动会通知已有实例，而不是再拉起一份。快速连续
+启动两次
+.B oremind
+可打开统计 / 历史，而不是提示弹窗。
+.SH 统计
+.TP
+.B F1
+显示日历视图。
+.TP
+.BR F5 ", " F6 ", " F7 ", " F8
+分别显示日、周、月、年统计。
+.TP
+.B Escape
+关闭统计窗口。
+.TP
+.BR PageUp ", " PageDown
+在日、周、月、年视图中切换到上一周期或下一周期。
+.PP
+在日历视图中选择日期后，可点击
+.BR 日 、
+.BR 周
+或
+.B 月
+进入对应统计视图。
+.SH 存储
+.SS SQLite
+SQLite 表会自动创建：
+.PP
+.nf
+CREATE TABLE IF NOT EXISTS observations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompted_at TEXT NOT NULL,
+    submitted_at TEXT NOT NULL,
+    energy REAL,
+    mood REAL,
+    grounding REAL,
+    activity TEXT NOT NULL,
+    quote TEXT
+);
+.fi
+.PP
+默认评分视为未记录，保存为
+.BR NULL 。
+.SS 目录日志
+目录模式按天写入一个文件。记录格式如下：
+.PP
+.nf
+hh:mm:ss e2.5 m3.5 g4.0 duration 1:23 submitted hh:mm:ss
+    活动内容
+.fi
+.PP
+行首时间为弹窗时间；提交时间写在 duration 字段之后。保持默认值的评分字段
+会被省略。
+.SH 退出状态
+.TP
+.B 0
+成功。
+.TP
+.B 1
+命令行参数无效，或启动时发生运行时错误。
+.SH 作者
+由 @PROJECT_AUTHOR@ <@PROJECT_EMAIL@> 编写。
+.SH 版权
+版权所有 \(co @PROJECT_YEAR@。
+许可证为 AGPL-3.0-or-later。这是自由软件：你可以在 GNU Affero General Public
+License 的条款下修改和再分发。在法律允许的范围内不提供任何担保。
+完整许可证文本及补充条款见源码发行版中的 LICENSE 文件。

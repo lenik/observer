@@ -118,21 +118,14 @@ Open the statistics window from the prompt.
 .B Control-H
 Also opens the statistics window from the prompt.
 .TP
-.B Mod4-Alt-G
-Show the prompt immediately while the application is waiting.  Mod4 is usually
-the Windows or Super key.  This shortcut is registered through X11 on Linux.
-.TP
-.B Mod4-Alt-H
-Open statistics/history immediately while the application is waiting.
-.TP
 .B Quit
 Click the small Quit label in the prompt footer to exit the application.
 .TP
 .BR F2 ", " F3 ", " F4
-Decrease energy, mood, or grounding score by half a step.
+Decrease grounding, mood, or energy score by half a step, respectively.
 .TP
 .BR F5 ", " F6 ", " F7
-Increase energy, mood, or grounding score by half a step.
+Increase energy, mood, or grounding score by half a step, respectively.
 .SH TRAY ICON
 .PP
 The tray icon stays visible while
@@ -143,11 +136,14 @@ menu with
 .BR "Statistics / History" ,
 and
 .BR Quit .
-The
-.B Wake
-action is equivalent to Mod4-Alt-G, and
-.B Statistics / History
-is equivalent to Mod4-Alt-H.
+.PP
+Configure a desktop app launcher shortcut to run
+.B oremind
+when you want to wake the prompt while waiting.  Only one background process is
+kept per user session, so repeated launches contact the running instance
+instead of starting another copy.  Launch
+.B oremind
+twice in quick succession to open statistics/history instead of the prompt.
 .SH STATISTICS
 .TP
 .B F1
