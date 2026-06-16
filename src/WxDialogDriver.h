@@ -5,14 +5,18 @@
 
 #include <wx/window.h>
 
+class ObservationDialog;
+
 class WxDialogDriver : public RenderDriver {
 public:
     explicit WxDialogDriver(wxWindow* parent);
 
     ObserveResult prompt(const ObservePromptDefaults& defaults) override;
+    void showStatisticsIfActive();
 
 private:
     wxWindow* m_parent;
+    ObservationDialog* m_activeDialog = nullptr;
 };
 
 #endif

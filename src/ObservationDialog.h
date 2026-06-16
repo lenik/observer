@@ -20,6 +20,7 @@ class ObservationDialog : public wxDialog {
     Observation observation() const;
     double intervalSeconds() const;
     void animateIn();
+    void showStatistics();
 
   private:
     void onCharHook(wxKeyEvent &event);
@@ -29,7 +30,6 @@ class ObservationDialog : public wxDialog {
     void quit();
     void finishWithResult(int result);
     void animateOut();
-    void showStatistics();
     std::string currentTimestamp() const;
     void showRandomQuote();
     void toggleIntervalUnit();
