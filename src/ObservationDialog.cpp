@@ -3,28 +3,29 @@
 #include "AppIcon.h"
 #include "ObservationStore.h"
 #include "StatisticsDialog.h"
+#include "formatting.h"
 
 #include <bas/locale/i18n.h>
 
-#include <wx/dcbuffer.h>
-#include <wx/sizer.h>
 #include <wx/button.h>
-#include <wx/stattext.h>
 #include <wx/caret.h>
+#include <wx/dcbuffer.h>
 #include <wx/display.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/stc/stc.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <ctime>
-#include <cerrno>
+#include <functional>
 #include <iomanip>
 #include <sstream>
-#include <cstdlib>
-#include <vector>
-#include <functional>
 #include <thread>
+#include <vector>
 
 namespace {
 
@@ -33,8 +34,7 @@ constexpr int ID_SKIP = wxID_CANCEL;
 constexpr int ID_SNOOZE = wxID_HIGHEST + 1;
 constexpr int ID_QUIT = wxID_HIGHEST + 2;
 
-int clampScore(int value)
-{
+int clampScore(int value) {
     if (value < 0) {
         return 0;
     }
@@ -44,8 +44,7 @@ int clampScore(int value)
     return value;
 }
 
-double clampIntervalSeconds(double value)
-{
+double clampIntervalSeconds(double value) {
     if (value < 0.0) {
         return 0.0;
     }
@@ -55,73 +54,21 @@ double clampIntervalSeconds(double value)
     return value;
 }
 
-wxString toWxUtf8(const std::string& value)
-{
-    return wxString::FromUTF8(value.c_str());
-}
+wxString toWxUtf8(const std::string &value) { return wxString::FromUTF8(value.c_str()); }
 
-wxString formatIntervalValue(double value)
-{
-    if (value < 0.0) {
-        value = 0.0;
-    }
-
-    std::ostringstream out;
-    out << std::setprecision(15) << value;
-    std::string text = out.str();
-    if (text.find('.') != std::string::npos) {
-        while (!text.empty() && text.back() == '0') {
-            text.pop_back();
-        }
-        if (!text.empty() && text.back() == '.') {
-            text.pop_back();
-        }
-    }
-    if (text.empty()) {
-        text = "0";
-    }
-    return wxString::FromUTF8(text.c_str());
-}
-
-double parseIntervalValue(const wxString& text)
-{
-    wxCharBuffer buffer = text.utf8_str();
-    const char* raw = buffer.data();
-    if (raw == nullptr) {
-        return 0.0;
-    }
-
-    char* end = nullptr;
-    errno = 0;
-    double value = std::strtod(raw, &end);
-    if (errno != 0 || end == raw) {
-        return 0.0;
-    }
-    while (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r') {
-        ++end;
-    }
-    if (*end != '\0') {
-        return 0.0;
-    }
-    return value;
-}
-
-double easeOutCubic(double t)
-{
+double easeOutCubic(double t) {
     const double inverse = 1.0 - t;
     return 1.0 - inverse * inverse * inverse;
 }
 
-std::string trimmedUtf8(wxString text)
-{
+std::string trimmedUtf8(wxString text) {
     text.Trim(true);
     text.Trim(false);
     wxCharBuffer buffer = text.utf8_str();
     return buffer.data() != nullptr ? std::string(buffer.data()) : std::string();
 }
 
-std::string activityForEdit(const std::string& activity)
-{
+std::string activityForEdit(const std::string &activity) {
     std::string result;
     result.reserve(activity.size());
     for (char ch : activity) {
@@ -136,88 +83,89 @@ std::string activityForEdit(const std::string& activity)
     return result;
 }
 
+double scoreShortcutDelta(const wxKeyEvent &event, double baseDelta) {
+    double magnitude = 0.5;
+    if (event.AltDown()) {
+        magnitude = 5.0;
+    } else if (event.ControlDown() || event.CmdDown()) {
+        magnitude = 1.0;
+    }
+    double delta = magnitude;
+    if (baseDelta < 0.0) {
+        delta = -delta;
+    }
+    if (event.ShiftDown()) {
+        delta = -delta;
+    }
+    return delta;
 }
 
+} // namespace
+
 class QuoteCanvas : public wxPanel {
-public:
-    QuoteCanvas(wxWindow* parent, const std::string& quote, bool darkTheme, std::function<void()> onClick)
-        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(720, 150)),
-          m_darkTheme(darkTheme),
-          m_quote(toWxUtf8(quote)),
-          m_onClick(std::move(onClick))
-    {
+  public:
+    QuoteCanvas(wxWindow *parent, const std::string &quote, bool darkTheme,
+                std::function<void()> onClick)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(720, 150)), m_darkTheme(darkTheme),
+          m_quote(toWxUtf8(quote)), m_onClick(std::move(onClick)) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetCursor(wxCursor(wxCURSOR_HAND));
         Bind(wxEVT_PAINT, &QuoteCanvas::onPaint, this);
-        Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) {
+        Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) {
             if (m_onClick) {
                 m_onClick();
             }
         });
-        Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
+        Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
             Refresh();
             event.Skip();
         });
     }
 
-    void setQuote(const std::string& quote)
-    {
+    void setQuote(const std::string &quote) {
         m_quote = toWxUtf8(quote);
         Refresh();
     }
 
-private:
-    static bool isWhitespace(wxUniChar ch)
-    {
+  private:
+    static bool isWhitespace(wxUniChar ch) {
         const wxUint32 value = ch.GetValue();
         return value == ' ' || value == '\t' || value == '\n' || value == '\r';
     }
 
-    static bool isCjk(wxUniChar ch)
-    {
+    static bool isCjk(wxUniChar ch) {
         const wxUint32 value = ch.GetValue();
-        return (value >= 0x3400 && value <= 0x4dbf)
-            || (value >= 0x4e00 && value <= 0x9fff)
-            || (value >= 0xf900 && value <= 0xfaff)
-            || (value >= 0x3040 && value <= 0x30ff)
-            || (value >= 0xac00 && value <= 0xd7af);
+        return (value >= 0x3400 && value <= 0x4dbf) || (value >= 0x4e00 && value <= 0x9fff) ||
+               (value >= 0xf900 && value <= 0xfaff) || (value >= 0x3040 && value <= 0x30ff) ||
+               (value >= 0xac00 && value <= 0xd7af);
     }
 
-    static bool isWordChar(wxUniChar ch)
-    {
+    static bool isWordChar(wxUniChar ch) {
         const wxUint32 value = ch.GetValue();
-        return (value >= 'A' && value <= 'Z')
-            || (value >= 'a' && value <= 'z')
-            || (value >= '0' && value <= '9')
-            || value == '\''
-            || value == '-';
+        return (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z') ||
+               (value >= '0' && value <= '9') || value == '\'' || value == '-';
     }
 
-    static bool isClosingPunctuation(wxUniChar ch)
-    {
+    static bool isClosingPunctuation(wxUniChar ch) {
         const wxUint32 value = ch.GetValue();
-        return value == '.' || value == ',' || value == ';' || value == ':' || value == '!'
-            || value == '?' || value == ')' || value == ']' || value == '}'
-            || value == 0x3002 || value == 0xff0c || value == 0xff1b || value == 0xff1a
-            || value == 0xff01 || value == 0xff1f || value == 0x3001 || value == 0x300d
-            || value == 0x300f || value == 0x3011 || value == 0xff09 || value == 0x201d
-            || value == 0x2019;
+        return value == '.' || value == ',' || value == ';' || value == ':' || value == '!' ||
+               value == '?' || value == ')' || value == ']' || value == '}' || value == 0x3002 ||
+               value == 0xff0c || value == 0xff1b || value == 0xff1a || value == 0xff01 ||
+               value == 0xff1f || value == 0x3001 || value == 0x300d || value == 0x300f ||
+               value == 0x3011 || value == 0xff09 || value == 0x201d || value == 0x2019;
     }
 
-    static wxString trimRight(wxString value)
-    {
+    static wxString trimRight(wxString value) {
         value.Trim(true);
         return value;
     }
 
-    static wxString trimLeft(wxString value)
-    {
+    static wxString trimLeft(wxString value) {
         value.Trim(false);
         return value;
     }
 
-    std::vector<wxString> tokenize(const wxString& text)
-    {
+    std::vector<wxString> tokenize(const wxString &text) {
         std::vector<wxString> tokens;
         for (std::size_t i = 0; i < text.length();) {
             wxUniChar ch = text[i];
@@ -247,16 +195,14 @@ private:
         return tokens;
     }
 
-    bool fits(wxDC& dc, const wxString& text, int maxWidth)
-    {
+    bool fits(wxDC &dc, const wxString &text, int maxWidth) {
         int width = 0;
         int height = 0;
         dc.GetTextExtent(text, &width, &height);
         return width <= maxWidth;
     }
 
-    void pushLine(std::vector<wxString>& lines, wxString& current)
-    {
+    void pushLine(std::vector<wxString> &lines, wxString &current) {
         current = trimRight(current);
         if (!current.empty()) {
             lines.push_back(current);
@@ -264,11 +210,10 @@ private:
         current.clear();
     }
 
-    std::vector<wxString> wrapText(wxDC& dc, const wxString& text, int maxWidth)
-    {
+    std::vector<wxString> wrapText(wxDC &dc, const wxString &text, int maxWidth) {
         std::vector<wxString> lines;
         wxString current;
-        for (const wxString& token : tokenize(text)) {
+        for (const wxString &token : tokenize(text)) {
             wxString candidate = current + token;
             if (fits(dc, candidate, maxWidth)) {
                 current = candidate;
@@ -309,14 +254,13 @@ private:
         return lines;
     }
 
-    void drawWrapped(wxDC& dc, const std::vector<wxString>& lines, const wxRect& rect)
-    {
+    void drawWrapped(wxDC &dc, const std::vector<wxString> &lines, const wxRect &rect) {
         int lineHeight = 0;
         dc.GetTextExtent("M", nullptr, &lineHeight);
         lineHeight += lineHeight / 4;
         const int totalHeight = lineHeight * static_cast<int>(lines.size());
         int y = rect.GetTop() + std::max(0, (rect.GetHeight() - totalHeight) / 2);
-        for (const wxString& line : lines) {
+        for (const wxString &line : lines) {
             int width = 0;
             int height = 0;
             dc.GetTextExtent(line, &width, &height);
@@ -326,8 +270,7 @@ private:
         }
     }
 
-    void onPaint(wxPaintEvent&)
-    {
+    void onPaint(wxPaintEvent &) {
         wxAutoBufferedPaintDC dc(this);
         const wxSize size = GetClientSize();
 
@@ -345,8 +288,10 @@ private:
         font.SetWeight(wxFONTWEIGHT_BOLD);
         dc.SetFont(font);
 
-        wxRect textShadowRect(padX + 3, padY + 3, size.GetWidth() - padX * 2, size.GetHeight() - padY * 2);
-        wxRect textGlowRect(padX + 1, padY + 1, size.GetWidth() - padX * 2, size.GetHeight() - padY * 2);
+        wxRect textShadowRect(padX + 3, padY + 3, size.GetWidth() - padX * 2,
+                              size.GetHeight() - padY * 2);
+        wxRect textGlowRect(padX + 1, padY + 1, size.GetWidth() - padX * 2,
+                            size.GetHeight() - padY * 2);
         const wxRect textRect(padX, padY, size.GetWidth() - padX * 2, size.GetHeight() - padY * 2);
         const std::vector<wxString> lines = wrapText(dc, m_quote, textRect.GetWidth());
         dc.SetTextForeground(m_darkTheme ? wxColour(55, 60, 72) : wxColour(190, 196, 205));
@@ -363,17 +308,12 @@ private:
 };
 
 class RatingControl : public wxPanel {
-public:
-    RatingControl(wxWindow* parent, const std::vector<wxString>& emojis, const wxColour& emojiColour,
-        const wxString& label, double value, bool darkTheme)
-        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(200, 138)),
-          m_emojis(emojis),
-          m_emojiColour(emojiColour),
-          m_label(label),
-          m_darkTheme(darkTheme),
-          m_committedLine(lineFromScore(value)),
-          m_hoverLine(m_committedLine)
-    {
+  public:
+    RatingControl(wxWindow *parent, const std::vector<wxString> &emojis,
+                  const wxColour &emojiColour, const wxString &label, double value, bool darkTheme)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(200, 138)), m_emojis(emojis),
+          m_emojiColour(emojiColour), m_label(label), m_darkTheme(darkTheme),
+          m_committedLine(lineFromScore(value)), m_hoverLine(m_committedLine) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         Bind(wxEVT_PAINT, &RatingControl::onPaint, this);
         Bind(wxEVT_MOTION, &RatingControl::onMotion, this);
@@ -381,32 +321,29 @@ public:
         Bind(wxEVT_LEAVE_WINDOW, &RatingControl::onLeave, this);
     }
 
-    double value() const
-    {
-        return m_committedLine;
-    }
+    double value() const { return m_committedLine; }
 
-    void adjust(double delta)
-    {
-        m_committedLine = std::max(0.0, std::min(5.0, std::round((m_committedLine + delta) * 2.0) / 2.0));
+    void adjust(double delta) {
+        m_committedLine =
+            std::max(0.0, std::min(5.0, std::round((m_committedLine + delta) * 2.0) / 2.0));
         m_hoverLine = m_committedLine;
         m_hoverActive = false;
         Refresh();
     }
 
-private:
-    wxString currentEmoji(double value) const
-    {
+  private:
+    wxString currentEmoji(double value) const {
         if (m_emojis.empty()) {
             return "";
         }
-        const int index = std::max(0, std::min(static_cast<int>(m_emojis.size()) - 1,
-            static_cast<int>(std::round((value / 5.0) * (static_cast<int>(m_emojis.size()) - 1)))));
+        const int index =
+            std::max(0, std::min(static_cast<int>(m_emojis.size()) - 1,
+                                 static_cast<int>(std::round(
+                                     (value / 5.0) * (static_cast<int>(m_emojis.size()) - 1)))));
         return m_emojis[index];
     }
 
-    static double lineFromScore(double value)
-    {
+    static double lineFromScore(double value) {
         if (value < 0.0) {
             return 0.0;
         }
@@ -416,16 +353,15 @@ private:
         return value;
     }
 
-    wxRect ratingRect() const
-    {
+    wxRect ratingRect() const {
         const wxSize size = GetClientSize();
         return wxRect(20, size.GetHeight() - 48, size.GetWidth() - 40, 30);
     }
 
-    double lineFromX(int x) const
-    {
+    double lineFromX(int x) const {
         const wxRect rect = ratingRect();
-        double ratio = static_cast<double>(x - rect.GetLeft()) / static_cast<double>(rect.GetWidth());
+        double ratio =
+            static_cast<double>(x - rect.GetLeft()) / static_cast<double>(rect.GetWidth());
         if (ratio < 0.0) {
             ratio = 0.0;
         }
@@ -435,35 +371,31 @@ private:
         return ratio * 5.0;
     }
 
-    int xFromLine(double line) const
-    {
+    int xFromLine(double line) const {
         const wxRect rect = ratingRect();
         return rect.GetLeft() + static_cast<int>((line / 5.0) * rect.GetWidth());
     }
 
-    void onMotion(wxMouseEvent& event)
-    {
+    void onMotion(wxMouseEvent &event) {
         m_hoverLine = lineFromX(event.GetX());
         m_hoverActive = true;
         Refresh();
     }
 
-    void onLeftDown(wxMouseEvent& event)
-    {
+    void onLeftDown(wxMouseEvent &event) {
         m_committedLine = lineFromX(event.GetX());
         m_hoverLine = m_committedLine;
         m_hoverActive = true;
         Refresh();
     }
 
-    void onLeave(wxMouseEvent&)
-    {
+    void onLeave(wxMouseEvent &) {
         m_hoverActive = false;
         Refresh();
     }
 
-    void drawCirclePart(wxDC& dc, const wxRect& circle, const wxColour& colour, const wxRect& clip)
-    {
+    void drawCirclePart(wxDC &dc, const wxRect &circle, const wxColour &colour,
+                        const wxRect &clip) {
         wxRect clipped = circle.Intersect(clip);
         if (clipped.IsEmpty()) {
             return;
@@ -475,8 +407,7 @@ private:
         dc.DestroyClippingRegion();
     }
 
-    void onPaint(wxPaintEvent&)
-    {
+    void onPaint(wxPaintEvent &) {
         wxAutoBufferedPaintDC dc(this);
         const wxSize size = GetClientSize();
         dc.SetBackground(wxBrush(m_darkTheme ? wxColour(24, 27, 33) : wxColour(244, 246, 248)));
@@ -504,14 +435,18 @@ private:
         const int middleX = xFromLine(2.5);
         const int fillLeft = std::min(lineX, middleX);
         const int fillRight = std::max(lineX, middleX);
-        const wxRect fillClip(fillLeft, rect.GetTop() - 4, fillRight - fillLeft, rect.GetHeight() + 8);
-        const wxColour fillColour = lineX < middleX ? wxColour(232, 73, 73) : wxColour(247, 197, 72);
+        const wxRect fillClip(fillLeft, rect.GetTop() - 4, fillRight - fillLeft,
+                              rect.GetHeight() + 8);
+        const wxColour fillColour =
+            lineX < middleX ? wxColour(232, 73, 73) : wxColour(247, 197, 72);
 
         dc.SetPen(wxPen(m_darkTheme ? wxColour(35, 39, 47) : wxColour(205, 211, 220), 1));
-        dc.DrawLine(rect.GetLeft(), rect.GetTop() + rect.GetHeight() / 2, rect.GetRight(), rect.GetTop() + rect.GetHeight() / 2);
+        dc.DrawLine(rect.GetLeft(), rect.GetTop() + rect.GetHeight() / 2, rect.GetRight(),
+                    rect.GetTop() + rect.GetHeight() / 2);
 
         for (int i = 0; i < 5; ++i) {
-            const int centerX = rect.GetLeft() + static_cast<int>((i + 0.5) * rect.GetWidth() / 5.0);
+            const int centerX =
+                rect.GetLeft() + static_cast<int>((i + 0.5) * rect.GetWidth() / 5.0);
             const int centerY = rect.GetTop() + rect.GetHeight() / 2;
             wxRect circle(centerX - radius, centerY - radius, radius * 2, radius * 2);
 
@@ -537,21 +472,21 @@ private:
     bool m_hoverActive = false;
 };
 
-ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaults& defaults)
+ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaults &defaults)
     : wxDialog(parent, wxID_ANY,
-          defaults.editing.has_value() ? wxString::FromUTF8(_("Edit record")) : wxString("Observer"),
-          wxDefaultPosition, wxDefaultSize,
-          wxRESIZE_BORDER | wxSTAY_ON_TOP),
-      m_quote(defaults.editing.has_value() && !defaults.editing->quote.empty() ? defaults.editing->quote
-                                                                             : defaults.quote),
-      m_promptedAt(defaults.editing.has_value() ? defaults.editing->promptedAt : currentTimestamp()),
-      m_editing(defaults.editing),
-      m_editMode(defaults.editing.has_value()),
+               defaults.editing.has_value() ? wxString::FromUTF8(_("Edit record"))
+                                            : wxString("Observer"),
+               wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxSTAY_ON_TOP),
+      m_quote(defaults.editing.has_value() && !defaults.editing->quote.empty()
+                  ? defaults.editing->quote
+                  : defaults.quote),
+      m_promptedAt(defaults.editing.has_value() ? defaults.editing->promptedAt
+                                                : currentTimestamp()),
+      m_editing(defaults.editing), m_editMode(defaults.editing.has_value()),
       m_store(defaults.store),
       m_quoteRng(static_cast<std::mt19937::result_type>(
-          std::chrono::high_resolution_clock::now().time_since_epoch().count()))
-{
-    auto* root = new wxBoxSizer(wxVERTICAL);
+          std::chrono::high_resolution_clock::now().time_since_epoch().count())) {
+    auto *root = new wxBoxSizer(wxVERTICAL);
     const bool darkTheme = defaults.theme != "light";
     m_theme = defaults.theme;
     m_quotes = defaults.quotes;
@@ -575,7 +510,8 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     SetFont(baseFont);
     SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
     SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
-    m_finalOpacity = std::max(0, std::min(255, static_cast<int>(std::round(defaults.opacityPercent * 255.0 / 100.0))));
+    m_finalOpacity = std::max(
+        0, std::min(255, static_cast<int>(std::round(defaults.opacityPercent * 255.0 / 100.0))));
 
     int emWidth = 12;
     int emHeight = 20;
@@ -587,53 +523,59 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     m_quoteCanvas = new QuoteCanvas(this, m_quote, darkTheme, [this]() { showRandomQuote(); });
     root->Add(m_quoteCanvas, 1, wxLEFT | wxRIGHT | wxEXPAND, outerMargin);
 
-    auto* ratingRow = new wxBoxSizer(wxHORIZONTAL);
+    auto *ratingRow = new wxBoxSizer(wxHORIZONTAL);
     m_energyRating = new RatingControl(this,
-        {wxString::FromUTF8("⏻"), wxString::FromUTF8("🪫"), wxString::FromUTF8("🔋"), wxString::FromUTF8("⚡")},
-        wxColour(255, 112, 190),
-        wxString::FromUTF8(_("energy")), defaults.energy, darkTheme);
-    m_moodRating = new RatingControl(this,
-        {wxString::FromUTF8("😢"), wxString::FromUTF8("🙁"), wxString::FromUTF8("😐"), wxString::FromUTF8("🙂"), wxString::FromUTF8("😄")},
-        wxColour(255, 205, 72),
-        wxString::FromUTF8(_("mood")), defaults.mood, darkTheme);
-    m_groundingRating = new RatingControl(this,
-        {wxString::FromUTF8("🔬"), wxString::FromUTF8("🧪"), wxString::FromUTF8("🪙"), wxString::FromUTF8("💵"), wxString::FromUTF8("💰")},
-        wxColour(91, 214, 123),
-        wxString::FromUTF8(_("grounding")), defaults.grounding, darkTheme);
+                                       {wxString::FromUTF8("⏻"), wxString::FromUTF8("🪫"),
+                                        wxString::FromUTF8("🔋"), wxString::FromUTF8("⚡")},
+                                       wxColour(255, 112, 190), wxString::FromUTF8(_("energy")),
+                                       defaults.energy, darkTheme);
+    m_moodRating = new RatingControl(
+        this,
+        {wxString::FromUTF8("😢"), wxString::FromUTF8("🙁"), wxString::FromUTF8("😐"),
+         wxString::FromUTF8("🙂"), wxString::FromUTF8("😄")},
+        wxColour(255, 205, 72), wxString::FromUTF8(_("mood")), defaults.mood, darkTheme);
+    m_groundingRating = new RatingControl(
+        this,
+        {wxString::FromUTF8("🔬"), wxString::FromUTF8("🧪"), wxString::FromUTF8("🪙"),
+         wxString::FromUTF8("💵"), wxString::FromUTF8("💰")},
+        wxColour(91, 214, 123), wxString::FromUTF8(_("grounding")), defaults.grounding, darkTheme);
     ratingRow->Add(m_energyRating, 0, wxRIGHT, 22);
     ratingRow->Add(m_moodRating, 0, wxRIGHT, 22);
     ratingRow->Add(m_groundingRating, 0);
-    root->Add(ratingRow, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_HORIZONTAL, outerMargin);
+    root->Add(ratingRow, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_HORIZONTAL,
+              outerMargin);
 
-    m_intervalCtrl = new wxTextCtrl(this, wxID_ANY,
-        formatIntervalValue(clampIntervalSeconds(defaults.intervalSeconds) / 60.0),
-        wxDefaultPosition, wxSize(emWidth * 5, -1),
-        wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
+    std::string intervalStr =
+        formatIntervalValue(clampIntervalSeconds(defaults.intervalSeconds) / 60.0);
+    m_intervalCtrl =
+        new wxTextCtrl(this, wxID_ANY, intervalStr, wxDefaultPosition, wxSize(emWidth * 5, -1),
+                       wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
     m_intervalCtrl->SetForegroundColour(darkTheme ? wxColour(170, 176, 184) : wxColour(78, 84, 94));
     m_intervalCtrl->SetBackgroundColour(darkTheme ? wxColour(28, 32, 39) : wxColour(235, 238, 242));
     m_intervalCtrl->SetToolTip(wxString::FromUTF8(_("Launch oremind again to wake immediately")));
 
     const wxColour promptBg = darkTheme ? wxColour(30, 34, 42) : wxColour(255, 255, 255);
     const wxColour promptFg = darkTheme ? wxColour(255, 255, 255) : wxColour(15, 18, 24);
-    auto* promptPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
-    auto* promptSizer = new wxBoxSizer(wxVERTICAL);
+    auto *promptPanel =
+        new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
+    auto *promptSizer = new wxBoxSizer(wxVERTICAL);
     const int promptMarginX = emWidth / 2;
     const int promptMarginY = emHeight / 2;
     const int textWidth = 680;
-    
+
     wxFont inputFont = GetFont();
     inputFont.SetPointSize(inputFont.GetPointSize() + 16);
 
     wxClientDC dc(promptPanel);
     dc.SetFont(inputFont);
     wxFontMetrics metrics = dc.GetFontMetrics();
-    int inputLineHeight = metrics.height; 
-    m_activityCtrl = new wxStyledTextCtrl(promptPanel, wxID_ANY, wxDefaultPosition, wxSize(textWidth, inputLineHeight),
-        wxBORDER_NONE);
+    int inputLineHeight = metrics.height;
+    m_activityCtrl = new wxStyledTextCtrl(promptPanel, wxID_ANY, wxDefaultPosition,
+                                          wxSize(textWidth, inputLineHeight), wxBORDER_NONE);
 
     m_activityCtrl->StyleClearAll();
     m_activityCtrl->SetFont(inputFont);
-    
+
     // 2. 【核心】绝对锁死单行（干掉所有换行行为）
     m_activityCtrl->SetWrapMode(wxSTC_WRAP_NONE); // 100% 禁止单行文本因过长而自动换行
     m_activityCtrl->SetUndoCollection(true);      // 保持撤销队列正常
@@ -649,7 +591,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     m_activityCtrl->SetCaretForeground(promptFg);
     m_activityCtrl->SetCaretLineVisible(false);
     // 可选：如果希望光标所在的整行背景色更亮一点，可以取消下面两行的注释
-    // activityCtrl_->SetCaretLineBackground(promptBg.ChangeLightness(110)); 
+    // activityCtrl_->SetCaretLineBackground(promptBg.ChangeLightness(110));
     // activityCtrl_->SetCaretLineVisibleAlways(true);
 
     m_activityCtrl->StyleSetForeground(wxSTC_STYLE_DEFAULT, promptFg);
@@ -664,7 +606,7 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
         m_activityCtrl->SetText(wxString::FromUTF8(activityForEdit(m_editing->activity).c_str()));
     }
 
-    auto* promptInputRow = new wxBoxSizer(wxHORIZONTAL);
+    auto *promptInputRow = new wxBoxSizer(wxHORIZONTAL);
     promptInputRow->AddSpacer(promptMarginX);
     promptInputRow->Add(m_activityCtrl, 1, wxALIGN_CENTER_VERTICAL);
     promptInputRow->AddSpacer(promptMarginX);
@@ -675,42 +617,44 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     promptPanel->SetMinSize(wxSize(-1, emHeight * 2 + promptMarginY * 2));
     root->Add(promptPanel, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
-    auto* bottomRow = new wxBoxSizer(wxHORIZONTAL);
+    auto *bottomRow = new wxBoxSizer(wxHORIZONTAL);
     wxFont hintFont = GetFont();
     hintFont.SetPointSize(std::max(5, hintFont.GetPointSize() - 7));
     hintFont.SetStyle(wxFONTSTYLE_ITALIC);
     const wxColour footerColour = darkTheme ? wxColour(142, 149, 158) : wxColour(96, 104, 116);
     const wxColour actionColour = darkTheme ? wxColour(175, 183, 194) : wxColour(72, 80, 92);
-    auto makeLabel = [this, &hintFont](const wxString& text, const wxColour& colour) {
-        auto* label = new wxStaticText(this, wxID_ANY, text);
+    auto makeLabel = [this, &hintFont](const wxString &text, const wxColour &colour) {
+        auto *label = new wxStaticText(this, wxID_ANY, text);
         label->SetFont(hintFont);
         label->SetForegroundColour(colour);
         label->SetCursor(wxCursor(wxCURSOR_HAND));
         return label;
     };
     auto makeSeparator = [this, &hintFont, footerColour]() {
-        auto* label = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("·"));
+        auto *label = new wxStaticText(this, wxID_ANY, wxString::FromUTF8("·"));
         label->SetFont(hintFont);
         label->SetForegroundColour(footerColour);
         return label;
     };
 
-    m_submitLabel = makeLabel(wxString::FromUTF8(m_editMode ? _("Enter save") : _("Enter submit")), actionColour);
-    m_submitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { submit(); });
-    m_skipLabel = makeLabel(wxString::FromUTF8(m_editMode ? _("Esc cancel") : _("Esc skip")), actionColour);
-    m_skipLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { skip(); });
-    wxStaticText* historyLabel = nullptr;
+    m_submitLabel = makeLabel(wxString::FromUTF8(m_editMode ? _("Enter save") : _("Enter submit")),
+                              actionColour);
+    m_submitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { submit(); });
+    m_skipLabel =
+        makeLabel(wxString::FromUTF8(m_editMode ? _("Esc cancel") : _("Esc skip")), actionColour);
+    m_skipLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { skip(); });
+    wxStaticText *historyLabel = nullptr;
     if (!m_editMode) {
         historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
-        historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { showStatistics(); });
+        historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { showStatistics(); });
     }
     m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
-    m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
+    m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
     m_intervalUnitLabel = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
-    m_intervalUnitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { toggleIntervalUnit(); });
+    m_intervalUnitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
     m_intervalCtrl->SetFont(hintFont);
     m_quitLabel = makeLabel(wxString::FromUTF8(_("Ctrl+Q quit")), actionColour);
-    m_quitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent&) { quit(); });
+    m_quitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { quit(); });
 
     bottomRow->AddStretchSpacer(1);
     bottomRow->Add(m_submitLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
@@ -731,8 +675,8 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     root->Add(bottomRow, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
     Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
-    Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent&) { skip(); });
-    Bind(wxEVT_SIZE, [this](wxSizeEvent& event) {
+    Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent &) { skip(); });
+    Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
         Refresh();
         event.Skip();
     });
@@ -751,17 +695,16 @@ ObservationDialog::ObservationDialog(wxWindow* parent, const ObservePromptDefaul
     int positionEmHeight = 18;
     GetTextExtent("M", &positionEmWidth, &positionEmHeight);
     const int margin = positionEmHeight * 2;
-    m_animationFinalPosition = wxPoint(
-        workArea.GetLeft() + (workArea.GetWidth() - dialogSize.GetWidth()) / 2,
-        workArea.GetBottom() - dialogSize.GetHeight() - margin);
+    m_animationFinalPosition =
+        wxPoint(workArea.GetLeft() + (workArea.GetWidth() - dialogSize.GetWidth()) / 2,
+                workArea.GetBottom() - dialogSize.GetHeight() - margin);
     m_animationStartPosition = wxPoint(m_animationFinalPosition.x, workArea.GetBottom() + 8);
     Move(m_animationStartPosition);
     m_hasTransparency = SetTransparent(0);
     m_activityCtrl->SetFocus();
 }
 
-Observation ObservationDialog::observation() const
-{
+Observation ObservationDialog::observation() const {
     Observation result{
         m_editing.has_value() ? m_editing->id : 0,
         m_promptedAt,
@@ -775,17 +718,15 @@ Observation ObservationDialog::observation() const
     return result;
 }
 
-double ObservationDialog::intervalSeconds() const
-{
-    double value = parseIntervalValue(m_intervalCtrl->GetValue());
+double ObservationDialog::intervalSeconds() const {
+    double value = parseIntervalValue(m_intervalCtrl->GetValue().ToStdString());
     if (!m_intervalInSeconds) {
         value *= 60.0;
     }
     return clampIntervalSeconds(value);
 }
 
-void ObservationDialog::onCharHook(wxKeyEvent& event)
-{
+void ObservationDialog::onCharHook(wxKeyEvent &event) {
     const int keyCode = event.GetKeyCode();
     if (keyCode == WXK_RETURN || keyCode == WXK_NUMPAD_ENTER) {
         if (!event.ShiftDown()) {
@@ -800,27 +741,27 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
         return;
     }
     if (keyCode == WXK_F2) {
-        m_groundingRating->adjust(-0.5);
+        m_groundingRating->adjust(scoreShortcutDelta(event, -0.5));
         return;
     }
     if (keyCode == WXK_F3) {
-        m_moodRating->adjust(-0.5);
+        m_moodRating->adjust(scoreShortcutDelta(event, -0.5));
         return;
     }
     if (keyCode == WXK_F4) {
-        m_energyRating->adjust(-0.5);
+        m_energyRating->adjust(scoreShortcutDelta(event, -0.5));
         return;
     }
     if (keyCode == WXK_F5) {
-        m_energyRating->adjust(0.5);
+        m_energyRating->adjust(scoreShortcutDelta(event, 0.5));
         return;
     }
     if (keyCode == WXK_F6) {
-        m_moodRating->adjust(0.5);
+        m_moodRating->adjust(scoreShortcutDelta(event, 0.5));
         return;
     }
     if (keyCode == WXK_F7) {
-        m_groundingRating->adjust(0.5);
+        m_groundingRating->adjust(scoreShortcutDelta(event, 0.5));
         return;
     }
     if (keyCode == WXK_F8) {
@@ -842,28 +783,15 @@ void ObservationDialog::onCharHook(wxKeyEvent& event)
     event.Skip();
 }
 
-void ObservationDialog::submit()
-{
-    finishWithResult(ID_SUBMIT);
-}
+void ObservationDialog::submit() { finishWithResult(ID_SUBMIT); }
 
-void ObservationDialog::skip()
-{
-    finishWithResult(ID_SKIP);
-}
+void ObservationDialog::skip() { finishWithResult(ID_SKIP); }
 
-void ObservationDialog::snooze()
-{
-    finishWithResult(ID_SNOOZE);
-}
+void ObservationDialog::snooze() { finishWithResult(ID_SNOOZE); }
 
-void ObservationDialog::quit()
-{
-    finishWithResult(ID_QUIT);
-}
+void ObservationDialog::quit() { finishWithResult(ID_QUIT); }
 
-void ObservationDialog::showStatistics()
-{
+void ObservationDialog::showStatistics() {
     if (m_statisticsOpen) {
         return;
     }
@@ -877,8 +805,7 @@ void ObservationDialog::showStatistics()
     }
 }
 
-void ObservationDialog::showRandomQuote()
-{
+void ObservationDialog::showRandomQuote() {
     if (m_quotes.empty()) {
         return;
     }
@@ -894,27 +821,28 @@ void ObservationDialog::showRandomQuote()
     }
 }
 
-void ObservationDialog::toggleIntervalUnit()
-{
+void ObservationDialog::toggleIntervalUnit() {
     if (m_intervalCtrl == nullptr || m_intervalUnitLabel == nullptr) {
         return;
     }
 
     const double seconds = intervalSeconds();
     m_intervalInSeconds = !m_intervalInSeconds;
-    m_intervalCtrl->ChangeValue(formatIntervalValue(m_intervalInSeconds ? seconds : seconds / 60.0));
-    m_intervalUnitLabel->SetLabel(wxString::FromUTF8(m_intervalInSeconds ? _("seconds later") : _("minutes later")));
+    m_intervalCtrl->ChangeValue(
+        formatIntervalValue(m_intervalInSeconds ? seconds : seconds / 60.0));
+    m_intervalUnitLabel->SetLabel(
+        wxString::FromUTF8(m_intervalInSeconds ? _("seconds later") : _("minutes later")));
     Layout();
 }
 
-void ObservationDialog::animateIn()
-{
+void ObservationDialog::animateIn() {
     constexpr int Frames = 12;
     constexpr int FrameDelayMs = 8;
     for (int i = 0; i <= Frames; ++i) {
         const double t = easeOutCubic(static_cast<double>(i) / Frames);
-        const int y = m_animationStartPosition.y
-            + static_cast<int>((m_animationFinalPosition.y - m_animationStartPosition.y) * t);
+        const int y =
+            m_animationStartPosition.y +
+            static_cast<int>((m_animationFinalPosition.y - m_animationStartPosition.y) * t);
         Move(m_animationFinalPosition.x, y);
         if (m_hasTransparency) {
             SetTransparent(static_cast<unsigned char>(m_finalOpacity * t));
@@ -930,15 +858,15 @@ void ObservationDialog::animateIn()
     m_activityCtrl->SetFocus();
 }
 
-void ObservationDialog::animateOut()
-{
+void ObservationDialog::animateOut() {
     constexpr int Frames = 10;
     constexpr int FrameDelayMs = 8;
     for (int i = 0; i <= Frames; ++i) {
         const double t = static_cast<double>(i) / Frames;
         const double eased = t * t;
-        const int y = m_animationFinalPosition.y
-            + static_cast<int>((m_animationStartPosition.y - m_animationFinalPosition.y) * eased);
+        const int y =
+            m_animationFinalPosition.y +
+            static_cast<int>((m_animationStartPosition.y - m_animationFinalPosition.y) * eased);
         Move(m_animationFinalPosition.x, y);
         if (m_hasTransparency) {
             SetTransparent(static_cast<unsigned char>(m_finalOpacity * (1.0 - t)));
@@ -949,8 +877,7 @@ void ObservationDialog::animateOut()
     }
 }
 
-void ObservationDialog::finishWithResult(int result)
-{
+void ObservationDialog::finishWithResult(int result) {
     if (m_closing) {
         return;
     }
@@ -959,13 +886,11 @@ void ObservationDialog::finishWithResult(int result)
     EndModal(result);
 }
 
-std::string ObservationDialog::activityText() const
-{
+std::string ObservationDialog::activityText() const {
     return trimmedUtf8(m_activityCtrl != nullptr ? m_activityCtrl->GetText() : wxString());
 }
 
-std::string ObservationDialog::currentTimestamp() const
-{
+std::string ObservationDialog::currentTimestamp() const {
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
     std::tm localTime{};
