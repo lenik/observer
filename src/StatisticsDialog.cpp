@@ -6,6 +6,8 @@
 #include "emoji.h"
 #include "formatting.h"
 #include "lunar.h"
+#include "UiTheme.h"
+#include "wx/gtk/font.h"
 
 #include <bas/locale/i18n.h>
 
@@ -236,11 +238,110 @@ std::map<std::string, DaySummary> summarizeDays(const std::vector<Observation> &
     return summaries;
 }
 
+wxColour withAlpha(const wxColour &color, unsigned char alpha) {
+    return wxColour(color.Red(), color.Green(), color.Blue(), alpha);
+}
+
+wxColour blendOver(const wxColour &base, const wxColour &overlay, double overlayAlpha) {
+    const double alpha = std::clamp(overlayAlpha, 0.0, 1.0);
+    const double inverse = 1.0 - alpha;
+    return wxColour(
+        static_cast<unsigned char>(std::round(base.Red() * inverse + overlay.Red() * alpha)),
+        static_cast<unsigned char>(std::round(base.Green() * inverse + overlay.Green() * alpha)),
+        static_cast<unsigned char>(std::round(base.Blue() * inverse + overlay.Blue() * alpha)));
+}
+
+template <typename PaintDC>
+void paintGlassRounded(PaintDC &dc, const wxRect &rect, const UiThemeColors &colors, const wxColour &tint,
+                       double tintAlpha, int radius) {
+    const wxColour base = colors.windowBg;
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.SetBrush(base);
+    if (radius > 0) {
+        dc.DrawRoundedRectangle(rect, radius);
+    } else {
+        dc.DrawRectangle(rect);
+    }
+
+    std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
+    if (!gc) {
+        dc.SetBrush(blendOver(base, tint, tintAlpha));
+        if (radius > 0) {
+            dc.DrawRoundedRectangle(rect, radius);
+        } else {
+            dc.DrawRectangle(rect);
+        }
+        return;
+    }
+
+    gc->SetBrush(withAlpha(tint, static_cast<unsigned char>(std::round(std::clamp(tintAlpha, 0.0, 1.0) * 255.0))));
+    if (radius > 0) {
+        gc->DrawRoundedRectangle(rect.x, rect.y, rect.width, rect.height, radius);
+    } else {
+        gc->DrawRectangle(rect.x, rect.y, rect.width, rect.height);
+    }
+}
+
+class ThemeGlassPanel : public wxPanel {
+  public:
+    ThemeGlassPanel(wxWindow *parent, const UiThemeColors &colors, Hsl fillTone, int radius = 12,
+                    double alpha = 0.72)
+        : wxPanel(parent, wxID_ANY), m_colors(colors), m_fillTone(fillTone), m_radius(radius),
+          m_alpha(alpha) {
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
+        Bind(wxEVT_PAINT, &ThemeGlassPanel::onPaint, this);
+        Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
+            Refresh();
+            event.Skip();
+        });
+    }
+
+    wxColour glassFill() const { return blendOver(m_colors.windowBg, m_fillTone, m_alpha); }
+
+  private:
+    void onPaint(wxPaintEvent &) {
+        wxAutoBufferedPaintDC dc(this);
+        paintGlassRounded(dc, GetClientRect(), m_colors, m_fillTone, m_alpha, m_radius);
+    }
+
+    UiThemeColors m_colors;
+    Hsl m_fillTone;
+    int m_radius = 12;
+    double m_alpha = 0.72;
+};
+
+class ThemeIconBadge : public wxPanel {
+  public:
+    ThemeIconBadge(wxWindow *parent, const UiThemeColors &colors, const wxBitmap &bitmap)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(36, 36)), m_colors(colors),
+          m_bitmap(bitmap) {
+        SetMinSize(wxSize(36, 36));
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
+        Bind(wxEVT_PAINT, &ThemeIconBadge::onPaint, this);
+    }
+
+  private:
+    void onPaint(wxPaintEvent &) {
+        wxAutoBufferedPaintDC dc(this);
+        const wxRect rect = GetClientRect();
+        paintGlassRounded(dc, rect, m_colors, m_colors.surfaceBg, 0.58, 8);
+        if (m_bitmap.IsOk()) {
+            const int x = rect.x + (rect.width - m_bitmap.GetWidth()) / 2;
+            const int y = rect.y + (rect.height - m_bitmap.GetHeight()) / 2;
+            dc.DrawBitmap(m_bitmap, x, y, true);
+        }
+    }
+
+    UiThemeColors m_colors;
+    wxBitmap m_bitmap;
+};
+
 class WheelPickerPanel : public wxPanel {
   public:
-    WheelPickerPanel(wxWindow *parent, std::vector<wxString> labels, int selected, bool darkTheme)
+    WheelPickerPanel(wxWindow *parent, std::vector<wxString> labels, int selected,
+                     const UiThemeColors &colors)
         : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(170, 260)),
-          m_labels(std::move(labels)), m_selected(selected), m_darkTheme(darkTheme) {
+          m_labels(std::move(labels)), m_selected(selected), m_colors(colors) {
         SetMinSize(wxSize(150, 240));
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         Bind(wxEVT_PAINT, &WheelPickerPanel::onPaint, this);
@@ -271,11 +372,11 @@ class WheelPickerPanel : public wxPanel {
     void onPaint(wxPaintEvent &) {
         wxAutoBufferedPaintDC dc(this);
         const wxSize size = GetClientSize();
-        const wxColour bg = m_darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248);
-        const wxColour fg = m_darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38);
-        const wxColour muted = m_darkTheme ? wxColour(132, 142, 158) : wxColour(112, 118, 128);
-        const wxColour selectedBg = m_darkTheme ? wxColour(42, 49, 62) : wxColour(231, 237, 246);
-        const wxColour border = m_darkTheme ? wxColour(72, 82, 98) : wxColour(190, 198, 210);
+        const wxColour bg = m_colors.windowBg;
+        const wxColour fg = m_colors.windowFg;
+        const wxColour muted = m_colors.mutedFg;
+        const wxColour selectedBg = m_colors.selectedBg;
+        const wxColour border = m_colors.border;
 
         dc.SetBackground(wxBrush(bg));
         dc.Clear();
@@ -374,18 +475,18 @@ class WheelPickerPanel : public wxPanel {
 
     std::vector<wxString> m_labels;
     int m_selected = 0;
-    bool m_darkTheme = false;
+    UiThemeColors m_colors;
     bool m_dragging = false;
     bool m_dragMoved = false;
     int m_lastY = 0;
     int m_dragRemainder = 0;
 };
 
-wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, bool darkTheme) {
+wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, const UiThemeColors &colors) {
     wxDialog dialog(parent, wxID_ANY, wxString::FromUTF8(_("Month")), wxDefaultPosition,
                     wxSize(420, 360), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-    dialog.SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
-    dialog.SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
+    dialog.SetBackgroundColour(colors.windowBg);
+    dialog.SetForegroundColour(colors.windowFg);
 
     std::vector<wxString> years;
     for (int year = 1900; year <= 2100; ++year) {
@@ -399,9 +500,9 @@ wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, bool darkTheme) {
 
     auto *root = new wxBoxSizer(wxVERTICAL);
     auto *pickerRow = new wxBoxSizer(wxHORIZONTAL);
-    auto *yearPicker = new WheelPickerPanel(&dialog, years, current.GetYear() - 1900, darkTheme);
+    auto *yearPicker = new WheelPickerPanel(&dialog, years, current.GetYear() - 1900, colors);
     auto *monthPicker =
-        new WheelPickerPanel(&dialog, months, static_cast<int>(current.GetMonth()), darkTheme);
+        new WheelPickerPanel(&dialog, months, static_cast<int>(current.GetMonth()), colors);
     pickerRow->Add(yearPicker, 1, wxEXPAND | wxRIGHT, 10);
     pickerRow->Add(monthPicker, 1, wxEXPAND | wxLEFT, 10);
     root->Add(pickerRow, 1, wxALL | wxEXPAND, 16);
@@ -450,12 +551,14 @@ wxDateTime chooseMonth(wxWindow *parent, wxDateTime current, bool darkTheme) {
 
 class ObservationRecordTable : public wxGenericListCtrl {
   public:
-    ObservationRecordTable(wxWindow *parent, bool darkTheme)
+    ObservationRecordTable(wxWindow *parent, const UiThemeColors &colors)
         : wxGenericListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
-          m_darkTheme(darkTheme) {
-        SetBackgroundColour(m_darkTheme ? wxColour(18, 21, 27) : wxColour(255, 255, 255));
-        SetForegroundColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
-        SetTextColour(m_darkTheme ? wxColour(232, 237, 244) : wxColour(24, 28, 34));
+          m_colors(colors) {
+        m_rowBg = blendOver(colors.windowBg, colors.surfaceBg, 0.74);
+        m_rowAltBg = blendOver(colors.windowBg, colors.cardBg, 0.38);
+        SetBackgroundColour(m_rowBg);
+        SetForegroundColour(m_colors.listFg);
+        SetTextColour(m_colors.listFg);
         Bind(wxEVT_LIST_COL_CLICK, &ObservationRecordTable::onColumnClick, this);
         Bind(wxEVT_LIST_ITEM_SELECTED, &ObservationRecordTable::onItemSelected, this);
         Bind(wxEVT_LIST_ITEM_DESELECTED, &ObservationRecordTable::onItemDeselected, this);
@@ -602,15 +705,40 @@ class ObservationRecordTable : public wxGenericListCtrl {
     }
 
     void appendColumns() {
-        AppendColumn(columnLabel(Prompted), wxLIST_FORMAT_LEFT, 70);
-        AppendColumn(columnLabel(Submitted), wxLIST_FORMAT_LEFT, 70);
-        AppendColumn(columnLabel(Duration), wxLIST_FORMAT_LEFT, 55);
-        AppendColumn(columnLabel(Energy), wxLIST_FORMAT_RIGHT, 55);
-        AppendColumn(columnLabel(Mood), wxLIST_FORMAT_RIGHT, 55);
-        AppendColumn(columnLabel(Grounding), wxLIST_FORMAT_RIGHT, 55);
-        AppendColumn(columnLabel(Average), wxLIST_FORMAT_RIGHT, 45);
-        AppendColumn(columnLabel(Activity), wxLIST_FORMAT_LEFT, 500);
-        AppendColumn(columnLabel(Quote), wxLIST_FORMAT_LEFT, 300);
+        AppendColumn(columnLabel(Prompted), wxLIST_FORMAT_CENTER, 80);
+        AppendColumn(columnLabel(Submitted), wxLIST_FORMAT_CENTER, 80);
+        AppendColumn(columnLabel(Duration), wxLIST_FORMAT_CENTER, 70);
+        AppendColumn(columnLabel(Energy), wxLIST_FORMAT_CENTER, 70);
+        AppendColumn(columnLabel(Mood), wxLIST_FORMAT_CENTER, 70);
+        AppendColumn(columnLabel(Grounding), wxLIST_FORMAT_CENTER, 70);
+        AppendColumn(columnLabel(Average), wxLIST_FORMAT_CENTER, 45);
+        AppendColumn(columnLabel(Activity), wxLIST_FORMAT_CENTER, 500);
+        AppendColumn(columnLabel(Quote), wxLIST_FORMAT_CENTER, 300);
+    }
+
+    static wxListColumnFormat cellAlign(int column) {
+        switch (column) {
+        case Energy:
+        case Mood:
+        case Grounding:
+        case Average:
+            return wxLIST_FORMAT_RIGHT;
+        case Activity:
+        case Quote:
+            return wxLIST_FORMAT_LEFT;
+        default:
+            return wxLIST_FORMAT_CENTER;
+        }
+    }
+
+    void setCellText(long row, int column, const wxString &text) {
+        wxListItem item;
+        item.SetId(row);
+        item.SetColumn(column);
+        item.SetText(text);
+        item.SetAlign(cellAlign(column));
+        item.SetMask(wxLIST_MASK_TEXT);
+        SetItem(item);
     }
 
     static double avg(const Observation &observation) {
@@ -657,20 +785,22 @@ class ObservationRecordTable : public wxGenericListCtrl {
 
         long index = 0;
         for (const Observation &observation : m_rows) {
-            InsertItem(index, timeOfDay(observation.promptedAt));
-            SetItem(index, 1, timeOfDay(observation.submittedAt));
-            SetItem(index, 2,
-                    wxString::FromUTF8(formatDuration(durationSeconds(observation)).c_str()));
-            SetItem(index, 3, scoreWithEmoji(energyEmoji(observation.energy), observation.energy));
-            SetItem(index, 4, scoreWithEmoji(moodEmoji(observation.mood), observation.mood));
-            SetItem(index, 5,
-                    scoreWithEmoji(groundingEmoji(observation.grounding), observation.grounding));
-            SetItem(index, 6, wxString::FromUTF8(formatDouble(avg(observation)).c_str()));
-            SetItem(index, 7, wxString::FromUTF8(trim(observation.activity).c_str()));
-            SetItem(index, 8, wxString::FromUTF8(observation.quote.c_str()));
-            if (m_darkTheme) {
-                SetItemTextColour(index, wxColour(232, 237, 244));
-            }
+            InsertItem(index, wxString());
+            setCellText(index, Prompted, timeOfDay(observation.promptedAt));
+            setCellText(index, Submitted, timeOfDay(observation.submittedAt));
+            setCellText(index, Duration,
+                        wxString::FromUTF8(formatDuration(durationSeconds(observation)).c_str()));
+            setCellText(index, Energy,
+                        scoreWithEmoji(energyEmoji(observation.energy), observation.energy));
+            setCellText(index, Mood, scoreWithEmoji(moodEmoji(observation.mood), observation.mood));
+            setCellText(index, Grounding,
+                        scoreWithEmoji(groundingEmoji(observation.grounding), observation.grounding));
+            setCellText(index, Average,
+                        wxString::FromUTF8(formatDouble(avg(observation)).c_str()));
+            setCellText(index, Activity, wxString::FromUTF8(trim(observation.activity).c_str()));
+            setCellText(index, Quote, wxString::FromUTF8(observation.quote.c_str()));
+            SetItemTextColour(index, m_colors.listFg);
+            SetItemBackgroundColour(index, index % 2 == 0 ? m_rowBg : m_rowAltBg);
             ++index;
         }
     }
@@ -789,15 +919,17 @@ class ObservationRecordTable : public wxGenericListCtrl {
     std::function<void(const Observation &)> m_onDelete;
     std::function<void()> m_onBulkDelete;
     std::function<void(int keyCode)> m_onPeriodNavigation;
-    bool m_darkTheme;
+    UiThemeColors m_colors;
+    wxColour m_rowBg;
+    wxColour m_rowAltBg;
     int m_sortColumn = Average;
     bool m_ascending = false;
 };
 
 class ObservationCalendarPanel : public wxPanel {
   public:
-    ObservationCalendarPanel(wxWindow *parent, bool darkTheme, bool weekStartsMonday)
-        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(620, 430)), m_darkTheme(darkTheme),
+    ObservationCalendarPanel(wxWindow *parent, const UiThemeColors &colors, bool weekStartsMonday)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(620, 430)), m_colors(colors),
           m_weekStartsMonday(weekStartsMonday) {
         SetMinSize(wxSize(620, 430));
         SetMaxSize(wxSize(620, 430));
@@ -833,15 +965,19 @@ class ObservationCalendarPanel : public wxPanel {
     void onPaint(wxPaintEvent &) {
         m_cellRects.clear();
         wxAutoBufferedPaintDC dc(this);
-        const wxSize size(620, 430);
-        const wxColour bg = m_darkTheme ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
-        const wxColour fg = m_darkTheme ? wxColour(229, 235, 244) : wxColour(31, 36, 44);
-        const wxColour muted = m_darkTheme ? wxColour(143, 153, 170) : wxColour(92, 99, 112);
-        const wxColour selectedBg = m_darkTheme ? wxColour(42, 51, 68) : wxColour(230, 239, 255);
-        const wxColour todayBg = m_darkTheme ? wxColour(72, 55, 28) : wxColour(255, 241, 210);
-        const wxColour todayBorder = wxColour(255, 183, 77);
-        dc.SetBackground(wxBrush(bg));
-        dc.Clear();
+        const wxSize size = GetClientSize();
+        const wxColour base = m_colors.windowBg;
+        const wxColour fg = m_colors.windowFg;
+        const wxColour muted = m_colors.mutedFg;
+        const wxColour selectedBg = blendOver(base, m_colors.selectedBg, 0.82);
+        const wxColour todayBg = blendOver(base, m_colors.todayBg, 0.82);
+        const wxColour todayBorder = m_colors.chartHighlight;
+        const wxColour hotDot = m_colors.chartHighlight;
+        const wxColour calmDot = m_colors.actionFg;
+        paintGlassRounded(dc, wxRect(0, 0, size.GetWidth(), size.GetHeight()), m_colors,
+                          m_colors.surfaceBg, 0.74, 14);
+
+        wxFont defaultFont = GetFont();
 
         wxFont weekdayFont = GetFont();
         weekdayFont.SetWeight(wxFONTWEIGHT_BOLD);
@@ -858,6 +994,7 @@ class ObservationCalendarPanel : public wxPanel {
         const int weeks = (firstOffset + daysInMonth(m_anchor) + 6) / 7;
         const int cellH =
             std::max(62, (size.GetHeight() - margin * 2 - navH - headerH) / std::max(1, weeks));
+        dc.SetFont(defaultFont);
 
         wxFont navFont = GetFont();
         navFont.SetPointSize(navFont.GetPointSize() + 2);
@@ -881,6 +1018,7 @@ class ObservationCalendarPanel : public wxPanel {
         dc.DrawText(nextTitle, m_nextRect.GetRight() - nextExtent.GetWidth(),
                     m_nextRect.GetY() + 2);
         dc.DrawText(monthTitle, m_titleRect.GetX() + 16, m_titleRect.GetY() + 2);
+        dc.SetFont(defaultFont);
 
         const char *mondayFirst[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         const char *sundayFirst[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -892,6 +1030,7 @@ class ObservationCalendarPanel : public wxPanel {
             const wxSize extent = dc.GetTextExtent(label);
             dc.DrawText(label, margin + i * cellW + (cellW - extent.GetWidth()) / 2, margin + navH);
         }
+        dc.SetFont(defaultFont);
 
         wxDateTime day = first;
         const wxDateTime today = wxDateTime::Today();
@@ -905,9 +1044,8 @@ class ObservationCalendarPanel : public wxPanel {
         const int gridY = margin + navH + headerH;
         const int gridRows = 6;
         const int daysInCurrentMonth = daysInMonth(m_anchor);
-        const wxColour gridColor = m_darkTheme ? wxColour(54, 60, 72) : wxColour(214, 220, 228);
-        const wxColour selectedBorder =
-            m_darkTheme ? wxColour(140, 148, 160) : wxColour(132, 140, 152);
+        const wxColour gridColor = m_colors.grid;
+        const wxColour selectedBorder = m_colors.weekdayHeader;
         const auto cellHasDay = [&](int r, int c) -> bool {
             const int idx = r * 7 + c;
             if (idx < firstOffset) {
@@ -932,9 +1070,6 @@ class ObservationCalendarPanel : public wxPanel {
                 const int y = gridY + row * cellH;
                 const wxRect rect(x, y, cellW, cellH);
                 if (cellIndex < firstOffset || day.GetMonth() != m_anchor.GetMonth()) {
-                    dc.SetPen(*wxTRANSPARENT_PEN);
-                    dc.SetBrush(wxBrush(bg));
-                    dc.DrawRectangle(rect);
                     continue;
                 }
 
@@ -950,6 +1085,10 @@ class ObservationCalendarPanel : public wxPanel {
                 } else if (isToday) {
                     dc.SetPen(*wxTRANSPARENT_PEN);
                     dc.SetBrush(wxBrush(todayBg));
+                    dc.DrawRectangle(rect);
+                } else {
+                    dc.SetPen(*wxTRANSPARENT_PEN);
+                    dc.SetBrush(wxBrush(blendOver(base, m_colors.cardBg, 0.28)));
                     dc.DrawRectangle(rect);
                 }
 
@@ -1001,15 +1140,14 @@ class ObservationCalendarPanel : public wxPanel {
             wxRect inner = cell.rect;
             inner.Deflate(cellPadding);
 
-            dc.SetTextForeground(cell.holiday ? wxColour(255, 116, 116) : fg);
-            dayFont.SetPointSize(GetFont().GetPointSize() + 8);
+            dc.SetTextForeground(cell.holiday ? m_colors.chartHighlight : fg);
             dc.SetFont(dayFont);
             wxString dayLabel = wxString::Format("%d", cell.day.GetDay());
             wxSize dayExtent = dc.GetTextExtent(dayLabel);
             dc.DrawText(dayLabel, inner.GetX(), inner.GetY());
 
             dc.SetFont(lunarFont);
-            dc.SetTextForeground(cell.holiday ? wxColour(255, 164, 164) : muted);
+            dc.SetTextForeground(cell.holiday ? blendOver(base, m_colors.chartHighlight, 0.75) : muted);
             wxString lunar = lunarLabel(cell.day);
             dc.DrawText(lunar, inner.GetX(), inner.GetY() + dayExtent.GetHeight() + 2);
 
@@ -1035,10 +1173,11 @@ class ObservationCalendarPanel : public wxPanel {
                 dc.DrawText(countLabel, dotX - dotRadius - dotGap - countExtent.GetWidth(),
                             rowCenterY - countExtent.GetHeight() / 2);
                 dc.SetPen(*wxTRANSPARENT_PEN);
-                dc.SetBrush(wxBrush(hot ? wxColour(235, 86, 86) : wxColour(65, 145, 255)));
+                dc.SetBrush(wxBrush(hot ? hotDot : calmDot));
                 dc.DrawCircle(dotX, dotY, dotRadius);
             }
         }
+        dc.SetFont(defaultFont);
     }
 
     void onLeftDown(wxMouseEvent &event) {
@@ -1053,7 +1192,7 @@ class ObservationCalendarPanel : public wxPanel {
             return;
         }
         if (m_titleRect.Contains(point)) {
-            wxDateTime chosen = chooseMonth(this, m_anchor, m_darkTheme);
+            wxDateTime chosen = chooseMonth(this, m_anchor, m_colors);
             m_anchor = startOfMonth(chosen);
             m_selected = m_anchor;
             Refresh();
@@ -1080,7 +1219,7 @@ class ObservationCalendarPanel : public wxPanel {
         wxDateTime date;
     };
 
-    bool m_darkTheme;
+    UiThemeColors m_colors;
     bool m_weekStartsMonday;
     wxDateTime m_anchor = startOfMonth(wxDateTime::Today());
     wxDateTime m_selected = wxDateTime::Today();
@@ -1095,8 +1234,8 @@ class ObservationCalendarPanel : public wxPanel {
 
 class StatisticsChartPanel : public wxPanel {
   public:
-    StatisticsChartPanel(wxWindow *parent, bool darkTheme)
-        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(-1, 220)), m_darkTheme(darkTheme) {
+    StatisticsChartPanel(wxWindow *parent, const UiThemeColors &colors)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(-1, 220)), m_colors(colors) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         Bind(wxEVT_PAINT, &StatisticsChartPanel::onPaint, this);
         Bind(wxEVT_MOUSEWHEEL, &StatisticsChartPanel::onMouseWheel, this);
@@ -1194,12 +1333,11 @@ class StatisticsChartPanel : public wxPanel {
     void onPaint(wxPaintEvent &) {
         wxAutoBufferedPaintDC dc(this);
         const wxSize size = GetClientSize();
-        const wxColour bg = m_darkTheme ? wxColour(18, 21, 27) : wxColour(250, 251, 253);
-        const wxColour fg = m_darkTheme ? wxColour(225, 230, 238) : wxColour(40, 44, 52);
-        const wxColour grid = m_darkTheme ? wxColour(44, 49, 59) : wxColour(220, 224, 230);
+        const wxColour fg = m_colors.windowFg;
+        const wxColour grid = m_colors.grid;
 
-        dc.SetBackground(wxBrush(bg));
-        dc.Clear();
+        paintGlassRounded(dc, wxRect(0, 0, size.GetWidth(), size.GetHeight()), m_colors,
+                          m_colors.surfaceBg, 0.72, 12);
 
         const int left = ChartLeft;
         const int right = ChartRight;
@@ -1281,8 +1419,7 @@ class StatisticsChartPanel : public wxPanel {
                     const bool highlighted =
                         !m_highlightedSampleKey.empty() && sample.key == m_highlightedSampleKey;
                     if (highlighted) {
-                        dc.SetPen(
-                            wxPen(m_darkTheme ? wxColour(245, 248, 255) : wxColour(24, 28, 34), 2));
+                        dc.SetPen(wxPen(m_colors.chartHighlight, 2));
                         dc.SetBrush(*wxTRANSPARENT_BRUSH);
                         dc.DrawCircle(x, y, 7);
                         dc.SetPen(wxPen(color, 2));
@@ -1544,7 +1681,7 @@ class StatisticsChartPanel : public wxPanel {
         legend(avgBaseColor, wxString::FromUTF8(_("EMG avg")));
     }
 
-    bool m_darkTheme;
+    UiThemeColors m_colors;
     std::vector<ChartBucket> m_buckets;
     std::vector<ChartSample> m_samples;
     std::string m_highlightedSampleKey;
@@ -1558,7 +1695,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
                                    bool weekStartsMonday, const std::vector<std::string> &quotes)
     : wxDialog(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition,
                wxSize(1040, 760), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP),
-      m_store(store), m_quotes(quotes), m_theme("light"), m_weekStartsMonday(weekStartsMonday),
+      m_store(store), m_quotes(quotes), m_theme(theme), m_weekStartsMonday(weekStartsMonday),
       m_anchor(wxDateTime::Today()) {
     if (m_store != nullptr) {
         m_store->load({});
@@ -1567,9 +1704,11 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
         }
     }
 
-    const bool darkTheme = m_theme != "light";
-    SetBackgroundColour(darkTheme ? wxColour(20, 23, 29) : wxColour(244, 246, 248));
-    SetForegroundColour(darkTheme ? wxColour(235, 239, 245) : wxColour(28, 32, 38));
+    const UiThemeColors &colors = uiThemeColors(m_theme);
+    const wxFont uiFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    SetFont(uiFont);
+    SetBackgroundColour(colors.windowBg);
+    SetForegroundColour(colors.windowFg);
 
     auto *root = new wxBoxSizer(wxVERTICAL);
     m_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -1608,6 +1747,8 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
                        wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR, wxSize(16, 16)),
                        wxString::FromUTF8("Esc"));
     m_toolbar->Realize();
+    m_toolbar->SetBackgroundColour(blendOver(colors.windowBg, colors.surfaceBg, 0.62));
+    m_toolbar->SetForegroundColour(colors.windowFg);
 
     auto *header = new wxBoxSizer(wxHORIZONTAL);
     m_title = new wxStaticText(this, wxID_ANY, "");
@@ -1615,14 +1756,16 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     titleFont.SetPointSize(titleFont.GetPointSize() + 5);
     titleFont.SetWeight(wxFONTWEIGHT_BOLD);
     m_title->SetFont(titleFont);
+    m_title->SetForegroundColour(colors.windowFg);
 
     m_eachYear = new wxCheckBox(this, wxID_ANY, wxString::FromUTF8(_("Each Year")));
     m_eachYear->SetValue(true);
+    m_eachYear->SetForegroundColour(colors.listFg);
 
     header->Add(m_title, 1, wxALIGN_CENTER_VERTICAL);
     header->Add(m_eachYear, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 12);
 
-    m_calendar = new ObservationCalendarPanel(this, darkTheme, m_weekStartsMonday);
+    m_calendar = new ObservationCalendarPanel(this, colors, m_weekStartsMonday);
     m_calendar->setSelected(m_anchor);
     m_calendar->setDaySelectedHandler([this](wxDateTime date) {
         m_anchor = date;
@@ -1637,20 +1780,17 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
         updateTitle();
     });
 
-    m_daySummaryPanel = new wxPanel(this);
-    m_daySummaryPanel->SetBackgroundColour(darkTheme ? wxColour(20, 23, 29)
-                                                     : wxColour(244, 246, 248));
+    m_daySummaryPanel = new ThemeGlassPanel(this, colors, colors.cardBg, 12, 0.72);
     auto *daySummarySizer = new wxBoxSizer(wxVERTICAL);
     m_daySummaryDate = new wxStaticText(m_daySummaryPanel, wxID_ANY, "");
     wxFont daySummaryTitleFont = GetFont();
     daySummaryTitleFont.SetPointSize(daySummaryTitleFont.GetPointSize() + 3);
     daySummaryTitleFont.SetWeight(wxFONTWEIGHT_BOLD);
     m_daySummaryDate->SetFont(daySummaryTitleFont);
-    m_daySummaryDate->SetForegroundColour(darkTheme ? wxColour(235, 239, 245)
-                                                    : wxColour(28, 32, 38));
+    m_daySummaryDate->SetForegroundColour(colors.windowFg);
     auto addSummaryLine = [&](wxStaticText *&target) {
         target = new wxStaticText(m_daySummaryPanel, wxID_ANY, "");
-        target->SetForegroundColour(darkTheme ? wxColour(226, 232, 240) : wxColour(24, 28, 34));
+        target->SetForegroundColour(colors.listFg);
         daySummarySizer->Add(target, 0, wxBOTTOM, 8);
     };
     daySummarySizer->Add(m_daySummaryDate, 0, wxBOTTOM, 16);
@@ -1660,18 +1800,26 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     addSummaryLine(m_daySummaryEnergy);
     addSummaryLine(m_daySummaryMood);
     addSummaryLine(m_daySummaryGrounding);
-    m_daySummaryPanel->SetSizer(daySummarySizer);
+    auto *daySummaryOuter = new wxBoxSizer(wxVERTICAL);
+    daySummaryOuter->Add(daySummarySizer, 1, wxEXPAND | wxALL, 14);
+    m_daySummaryPanel->SetSizer(daySummaryOuter);
 
     m_metricsPanel = new wxPanel(this);
+    m_metricsPanel->SetBackgroundColour(colors.windowBg);
     m_metricsSizer = new wxBoxSizer(wxHORIZONTAL);
     m_metricsPanel->SetSizer(m_metricsSizer);
-    m_chart = new StatisticsChartPanel(this, darkTheme);
+    m_chart = new StatisticsChartPanel(this, colors);
     m_tableTitle = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(_("Top activities")));
     wxFont tableTitleFont = GetFont();
     tableTitleFont.SetPointSize(tableTitleFont.GetPointSize() + 2);
     tableTitleFont.SetWeight(wxFONTWEIGHT_BOLD);
     m_tableTitle->SetFont(tableTitleFont);
-    m_table = new ObservationRecordTable(this, darkTheme);
+    m_tableTitle->SetForegroundColour(colors.listFg);
+    auto *tableFrame = new ThemeGlassPanel(this, colors, colors.surfaceBg, 10, 0.74);
+    auto *tableFrameSizer = new wxBoxSizer(wxVERTICAL);
+    tableFrame->SetSizer(tableFrameSizer);
+    m_table = new ObservationRecordTable(tableFrame, colors);
+    m_table->SetFont(uiFont);
     m_table->setSelectionHandler([this](const Observation *observation) {
         if (observation != nullptr && (m_mode == ViewMode::Day || m_mode == ViewMode::Week)) {
             m_chart->setHighlightedSample(observationKey(*observation));
@@ -1684,6 +1832,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
         [this](const Observation &observation) { deleteObservation(observation); });
     m_table->setBulkDeleteHandler([this]() { deleteSelectedObservations(); });
     m_table->setPeriodNavigationHandler([this](int keyCode) { navigatePeriodFromTable(keyCode); });
+    tableFrameSizer->Add(m_table, 1, wxEXPAND | wxALL, 10);
 
     root->Add(m_toolbar, 0, wxEXPAND);
     root->Add(header, 0, wxALL | wxEXPAND, 16);
@@ -1694,7 +1843,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     root->Add(m_metricsPanel, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
     root->Add(m_chart, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
     root->Add(m_tableTitle, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
-    root->Add(m_table, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
+    root->Add(tableFrame, 1, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 16);
     SetSizer(root);
 
     m_eachYear->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent &) { render(); });
@@ -1715,6 +1864,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     hookDisplaySurface(m_calendar);
     hookDisplaySurface(m_chart);
     hookDisplaySurface(m_title);
+    hookDisplaySurface(tableFrame);
     for (wxWindow *summaryLine :
          {static_cast<wxWindow *>(m_daySummaryDate), static_cast<wxWindow *>(m_daySummaryRecords),
           static_cast<wxWindow *>(m_daySummaryEmpty), static_cast<wxWindow *>(m_daySummaryDuration),
@@ -1927,17 +2077,13 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) 
     }
 
     const double emgAverageCount = static_cast<double>(emgCount);
-    const bool darkTheme = m_theme != "light";
-    const wxColour cardBg = darkTheme ? wxColour(27, 31, 39) : wxColour(255, 255, 255);
-    const wxColour fg = darkTheme ? wxColour(232, 237, 244) : wxColour(32, 36, 44);
-    const wxColour muted = darkTheme ? wxColour(160, 169, 184) : wxColour(92, 99, 112);
+    const UiThemeColors &colors = uiThemeColors(m_theme);
 
     auto addMetric = [&](const wxArtID &artId, const wxString &label, const wxString &value) {
-        auto *panel = new wxPanel(m_metricsPanel);
-        panel->SetBackgroundColour(cardBg);
+        auto *panel = new ThemeGlassPanel(m_metricsPanel, colors, colors.cardBg, 12, 0.72);
         auto *row = new wxBoxSizer(wxHORIZONTAL);
-        auto *icon = new wxStaticBitmap(
-            panel, wxID_ANY, wxArtProvider::GetBitmap(artId, wxART_OTHER, wxSize(24, 24)));
+        auto *icon = new ThemeIconBadge(
+            panel, colors, wxArtProvider::GetBitmap(artId, wxART_OTHER, wxSize(24, 24)));
         auto *texts = new wxBoxSizer(wxVERTICAL);
         auto *valueText = new wxStaticText(panel, wxID_ANY, value);
         auto *labelText = new wxStaticText(panel, wxID_ANY, label);
@@ -1945,13 +2091,15 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) 
         valueFont.SetPointSize(valueFont.GetPointSize() + 3);
         valueFont.SetWeight(wxFONTWEIGHT_BOLD);
         valueText->SetFont(valueFont);
-        valueText->SetForegroundColour(fg);
-        labelText->SetForegroundColour(muted);
+        valueText->SetForegroundColour(colors.listFg);
+        labelText->SetForegroundColour(colors.mutedFg);
         texts->Add(valueText, 0, wxBOTTOM, 2);
         texts->Add(labelText, 0);
         row->Add(icon, 0, wxRIGHT | wxALIGN_CENTER_VERTICAL, 10);
         row->Add(texts, 1, wxALIGN_CENTER_VERTICAL);
-        panel->SetSizer(row);
+        auto *cardInner = new wxBoxSizer(wxVERTICAL);
+        cardInner->Add(row, 1, wxEXPAND | wxALL, 12);
+        panel->SetSizer(cardInner);
         hookDisplaySurface(panel);
         hookDisplaySurface(icon);
         hookDisplaySurface(valueText);
@@ -2175,29 +2323,31 @@ void StatisticsDialog::refreshAfterMutation(long selectIndex) {
 }
 
 void StatisticsDialog::editObservation(const Observation &original) {
-    ObservePromptDefaults defaults;
-    defaults.theme = m_theme;
-    defaults.weekStartsMonday = m_weekStartsMonday;
-    defaults.energy = original.energy;
-    defaults.mood = original.mood;
-    defaults.grounding = original.grounding;
-    defaults.quote = original.quote;
-    defaults.quotes = m_quotes;
-    if (defaults.quotes.empty() && !original.quote.empty()) {
-        defaults.quotes.push_back(original.quote);
-    }
-    defaults.editing = original;
-    defaults.store = m_store;
+    CallAfter([this, original]() {
+        ObservePromptDefaults defaults;
+        defaults.theme = m_theme;
+        defaults.weekStartsMonday = m_weekStartsMonday;
+        defaults.energy = original.energy;
+        defaults.mood = original.mood;
+        defaults.grounding = original.grounding;
+        defaults.quote = original.quote;
+        defaults.quotes = m_quotes;
+        if (defaults.quotes.empty() && !original.quote.empty()) {
+            defaults.quotes.push_back(original.quote);
+        }
+        defaults.editing = original;
+        defaults.store = m_store;
 
-    ObservationDialog dialog(this, defaults);
-    if (dialog.ShowModal() != wxID_OK) {
-        return;
-    }
+        ObservationDialog dialog(this, defaults);
+        if (dialog.ShowModal() != wxID_OK) {
+            return;
+        }
 
-    if (m_store != nullptr) {
-        m_store->update(original.id, dialog.observation());
-    }
-    refreshAfterMutation();
+        if (m_store != nullptr) {
+            m_store->update(original.id, dialog.observation());
+        }
+        refreshAfterMutation();
+    });
 }
 
 void StatisticsDialog::navigatePeriodFromTable(int keyCode) {
