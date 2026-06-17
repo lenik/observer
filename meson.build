@@ -67,7 +67,20 @@ bas_ui_dep = dependency('bas-ui', required: true)
 # bas_ui_static_dep = dependency('bas-ui-static', required: true)
 
 sqlite_dep = dependency('sqlite3', required: true)
-wx_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
+wx_lib_dep = dependency('wxwidgets', modules: ['base', 'core', 'stc', 'adv'], required: true)
+gobject_dep = dependency('gobject-2.0', required: true)
+dl_dep = cpp.find_library('dl', required: false)
+
+cpu_libdir = '/usr/lib/' + host_machine.cpu_family() + '-linux-gnu'
+if fs.exists(cpu_libdir / 'libwx_gtk3u_webview-3.2.so')
+    wx_webview_dep = dependency('wxwidgets', modules: ['webview'], required: true)
+elif fs.exists(cpu_libdir / 'libwx_gtk3u_webview-3.2.so.0')
+    wx_webview_dep = declare_dependency(
+        link_args: ['-L' + cpu_libdir, '-l:libwx_gtk3u_webview-3.2.so.0'],
+    )
+else
+    error('wx webview library not found (install libwxgtk-webview3.2-dev)')
+endif
 
 lib_objects = []
 
@@ -127,8 +140,14 @@ lib_inc = [
 lib_deps = [
     bas_cpp_dep,
     bas_ui_dep,
-    wx_dep,
+    wx_lib_dep,
     sqlite_dep,
+]
+
+app_deps = lib_deps + [
+    wx_webview_dep,
+    gobject_dep,
+    dl_dep,
 ]
 
 subdir('po')
@@ -255,6 +274,11 @@ foreach source : app_sources
           'src/ObserverApp.cpp',
           'src/ObserverFrame.cpp',
           'src/ObservationDialog.cpp',
+          'src/DeepSeekLauncher.cpp',
+          'src/DeepSeekBrowserFrame.cpp',
+          'src/DeepSeekWebViewSetup.cpp',
+          'src/UiTheme.cpp',
+          'src/LayoutDiag.cpp',
           'src/StatisticsDialog.cpp',
           'src/WxDialogDriver.cpp',
         ]
@@ -267,12 +291,28 @@ foreach source : app_sources
         cpp_args: cpp_args,
         cpp_pch: cpp_pch,
         include_directories: lib_inc,
-        dependencies: lib_deps,
+        dependencies: app_deps,
         link_with: lib_observer,
         install: true,
         install_dir: bindir,
     )
 endforeach
+
+executable(
+    'transparent_frame_test',
+    'tests/transparent_frame_test.cpp',
+    cpp_args: nowarn,
+    dependencies: [wx_lib_dep],
+    install: false,
+)
+
+executable(
+    'solid_frame_test',
+    'tests/solid_frame_test.cpp',
+    cpp_args: nowarn,
+    dependencies: [wx_lib_dep],
+    install: false,
+)
 
 bash_files = [
     'oremind.bash',
