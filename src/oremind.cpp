@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "AppConfig.h"
-#include "DeepSeekLauncher.h"
+#include "AuxGuiProcess.h"
 #include "DeepSeekWebViewSetup.h"
 #include "LayoutDiag.h"
 #include "UiTheme.h"
@@ -152,13 +152,9 @@ int main(int argc, char **argv) {
     bind_textdomain_codeset("observer", "UTF-8");
     textdomain("observer");
 
-    wxString deepSeekPrompt;
-    if (parseDeepSeekBrowserArg(argc, argv, deepSeekPrompt)) {
-        prepareDeepSeekWebViewEnvironment();
-        g_deepSeekBrowserPrompt = deepSeekPrompt;
-        int wxArgc = 1;
-        char *wxArgv[] = {argv[0], nullptr};
-        return wxEntry(wxArgc, wxArgv);
+    if (!parseAuxGuiLaunchRequest(argc, argv, g_auxGuiLaunchRequest)) {
+        fprintf(stderr, _("invalid auxiliary GUI arguments.\n"));
+        return 1;
     }
 
     static const struct option long_opts[] = {
@@ -286,5 +282,18 @@ int main(int argc, char **argv) {
 
     loginfo_fmt("%s: verbose mode enabled", exe);
 
-    return wxEntry(argc, argv);
+    if (g_auxGuiLaunchRequest.active) {
+        prepareDeepSeekWebViewEnvironment();
+        int wxArgc = 1;
+        char *wxArgv[] = {const_cast<char *>(exe), nullptr};
+        return wxEntry(wxArgc, wxArgv);
+    }
+
+    if (!appConfig().diagMode) {
+        forkAuxGuiDaemon(exe);
+    }
+
+    int wxArgc = 1;
+    char *wxArgv[] = {const_cast<char *>(exe), nullptr};
+    return wxEntry(wxArgc, wxArgv);
 }

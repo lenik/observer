@@ -1,8 +1,8 @@
 #include "ObserverApp.h"
 
 #include "AppConfig.h"
-#include "DeepSeekBrowserFrame.h"
-#include "DeepSeekLauncher.h"
+#include "AuxGuiProcess.h"
+#include "DeepSeekWebViewSetup.h"
 #include "LayoutDiag.h"
 #include "ObserverFrame.h"
 
@@ -23,17 +23,12 @@ bool ObserverApp::OnInit()
         std::exit(status);
     }
 
-    if (!g_deepSeekBrowserPrompt.empty()) {
-        auto *frame = new DeepSeekBrowserFrame(g_deepSeekBrowserPrompt);
-        g_deepSeekBrowserPrompt.clear();
-        if (!frame->isReady()) {
-            wxMessageBox("WebView is unavailable on this system.", "DeepSeek", wxOK | wxICON_ERROR);
+    if (g_auxGuiLaunchRequest.active) {
+        prepareDeepSeekWebViewEnvironment();
+        if (!runAuxGuiSession()) {
+            wxMessageBox("Auxiliary GUI process failed to start.", "Observer", wxOK | wxICON_ERROR);
             return false;
         }
-        frame->Show(true);
-        frame->activateWindow();
-        SetTopWindow(frame);
-        SetExitOnFrameDelete(true);
         return true;
     }
 

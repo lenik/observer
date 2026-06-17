@@ -274,12 +274,12 @@ foreach source : app_sources
           'src/ObserverApp.cpp',
           'src/ObserverFrame.cpp',
           'src/ObservationDialog.cpp',
-          'src/DeepSeekLauncher.cpp',
+          'src/AuxGuiProcess.cpp',
           'src/DeepSeekBrowserFrame.cpp',
           'src/DeepSeekWebViewSetup.cpp',
+          'src/HistoryFrame.cpp',
           'src/UiTheme.cpp',
           'src/LayoutDiag.cpp',
-          'src/StatisticsDialog.cpp',
           'src/WxDialogDriver.cpp',
         ]
     endif
