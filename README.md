@@ -81,6 +81,8 @@ Options:
 - `F4` / `F5`: decrease / increase energy by half a step.
 - `F3` / `F6`: decrease / increase mood by half a step.
 - `F2` / `F7`: decrease / increase grounding by half a step.
+- Hold `Shift` with `F2`-`F7` to reverse the direction.
+- Hold `Ctrl` for a `1.0` step, or `Alt` for a `5.0` step.
 
 ## Tray And Single Instance
 
@@ -126,7 +128,10 @@ mood, and average grounding.  A combined chart displays record count and prompt
 duration as bars, with energy, mood, and grounding lines drawn above them.  The
 record table below the chart reuses the same sortable history table used by the
 calendar view and includes prompted time, submitted time, duration, energy,
-mood, grounding, average score, activity, and quote.
+mood, grounding, average score, activity, and quote.  Double-click a row or use
+the context menu to edit a record in the same dialog used for new prompts.
+`Delete` removes all selected rows immediately.  Changes are saved when the
+statistics window closes.
 
 Statistics keyboard shortcuts:
 
@@ -134,9 +139,12 @@ Statistics keyboard shortcuts:
 - `F5` / `F6` / `F7` / `F8`: day / week / month / year statistics.
 - `Left` / `Right`: in calendar view, select the previous or next day; in
   day/week/month/year views, cycle through those four statistic views.
-- `Up` / `Down`: in calendar view, select the previous or next week; in
-  day/week/month/year views, move to the previous or next period.
+- `Up` / `Down`: in calendar view, select the previous or next week when the
+  record table has no selection; in day/week/month/year views, move to the
+  previous or next period when the table has no selection.  When rows are
+  selected, move the selection within the table.
 - `PageUp` / `PageDown`: move to the previous or next period.
+- `Delete`: delete all selected records in the table.
 - `Ctrl+T` or `Home`: return to today.
 - `Esc`: close the statistics window.
 

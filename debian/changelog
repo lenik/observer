@@ -1,3 +1,14 @@
+observer (1.0.7) testing; urgency=medium
+
+  * Allow multi-select in the statistics record table with empty default
+    selection; Up/Down scroll dates when nothing is selected.
+  * Delete selected history records immediately without a confirmation dialog.
+  * Add Shift, Ctrl, and Alt modifiers for F2-F7 score shortcuts: reverse
+    direction, 1.0 step with Ctrl, and 5.0 step with Alt.
+  * Update README and man pages for history table editing and score modifiers.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Tue, 16 Jun 2026 22:00:00 +0800
+
 observer (1.0.6) testing; urgency=medium
 
   * Add history record edit and delete in the statistics table, with auto-save
