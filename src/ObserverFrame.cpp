@@ -2,7 +2,7 @@
 
 #include "AppConfig.h"
 #include "AppIcon.h"
-#include "StatisticsDialog.h"
+#include "AuxGuiProcess.h"
 #include "WxDialogDriver.h"
 
 #include <bas/locale/i18n.h>
@@ -64,7 +64,7 @@ public:
         }, ID_TRAY_WAKE);
         Bind(wxEVT_MENU, [this](wxCommandEvent&) {
             if (m_frame != nullptr) {
-                m_frame->showStatisticsDialog();
+                m_frame->showHistoryFrame();
             }
         }, ID_TRAY_STATS);
         Bind(wxEVT_MENU, [this](wxCommandEvent&) {
@@ -116,7 +116,7 @@ ObserverFrame::~ObserverFrame()
     cleanupIpcServer();
 }
 
-bool ObserverFrame::notifyExistingInstance()
+bool ObserverFrame::sendIpcCommand(const std::string &command)
 {
     const std::string path = ipcSocketPath();
     sockaddr_un addr{};
@@ -124,18 +124,23 @@ bool ObserverFrame::notifyExistingInstance()
         return false;
     }
 
-    int fd = ::socket(AF_UNIX, SOCK_STREAM, 0);
+    const int fd = ::socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd < 0) {
         return false;
     }
 
-    const bool connected = ::connect(fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == 0;
+    const bool connected =
+        ::connect(fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == 0;
     if (connected) {
-        const char command[] = "WAKE\n";
-        (void)::write(fd, command, sizeof(command) - 1);
+        (void)::write(fd, command.data(), command.size());
     }
     ::close(fd);
     return connected;
+}
+
+bool ObserverFrame::notifyExistingInstance()
+{
+    return sendIpcCommand("WAKE\n");
 }
 
 void ObserverFrame::onTimer(wxTimerEvent& event)
@@ -220,7 +225,15 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
         char buffer[64] = {};
         const ssize_t n = ::read(client, buffer, sizeof(buffer) - 1);
         ::close(client);
-        if (n > 0 && std::string(buffer, static_cast<std::size_t>(n)).find("WAKE") != std::string::npos) {
+        if (n <= 0) {
+            continue;
+        }
+        const std::string message(buffer, static_cast<std::size_t>(n));
+        if (message.find("HISTORY") != std::string::npos) {
+            CallAfter([this]() { openHistoryWindow(); });
+            continue;
+        }
+        if (message.find("WAKE") != std::string::npos) {
             handleExternalWake();
         }
     }
@@ -251,18 +264,17 @@ void ObserverFrame::wakePrompt()
     showPrompt();
 }
 
-void ObserverFrame::showStatisticsDialog()
+void ObserverFrame::openHistoryWindow()
+{
+    launchAuxGuiHistory();
+}
+
+void ObserverFrame::showHistoryFrame()
 {
     if (m_promptOpen) {
         return;
     }
-    try {
-        StatisticsDialog dialog(this, m_store.get(), appConfig().theme, appConfig().weekStartsMonday,
-                                m_quoteProvider.quotes());
-        dialog.ShowModal();
-    } catch (const std::exception& ex) {
-        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
-    }
+    openHistoryWindow();
 }
 
 void ObserverFrame::scheduleNextPrompt(int delayMs)

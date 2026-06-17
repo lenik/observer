@@ -2,9 +2,9 @@
 
 #include "AppConfig.h"
 #include "AppIcon.h"
-#include "DeepSeekLauncher.h"
+#include "AuxGuiProcess.h"
+#include "ObserverFrame.h"
 #include "ObservationStore.h"
-#include "StatisticsDialog.h"
 #include "UiTheme.h"
 #include "formatting.h"
 
@@ -279,7 +279,7 @@ void openQuoteAiAssistant(const std::string &quote) {
     const std::string locale = effectiveAppLocale();
     if (isSimplifiedChineseLocale(locale)) {
         wxTheApp->CallAfter([prompt]() {
-            if (launchDeepSeekBrowser(prompt)) {
+            if (launchAuxGuiDeepSeek(prompt)) {
                 return;
             }
             wxLaunchDefaultBrowser(wxString::FromUTF8(buildDoubaoChatUrl(prompt).c_str()));
@@ -1057,12 +1057,15 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
 
     std::string intervalStr =
         formatIntervalValue(clampIntervalSeconds(defaults.intervalSeconds) / 60.0);
-    m_intervalCtrl =
-        new wxTextCtrl(m_contentPanel, wxID_ANY, intervalStr, wxDefaultPosition,
-                       wxSize(emWidth * 5, -1), wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
-    m_intervalCtrl->SetForegroundColour(colors.intervalFg);
-    m_intervalCtrl->SetBackgroundColour(colors.intervalBg);
-    m_intervalCtrl->SetToolTip(wxString::FromUTF8(_("Launch oremind again to wake immediately")));
+    if (!m_editMode) {
+        m_intervalCtrl =
+            new wxTextCtrl(m_contentPanel, wxID_ANY, intervalStr, wxDefaultPosition,
+                           wxSize(emWidth * 5, -1), wxTE_PROCESS_ENTER | wxALIGN_RIGHT | wxBORDER_NONE);
+        m_intervalCtrl->SetForegroundColour(colors.intervalFg);
+        m_intervalCtrl->SetBackgroundColour(colors.intervalBg);
+        m_intervalCtrl->SetToolTip(
+            wxString::FromUTF8(_("Launch oremind again to wake immediately")));
+    }
 
     const wxColour promptBg = colors.promptBg;
     const wxColour promptFg = colors.promptFg;
@@ -1161,14 +1164,14 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     if (!m_editMode) {
         historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
         historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { showStatistics(); });
+        m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
+        m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
+        m_intervalUnitLabel = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
+        m_intervalUnitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
+        m_intervalCtrl->SetFont(hintFont);
+        m_quitLabel = makeLabel(wxString::FromUTF8(_("Ctrl+Q quit")), actionColour);
+        m_quitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { quit(); });
     }
-    m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
-    m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
-    m_intervalUnitLabel = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
-    m_intervalUnitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
-    m_intervalCtrl->SetFont(hintFont);
-    m_quitLabel = makeLabel(wxString::FromUTF8(_("Ctrl+Q quit")), actionColour);
-    m_quitLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { quit(); });
 
     bottomRow->AddStretchSpacer(1);
     bottomRow->Add(m_submitLabel, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 8);
@@ -1232,6 +1235,9 @@ Observation ObservationDialog::observation() const {
 }
 
 double ObservationDialog::intervalSeconds() const {
+    if (m_intervalCtrl == nullptr) {
+        return clampIntervalSeconds(appConfig().intervalSeconds);
+    }
     double value = parseIntervalValue(m_intervalCtrl->GetValue().ToStdString());
     if (!m_intervalInSeconds) {
         value *= 60.0;
@@ -1310,8 +1316,7 @@ void ObservationDialog::showStatistics() {
     }
 
     m_statisticsOpen = true;
-    StatisticsDialog dialog(this, m_store, m_theme, m_weekStartsMonday, m_quotes);
-    dialog.ShowModal();
+    ObserverFrame::sendIpcCommand("HISTORY\n");
     m_statisticsOpen = false;
     if (m_activityCtrl != nullptr) {
         m_activityCtrl->SetFocus();

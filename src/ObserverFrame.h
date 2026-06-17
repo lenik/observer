@@ -6,6 +6,7 @@
 #include "RenderDriver.h"
 
 #include <memory>
+#include <string>
 #include <wx/timer.h>
 #include <wx/wx.h>
 
@@ -16,12 +17,14 @@ public:
     ObserverFrame();
     ~ObserverFrame() override;
     static bool notifyExistingInstance();
+    static bool sendIpcCommand(const std::string &command);
 
     void wakePrompt();
-    void showStatisticsDialog();
+    void showHistoryFrame();
     void exitApp();
 
 private:
+    void openHistoryWindow();
     void onTimer(wxTimerEvent& event);
     void setupTrayIcon();
     void cleanupTrayIcon();
