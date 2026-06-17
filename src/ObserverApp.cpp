@@ -1,9 +1,14 @@
 #include "ObserverApp.h"
 
+#include "AppConfig.h"
+#include "DeepSeekBrowserFrame.h"
+#include "DeepSeekLauncher.h"
+#include "LayoutDiag.h"
 #include "ObserverFrame.h"
 
 #include <exception>
 #include <cstdio>
+#include <cstdlib>
 
 bool ObserverApp::OnInit()
 {
@@ -12,6 +17,26 @@ bool ObserverApp::OnInit()
     }
 
     wxInitAllImageHandlers();
+
+    if (appConfig().diagMode) {
+        const int status = runLayoutDiagnostics("layout.toml");
+        std::exit(status);
+    }
+
+    if (!g_deepSeekBrowserPrompt.empty()) {
+        auto *frame = new DeepSeekBrowserFrame(g_deepSeekBrowserPrompt);
+        g_deepSeekBrowserPrompt.clear();
+        if (!frame->isReady()) {
+            wxMessageBox("WebView is unavailable on this system.", "DeepSeek", wxOK | wxICON_ERROR);
+            return false;
+        }
+        frame->Show(true);
+        frame->activateWindow();
+        SetTopWindow(frame);
+        SetExitOnFrameDelete(true);
+        return true;
+    }
+
     SetExitOnFrameDelete(false);
 
     if (ObserverFrame::notifyExistingInstance()) {

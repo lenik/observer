@@ -10,6 +10,10 @@
 
 #include "config.h"
 #include "AppConfig.h"
+#include "DeepSeekLauncher.h"
+#include "DeepSeekWebViewSetup.h"
+#include "LayoutDiag.h"
+#include "UiTheme.h"
 #include "ObserverApp.h"
 
 #include <wx/wx.h>
@@ -34,7 +38,7 @@
 define_logger();
 wxIMPLEMENT_APP_NO_MAIN(ObserverApp);
 
-enum { OPT_VERSION = 256 };
+enum { OPT_VERSION = 256, OPT_DIAG = 257 };
 
 void set_locale_env(const char* locale) {
     if (locale == nullptr || *locale == '\0') {
@@ -117,7 +121,7 @@ void usage(FILE *out) {
     fputs("  -l, --locale LOCALE ", out);
     fputs(_("set UI locale, for example zh_CN, ja, ko, en\n"), out);
     fputs("  -t, --theme THEME  ", out);
-    fputs(_("set theme: light or dark\n"), out);
+    fputs(_("set theme: dark, light, innocent, maiden, girl, morandi, github, ios, msdos, windows\n"), out);
     fputs("  -o, --opacity NUM  ", out);
     fputs(_("set final dialog opacity percentage, 0 to 100\n"), out);
     fputs("  -c, --cancel NUM   ", out);
@@ -128,6 +132,8 @@ void usage(FILE *out) {
     fputs(_("set calendar week start: M/m for Monday, S/s for Sunday\n"), out);
     fputs("  -d, --database PATH ", out);
     fputs(_("SQLite file path, or log directory when PATH is a directory\n"), out);
+    fputs("      --diag         ", out);
+    fputs(_("dump dialog layout to layout.toml and exit\n"), out);
     fputs("      --version      ", out);
     fputs(_("output version information and exit\n"), out);
     fputs("\n", out);
@@ -146,6 +152,15 @@ int main(int argc, char **argv) {
     bind_textdomain_codeset("observer", "UTF-8");
     textdomain("observer");
 
+    wxString deepSeekPrompt;
+    if (parseDeepSeekBrowserArg(argc, argv, deepSeekPrompt)) {
+        prepareDeepSeekWebViewEnvironment();
+        g_deepSeekBrowserPrompt = deepSeekPrompt;
+        int wxArgc = 1;
+        char *wxArgv[] = {argv[0], nullptr};
+        return wxEntry(wxArgc, wxArgv);
+    }
+
     static const struct option long_opts[] = {
         {"verbose", no_argument, NULL, 'v'},
         {"quiet", no_argument, NULL, 'q'},
@@ -157,6 +172,7 @@ int main(int argc, char **argv) {
         {"interval", required_argument, NULL, 'i'},
         {"weekstart", required_argument, NULL, 'w'},
         {"database", required_argument, NULL, 'd'},
+        {"diag", no_argument, NULL, OPT_DIAG},
         {"version", no_argument, NULL, OPT_VERSION},
         {NULL, 0, NULL, 0},
     };
@@ -189,13 +205,12 @@ int main(int argc, char **argv) {
                     fprintf(stderr, _("expect theme name.\n"));
                     return 1;
                 }
-                bool prefix_to_light = strstr("light", optarg) != NULL;
-                bool prefix_to_dark = strstr("dark", optarg) != NULL;
-                if (!prefix_to_light && !prefix_to_dark) {
+                const std::string normalized = normalizeUiTheme(optarg);
+                if (normalized.empty()) {
                     fprintf(stderr, _("invalid theme: %s\n"), optarg);
                     return 1;
                 }
-                appConfig().theme = prefix_to_light ? "light" : "dark";
+                appConfig().theme = normalized;
             }
             break;
         case 'o': {
@@ -243,6 +258,9 @@ int main(int argc, char **argv) {
             break;
         case 'd':
             appConfig().storePath = optarg;
+            break;
+        case OPT_DIAG:
+            appConfig().diagMode = true;
             break;
         case OPT_VERSION:
             printf("oremind %s\n", PROJECT_VERSION);

@@ -11,6 +11,7 @@ struct AppConfig {
     double intervalSeconds = 300.0;
     std::string storePath;
     bool weekStartsMonday = true;
+    bool diagMode = false;
 };
 
 AppConfig& appConfig();
