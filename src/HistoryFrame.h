@@ -1,5 +1,5 @@
-#ifndef STATISTICS_DIALOG_H
-#define STATISTICS_DIALOG_H
+#ifndef HISTORY_FRAME_H
+#define HISTORY_FRAME_H
 
 #include "ObservationStore.h"
 
@@ -13,7 +13,7 @@ class ObservationCalendarPanel;
 class ObservationRecordTable;
 class StatisticsChartPanel;
 
-class StatisticsDialog : public wxDialog {
+class HistoryFrame : public wxFrame {
   public:
     enum class ViewMode {
         Calendar,
@@ -23,8 +23,10 @@ class StatisticsDialog : public wxDialog {
         Year,
     };
 
-    StatisticsDialog(wxWindow *parent, ObservationStore *store, std::string theme, bool weekStartsMonday,
-                     const std::vector<std::string> &quotes = {});
+    HistoryFrame(wxWindow *parent, ObservationStore *store, std::string theme, bool weekStartsMonday,
+                 const std::vector<std::string> &quotes = {});
+
+    void activateWindow();
 
   private:
     void onCharHook(wxKeyEvent &event);
@@ -66,9 +68,8 @@ class StatisticsDialog : public wxDialog {
     wxStaticText *m_daySummaryRecords = nullptr;
     wxStaticText *m_daySummaryEmpty = nullptr;
     wxStaticText *m_daySummaryDuration = nullptr;
-    wxStaticText *m_daySummaryEnergy = nullptr;
-    wxStaticText *m_daySummaryMood = nullptr;
-    wxStaticText *m_daySummaryGrounding = nullptr;
+    wxStaticText *m_daySummaryEmg = nullptr;
+    wxStaticText *m_daySummaryFooter = nullptr;
     wxPanel *m_metricsPanel = nullptr;
     wxBoxSizer *m_metricsSizer = nullptr;
     StatisticsChartPanel *m_chart = nullptr;
@@ -76,4 +77,4 @@ class StatisticsDialog : public wxDialog {
     ObservationRecordTable *m_table = nullptr;
 };
 
-#endif
+#endif // HISTORY_FRAME_H

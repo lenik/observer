@@ -1,5 +1,6 @@
-#include "StatisticsDialog.h"
+#include "HistoryFrame.h"
 
+#include "config.h"
 #include "ObservationDialog.h"
 #include "ObservationStore.h"
 #include "calendar.h"
@@ -71,38 +72,38 @@ struct DaySummary {
     double groundingSum = 0.0;
 };
 
-wxDateTime periodStart(wxDateTime value, StatisticsDialog::ViewMode mode, bool weekStartsMonday) {
+wxDateTime periodStart(wxDateTime value, HistoryFrame::ViewMode mode, bool weekStartsMonday) {
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         return startOfDay(value);
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         return startOfWeek(value, weekStartsMonday);
-    case StatisticsDialog::ViewMode::Month:
+    case HistoryFrame::ViewMode::Month:
         return startOfMonth(value);
-    case StatisticsDialog::ViewMode::Year:
+    case HistoryFrame::ViewMode::Year:
         return startOfYear(value);
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Calendar:
         return startOfMonth(value);
     }
     return startOfDay(value);
 }
 
-wxDateTime periodEnd(const wxDateTime &start, StatisticsDialog::ViewMode mode) {
+wxDateTime periodEnd(const wxDateTime &start, HistoryFrame::ViewMode mode) {
     wxDateTime end = start;
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         end.Add(wxDateSpan::Days(1));
         break;
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         end.Add(wxDateSpan::Weeks(1));
         break;
-    case StatisticsDialog::ViewMode::Month:
+    case HistoryFrame::ViewMode::Month:
         end.Add(wxDateSpan::Months(1));
         break;
-    case StatisticsDialog::ViewMode::Year:
+    case HistoryFrame::ViewMode::Year:
         end.Add(wxDateSpan::Years(1));
         break;
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Calendar:
         end.Add(wxDateSpan::Months(1));
         break;
     }
@@ -118,16 +119,16 @@ long durationSeconds(const Observation &observation) {
     return std::max(0L, static_cast<long>(std::difftime(submitted, prompted)));
 }
 
-std::vector<ChartBucket> makeBuckets(StatisticsDialog::ViewMode mode, wxDateTime anchor,
+std::vector<ChartBucket> makeBuckets(HistoryFrame::ViewMode mode, wxDateTime anchor,
                                      bool eachYear, bool weekStartsMonday) {
     std::vector<ChartBucket> buckets;
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         for (int hour = 0; hour < 24; ++hour) {
             buckets.push_back({wxString::Format("%02d", hour)});
         }
         break;
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         if (weekStartsMonday) {
             for (const char *label : {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}) {
                 buckets.push_back({wxString::FromUTF8(label)});
@@ -138,55 +139,55 @@ std::vector<ChartBucket> makeBuckets(StatisticsDialog::ViewMode mode, wxDateTime
             }
         }
         break;
-    case StatisticsDialog::ViewMode::Month:
+    case HistoryFrame::ViewMode::Month:
         for (int day = 1;
              day <= (eachYear ? daysInMonth(anchor) : maxDaysForMonth(anchor.GetMonth())); ++day) {
             buckets.push_back({wxString::Format("%d", day)});
         }
         break;
-    case StatisticsDialog::ViewMode::Year:
+    case HistoryFrame::ViewMode::Year:
         for (int month = 0; month < 12; ++month) {
             wxDateTime date(1, static_cast<wxDateTime::Month>(month), anchor.GetYear());
             buckets.push_back({date.Format("%b")});
         }
         break;
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Calendar:
         break;
     }
     return buckets;
 }
 
-int bucketIndex(const Observation &observation, StatisticsDialog::ViewMode mode,
+int bucketIndex(const Observation &observation, HistoryFrame::ViewMode mode,
                 bool weekStartsMonday) {
     const wxDateTime when = toDateTime(observation.promptedAt);
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         return parseLocalTime(observation.promptedAt).tm_hour;
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         return weekdayIndex(when, weekStartsMonday);
-    case StatisticsDialog::ViewMode::Month:
+    case HistoryFrame::ViewMode::Month:
         return when.GetDay() - 1;
-    case StatisticsDialog::ViewMode::Year:
+    case HistoryFrame::ViewMode::Year:
         return static_cast<int>(when.GetMonth());
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Calendar:
         return 0;
     }
     return 0;
 }
 
-double sampleAxisX(const Observation &observation, StatisticsDialog::ViewMode mode,
+double sampleAxisX(const Observation &observation, HistoryFrame::ViewMode mode,
                    bool weekStartsMonday) {
     const std::tm local = parseLocalTime(observation.promptedAt);
     const double dayFraction =
         (local.tm_hour * 3600.0 + local.tm_min * 60.0 + local.tm_sec) / 86400.0;
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         return dayFraction * 24.0;
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         return weekdayIndex(toDateTime(observation.promptedAt), weekStartsMonday) + dayFraction;
-    case StatisticsDialog::ViewMode::Month:
-    case StatisticsDialog::ViewMode::Year:
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Month:
+    case HistoryFrame::ViewMode::Year:
+    case HistoryFrame::ViewMode::Calendar:
         return bucketIndex(observation, mode, weekStartsMonday) + 0.5;
     }
     return 0.0;
@@ -196,22 +197,22 @@ std::string observationKey(const Observation &observation) {
     return observation.promptedAt + "\n" + observation.submittedAt + "\n" + observation.activity;
 }
 
-wxString periodTitle(StatisticsDialog::ViewMode mode, wxDateTime anchor, bool eachYear) {
+wxString periodTitle(HistoryFrame::ViewMode mode, wxDateTime anchor, bool eachYear) {
     switch (mode) {
-    case StatisticsDialog::ViewMode::Day:
+    case HistoryFrame::ViewMode::Day:
         return wxString::FromUTF8(_("Day statistics")) + " " +
                (eachYear ? anchor.FormatISODate() : anchor.Format("%m-%d"));
-    case StatisticsDialog::ViewMode::Week:
+    case HistoryFrame::ViewMode::Week:
         return wxString::FromUTF8(_("Week statistics")) + " " +
                (eachYear ? wxString::Format("%d ", anchor.GetYear()) : "") +
                wxString::FromUTF8(ordinal(isoWeek(anchor)).c_str());
-    case StatisticsDialog::ViewMode::Month:
+    case HistoryFrame::ViewMode::Month:
         return wxString::FromUTF8(_("Month statistics")) + " " +
                (eachYear ? wxString::Format("%d ", anchor.GetYear()) : "") + anchor.Format("%b");
-    case StatisticsDialog::ViewMode::Year:
+    case HistoryFrame::ViewMode::Year:
         return wxString::FromUTF8(_("Year statistics")) + " " +
                wxString::Format("%d", anchor.GetYear());
-    case StatisticsDialog::ViewMode::Calendar:
+    case HistoryFrame::ViewMode::Calendar:
         return wxString::FromUTF8(_("Calendar")) + " " + anchor.Format("%Y %b");
     }
     return "";
@@ -1691,10 +1692,10 @@ class StatisticsChartPanel : public wxPanel {
     int m_lastDragX = 0;
 };
 
-StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, std::string theme,
-                                   bool weekStartsMonday, const std::vector<std::string> &quotes)
-    : wxDialog(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition,
-               wxSize(1040, 760), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP),
+HistoryFrame::HistoryFrame(wxWindow *parent, ObservationStore *store, std::string theme,
+                           bool weekStartsMonday, const std::vector<std::string> &quotes)
+    : wxFrame(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition,
+              wxSize(1040, 760), wxDEFAULT_FRAME_STYLE | wxRESIZE_BORDER),
       m_store(store), m_quotes(quotes), m_theme(theme), m_weekStartsMonday(weekStartsMonday),
       m_anchor(wxDateTime::Today()) {
     if (m_store != nullptr) {
@@ -1797,11 +1798,20 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     addSummaryLine(m_daySummaryRecords);
     addSummaryLine(m_daySummaryEmpty);
     addSummaryLine(m_daySummaryDuration);
-    addSummaryLine(m_daySummaryEnergy);
-    addSummaryLine(m_daySummaryMood);
-    addSummaryLine(m_daySummaryGrounding);
+    addSummaryLine(m_daySummaryEmg);
+    m_daySummaryFooter = new wxStaticText(m_daySummaryPanel, wxID_ANY, "");
+    wxFont daySummaryFooterFont = GetFont();
+    daySummaryFooterFont.SetPointSize(std::max(7, daySummaryFooterFont.GetPointSize() - 2));
+    m_daySummaryFooter->SetFont(daySummaryFooterFont);
+    m_daySummaryFooter->SetForegroundColour(colors.mutedFg);
+    m_daySummaryFooter->SetLabel(
+        wxString::Format(wxString::FromUTF8(_("Version %s · Copyright (C) %d %s")),
+                         wxString::FromUTF8(PROJECT_VERSION), PROJECT_YEAR,
+                         wxString::FromUTF8(PROJECT_AUTHOR)));
     auto *daySummaryOuter = new wxBoxSizer(wxVERTICAL);
-    daySummaryOuter->Add(daySummarySizer, 1, wxEXPAND | wxALL, 14);
+    daySummaryOuter->Add(daySummarySizer, 0, wxEXPAND | wxALL, 14);
+    daySummaryOuter->AddStretchSpacer(1);
+    daySummaryOuter->Add(m_daySummaryFooter, 0, wxLEFT | wxRIGHT | wxBOTTOM, 14);
     m_daySummaryPanel->SetSizer(daySummaryOuter);
 
     m_metricsPanel = new wxPanel(this);
@@ -1856,8 +1866,8 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { movePeriod(-1); }, ID_MENU_PREVIOUS);
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { movePeriod(1); }, ID_MENU_NEXT);
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { Close(); }, wxID_CLOSE);
-    Bind(wxEVT_CHAR_HOOK, &StatisticsDialog::onCharHook, this);
-    Bind(wxEVT_CLOSE_WINDOW, &StatisticsDialog::onClose, this);
+    Bind(wxEVT_CHAR_HOOK, &HistoryFrame::onCharHook, this);
+    Bind(wxEVT_CLOSE_WINDOW, &HistoryFrame::onClose, this);
 
     hookDisplaySurface(m_daySummaryPanel);
     hookDisplaySurface(m_metricsPanel);
@@ -1868,8 +1878,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     for (wxWindow *summaryLine :
          {static_cast<wxWindow *>(m_daySummaryDate), static_cast<wxWindow *>(m_daySummaryRecords),
           static_cast<wxWindow *>(m_daySummaryEmpty), static_cast<wxWindow *>(m_daySummaryDuration),
-          static_cast<wxWindow *>(m_daySummaryEnergy), static_cast<wxWindow *>(m_daySummaryMood),
-          static_cast<wxWindow *>(m_daySummaryGrounding)}) {
+          static_cast<wxWindow *>(m_daySummaryEmg), static_cast<wxWindow *>(m_daySummaryFooter)}) {
         hookDisplaySurface(summaryLine);
     }
 
@@ -1878,7 +1887,7 @@ StatisticsDialog::StatisticsDialog(wxWindow *parent, ObservationStore *store, st
     render();
 }
 
-void StatisticsDialog::hookDisplaySurface(wxWindow *surface) {
+void HistoryFrame::hookDisplaySurface(wxWindow *surface) {
     if (surface == nullptr) {
         return;
     }
@@ -1887,10 +1896,10 @@ void StatisticsDialog::hookDisplaySurface(wxWindow *surface) {
         SetFocus();
         event.Skip();
     });
-    surface->Bind(wxEVT_CHAR_HOOK, &StatisticsDialog::onCharHook, this);
+    surface->Bind(wxEVT_CHAR_HOOK, &HistoryFrame::onCharHook, this);
 }
 
-void StatisticsDialog::onCharHook(wxKeyEvent &event) {
+void HistoryFrame::onCharHook(wxKeyEvent &event) {
     const int keyCode = event.GetKeyCode();
     if (keyCode == WXK_ESCAPE) {
         Close();
@@ -1965,12 +1974,12 @@ void StatisticsDialog::onCharHook(wxKeyEvent &event) {
     event.Skip();
 }
 
-void StatisticsDialog::setMode(ViewMode mode) {
+void HistoryFrame::setMode(ViewMode mode) {
     m_mode = mode;
     render();
 }
 
-void StatisticsDialog::movePeriod(int delta) {
+void HistoryFrame::movePeriod(int delta) {
     switch (m_mode) {
     case ViewMode::Day:
         m_anchor.Add(wxDateSpan::Days(delta));
@@ -1989,7 +1998,7 @@ void StatisticsDialog::movePeriod(int delta) {
     render();
 }
 
-void StatisticsDialog::render() {
+void HistoryFrame::render() {
     if (m_mode == ViewMode::Calendar) {
         renderCalendar();
     } else {
@@ -1997,14 +2006,14 @@ void StatisticsDialog::render() {
     }
 }
 
-void StatisticsDialog::updateTitle() {
+void HistoryFrame::updateTitle() {
     const bool eachYear = m_eachYear->GetValue();
     m_title->SetLabel(periodTitle(m_mode, m_anchor, eachYear));
     m_eachYear->Show(m_mode == ViewMode::Day || m_mode == ViewMode::Week ||
                      m_mode == ViewMode::Month);
 }
 
-void StatisticsDialog::updateToolbar() {
+void HistoryFrame::updateToolbar() {
     if (m_toolbar == nullptr) {
         return;
     }
@@ -2036,7 +2045,7 @@ void StatisticsDialog::updateToolbar() {
     m_toolbar->ToggleTool(id, true);
 }
 
-void StatisticsDialog::renderCalendar() {
+void HistoryFrame::renderCalendar() {
     reloadCalendarRecords();
     m_calendar->Show();
     m_daySummaryPanel->Show();
@@ -2053,7 +2062,7 @@ void StatisticsDialog::renderCalendar() {
     Layout();
 }
 
-void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) {
+void HistoryFrame::rebuildMetrics(const std::vector<Observation> &selected) {
     m_metricsSizer->Clear(true);
 
     double energy = 0.0;
@@ -2125,7 +2134,7 @@ void StatisticsDialog::rebuildMetrics(const std::vector<Observation> &selected) 
                   : wxString::FromUTF8(formatDouble(grounding / emgAverageCount).c_str()));
 }
 
-std::vector<Observation> StatisticsDialog::currentViewRows() const {
+std::vector<Observation> HistoryFrame::currentViewRows() const {
     std::vector<Observation> rows;
     if (m_store == nullptr) {
         return rows;
@@ -2137,7 +2146,7 @@ std::vector<Observation> StatisticsDialog::currentViewRows() const {
     return rows;
 }
 
-ObservationCriteria StatisticsDialog::tableCriteria() const {
+ObservationCriteria HistoryFrame::tableCriteria() const {
     ObservationCriteria criteria;
     criteria.filter = ObservationFilter::Day;
     criteria.anchorDate = m_anchor.FormatISODate().ToStdString();
@@ -2145,7 +2154,7 @@ ObservationCriteria StatisticsDialog::tableCriteria() const {
     return criteria;
 }
 
-ObservationCriteria StatisticsDialog::statisticsCriteria() const {
+ObservationCriteria HistoryFrame::statisticsCriteria() const {
     ObservationCriteria criteria;
     criteria.anchorDate = m_anchor.FormatISODate().ToStdString();
     criteria.eachYear = m_eachYear->GetValue();
@@ -2170,7 +2179,7 @@ ObservationCriteria StatisticsDialog::statisticsCriteria() const {
     return criteria;
 }
 
-void StatisticsDialog::reloadTableRecords(long selectIndex) {
+void HistoryFrame::reloadTableRecords(long selectIndex) {
     if (m_store == nullptr || m_table == nullptr) {
         return;
     }
@@ -2182,7 +2191,7 @@ void StatisticsDialog::reloadTableRecords(long selectIndex) {
     m_table->setRecords(currentViewRows(), selectIndex);
 }
 
-void StatisticsDialog::reloadCalendarRecords() {
+void HistoryFrame::reloadCalendarRecords() {
     if (m_store == nullptr || m_calendar == nullptr) {
         return;
     }
@@ -2194,7 +2203,7 @@ void StatisticsDialog::reloadCalendarRecords() {
     m_calendar->setObservations(allRows);
 }
 
-void StatisticsDialog::updateSelectedDaySummary() {
+void HistoryFrame::updateSelectedDaySummary() {
     if (m_store != nullptr && m_mode == ViewMode::Calendar) {
         m_store->load(tableCriteria());
     }
@@ -2227,24 +2236,22 @@ void StatisticsDialog::updateSelectedDaySummary() {
                                 wxString::Format("%d", emptyCount));
     m_daySummaryDuration->SetLabel(wxString::FromUTF8(_("Total prompt duration")) + ": " +
                                    wxString::FromUTF8(formatDuration(totalDuration).c_str()));
-    m_daySummaryEnergy->SetLabel(
-        wxString::FromUTF8(_("Average energy")) + ": " +
-        (emgCount == 0
-             ? "-"
-             : scoreWithEmoji(energyEmoji(energy / emgAverageCount), energy / emgAverageCount)));
-    m_daySummaryMood->SetLabel(wxString::FromUTF8(_("Average mood")) + ": " +
-                               (emgCount == 0 ? "-"
-                                              : scoreWithEmoji(moodEmoji(mood / emgAverageCount),
-                                                               mood / emgAverageCount)));
-    m_daySummaryGrounding->SetLabel(
-        wxString::FromUTF8(_("Average grounding")) + ": " +
-        (emgCount == 0 ? "-"
-                       : scoreWithEmoji(groundingEmoji(grounding / emgAverageCount),
-                                        grounding / emgAverageCount)));
+    if (emgCount == 0) {
+        m_daySummaryEmg->SetLabel(wxString::FromUTF8(_("Average E/M/G")) + ": -");
+    } else {
+        const double avgEnergy = energy / emgAverageCount;
+        const double avgMood = mood / emgAverageCount;
+        const double avgGrounding = grounding / emgAverageCount;
+        m_daySummaryEmg->SetLabel(
+            wxString::FromUTF8(_("Average E/M/G")) + ": " +
+            scoreWithEmoji(energyEmoji(avgEnergy), avgEnergy) + " / " +
+            scoreWithEmoji(moodEmoji(avgMood), avgMood) + " / " +
+            scoreWithEmoji(groundingEmoji(avgGrounding), avgGrounding));
+    }
     m_daySummaryPanel->Layout();
 }
 
-void StatisticsDialog::renderStatistics(long selectIndex) {
+void HistoryFrame::renderStatistics(long selectIndex) {
     m_calendar->Hide();
     m_daySummaryPanel->Hide();
     m_metricsPanel->Show();
@@ -2292,12 +2299,18 @@ void StatisticsDialog::renderStatistics(long selectIndex) {
     Layout();
 }
 
-void StatisticsDialog::goToday() {
+void HistoryFrame::goToday() {
     m_anchor = wxDateTime::Today();
     render();
 }
 
-void StatisticsDialog::onClose(wxCloseEvent &event) {
+void HistoryFrame::activateWindow() {
+    Show(true);
+    Raise();
+    SetFocus();
+}
+
+void HistoryFrame::onClose(wxCloseEvent &event) {
     try {
         if (m_store != nullptr) {
             m_store->commit();
@@ -2311,7 +2324,7 @@ void StatisticsDialog::onClose(wxCloseEvent &event) {
     event.Skip();
 }
 
-void StatisticsDialog::refreshAfterMutation(long selectIndex) {
+void HistoryFrame::refreshAfterMutation(long selectIndex) {
     reloadCalendarRecords();
     if (m_mode == ViewMode::Calendar) {
         reloadTableRecords(selectIndex);
@@ -2322,7 +2335,7 @@ void StatisticsDialog::refreshAfterMutation(long selectIndex) {
     renderStatistics(selectIndex);
 }
 
-void StatisticsDialog::editObservation(const Observation &original) {
+void HistoryFrame::editObservation(const Observation &original) {
     CallAfter([this, original]() {
         ObservePromptDefaults defaults;
         defaults.theme = m_theme;
@@ -2350,7 +2363,7 @@ void StatisticsDialog::editObservation(const Observation &original) {
     });
 }
 
-void StatisticsDialog::navigatePeriodFromTable(int keyCode) {
+void HistoryFrame::navigatePeriodFromTable(int keyCode) {
     if (keyCode != WXK_UP && keyCode != WXK_DOWN) {
         return;
     }
@@ -2362,7 +2375,7 @@ void StatisticsDialog::navigatePeriodFromTable(int keyCode) {
     movePeriod(keyCode == WXK_UP ? -1 : 1);
 }
 
-void StatisticsDialog::deleteSelectedObservations() {
+void HistoryFrame::deleteSelectedObservations() {
     if (m_table == nullptr || m_store == nullptr) {
         return;
     }
@@ -2379,7 +2392,7 @@ void StatisticsDialog::deleteSelectedObservations() {
     refreshAfterMutation(selectAfter);
 }
 
-void StatisticsDialog::deleteObservation(const Observation &original) {
+void HistoryFrame::deleteObservation(const Observation &original) {
     long selectAfter = -1;
     if (m_table != nullptr) {
         const long deletedIndex = m_table->selectedIndex();
