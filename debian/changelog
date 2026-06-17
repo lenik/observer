@@ -1,3 +1,28 @@
+observer (1.0.8) testing; urgency=medium
+
+  * Add eight UI themes—innocent, maiden, girl, morandi, github, ios, msdos, and
+    windows—and a shared palette for the observation prompt and statistics
+    window; -t/--theme now accepts exact theme names.
+  * Restyle statistics with theme colours, glass-style day summary and metric
+    cards, a framed record table, and centered column headers.
+  * Improve the observation prompt layout: wrap quotes at closing punctuation,
+    balance line breaks, cap quote width, and size the window toward a golden
+    ratio; prefer Chinese serif fonts for quotes and activity input.
+  * Fix EMG rating labels overlapping their knobs; tune panel fills and rating
+    ring colours per theme.
+  * Click a quote to ask an AI assistant: launch DeepSeek on zh_CN with Doubao
+    as fallback, or open Google AI mode search for other locales.
+  * Add an embedded DeepSeek browser (--deepseek-browser) with WebKit disk
+    cache, captcha-friendly settings, and automatic prompt submission after the
+    chat page loads.
+  * Add --diag to write observation dialog layout metrics to layout.toml and
+    exit.
+  * Expand oremind.bash completion for new themes and flags; refresh locale
+    catalogs; link oremind against wxWebView and update Debian build
+    dependencies.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Wed, 18 Jun 2026 12:00:00 +0800
+
 observer (1.0.7) testing; urgency=medium
 
   * Allow multi-select in the statistics record table with empty default
