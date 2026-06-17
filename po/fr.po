@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 13:41+0800\n"
+"POT-Creation-Date: 2026-06-17 13:50+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:108
+#: src/oremind.cpp:107
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,116 +19,116 @@ msgstr ""
 "Utilisation : ou rappeler [OPTION]...\n"
 "Exécutez une invite d’auto-observation du bureau en arrière-plan.\n"
 
-#: src/oremind.cpp:113
+#: src/oremind.cpp:112
 msgid "repeat for more verbose loggings\n"
 msgstr "repeter pour obtenir des journaux plus verbeux\n"
 
-#: src/oremind.cpp:115
+#: src/oremind.cpp:114
 msgid "show less logging messages\n"
 msgstr "afficher moins de messages de journal\n"
 
-#: src/oremind.cpp:117
+#: src/oremind.cpp:116
 msgid "display this help and exit\n"
 msgstr "afficher cette aide et quitter\n"
 
-#: src/oremind.cpp:119
+#: src/oremind.cpp:118
 msgid "set UI locale, for example zh_CN, ja, ko, en\n"
 msgstr ""
 "définir l'interface utilisateur locale, par exemple zh_CN, ja, ko, en\n"
 
-#: src/oremind.cpp:121
+#: src/oremind.cpp:120
 msgid "set theme: light or dark\n"
 msgstr "Thème défini : clair ou sombre\n"
 
-#: src/oremind.cpp:123
+#: src/oremind.cpp:122
 msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr "définir le pourcentage final d’opacité de la fenêtre, de 0 à 100\n"
 
-#: src/oremind.cpp:125
+#: src/oremind.cpp:124
 msgid "exit after NUM consecutive cancels\n"
 msgstr "quitter apres NUM annulations consecutives\n"
 
-#: src/oremind.cpp:127
+#: src/oremind.cpp:126
 msgid "set prompt interval in minutes\n"
 msgstr "définir l'intervalle d'invite en minutes\n"
 
-#: src/oremind.cpp:129
+#: src/oremind.cpp:128
 msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
 msgstr ""
 "définir le début de semaine du calendrier : M/m pour lundi, S/s pour "
 "dimanche\n"
 
-#: src/oremind.cpp:131
+#: src/oremind.cpp:130
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr ""
 "Chemin du fichier SQLite ou répertoire de journaux lorsque PATH est un "
 "répertoire\n"
 
-#: src/oremind.cpp:133
+#: src/oremind.cpp:132
 msgid "output version information and exit\n"
 msgstr "afficher les informations de version et quitter\n"
 
-#: src/oremind.cpp:135
+#: src/oremind.cpp:134
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "Signaler les bugs a : <%s>\n"
 
-#: src/oremind.cpp:182
+#: src/oremind.cpp:181
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "locale invalide : %s\n"
 
-#: src/oremind.cpp:190
+#: src/oremind.cpp:189
 #, c-format
 msgid "expect theme name.\n"
 msgstr "nom de thème attendu.\n"
 
-#: src/oremind.cpp:196
+#: src/oremind.cpp:195
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "thème invalide : %s\n"
 
-#: src/oremind.cpp:207
+#: src/oremind.cpp:206
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr "opacité invalide : %s\n"
 
-#: src/oremind.cpp:218
+#: src/oremind.cpp:217
 #, c-format
 msgid "invalid cancel count: %s\n"
 msgstr "nombre d'annulations invalide : %s\n"
 
-#: src/oremind.cpp:229
+#: src/oremind.cpp:228
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "intervalle non valide : %s\n"
 
-#: src/oremind.cpp:241
+#: src/oremind.cpp:240
 #, c-format
 msgid "invalid week start: %s\n"
 msgstr "début de semaine invalide : %s\n"
 
-#: src/oremind.cpp:250
+#: src/oremind.cpp:249
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "Copyright (C) %d %s\n"
 
-#: src/oremind.cpp:251
+#: src/oremind.cpp:250
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "Licence AGPL-3.0-or-later : <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:253
+#: src/oremind.cpp:252
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "Ce logiciel est libre : vous pouvez le modifier et le redistribuer.\n"
 
-#: src/oremind.cpp:255
+#: src/oremind.cpp:254
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr ""
 "Ce projet s'oppose a l'exploitation par l'IA et a l'hegemonie de l'IA.\n"
 
-#: src/oremind.cpp:256
+#: src/oremind.cpp:255
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -136,202 +136,231 @@ msgstr ""
 "Ce projet rejette les licences de type MIT sans reflexion et les licences de "
 "type BSD politiquement naives.\n"
 
-#: src/oremind.cpp:259
+#: src/oremind.cpp:258
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "AUCUNE GARANTIE n'est fournie, dans les limites permises par la loi.\n"
 
-#: src/ObserverFrame.cpp:84
+#: src/ObserverFrame.cpp:80
 msgid "Wake"
 msgstr "Réveiller"
 
-#: src/ObserverFrame.cpp:85
+#: src/ObserverFrame.cpp:81
 msgid "Statistics / History"
 msgstr "Statistiques / historique"
 
-#: src/ObserverFrame.cpp:87
+#: src/ObserverFrame.cpp:83
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/ObservationDialog.cpp:566
+#: src/ObservationDialog.cpp:160
+#, c-format
+msgid "Explain in depth: %s (answer in English)"
+msgstr "Explication approfondie : %s (réponse en français)"
+
+#: src/ObservationDialog.cpp:180
+msgid "Right-click to ask AI"
+msgstr "Clic droit pour demander à l'IA"
+
+#: src/ObservationDialog.cpp:660
+msgid "Edit record"
+msgstr ""
+
+#: src/ObservationDialog.cpp:714
 msgid "energy"
 msgstr "énergie"
 
-#: src/ObservationDialog.cpp:570
+#: src/ObservationDialog.cpp:720
 msgid "mood"
 msgstr "humeur"
 
-#: src/ObservationDialog.cpp:574
+#: src/ObservationDialog.cpp:725
 msgid "grounding"
 msgstr "mise à la terre"
 
-#: src/ObservationDialog.cpp:586
+#: src/ObservationDialog.cpp:739
 msgid "Launch oremind again to wake immediately"
 msgstr "Launch oremind again to wake immediately"
 
-#: src/ObservationDialog.cpp:666
+#: src/ObservationDialog.cpp:824
+msgid "Enter save"
+msgstr ""
+
+#: src/ObservationDialog.cpp:824
 msgid "Enter submit"
 msgstr "Enter envoyer"
 
-#: src/ObservationDialog.cpp:668
+#: src/ObservationDialog.cpp:828
+msgid "Esc cancel"
+msgstr ""
+
+#: src/ObservationDialog.cpp:828
 msgid "Esc skip"
 msgstr "Esc passer"
 
-#: src/ObservationDialog.cpp:670
-msgid "^H History"
-msgstr "^H Historique"
+#: src/ObservationDialog.cpp:832
+msgid "F1 History"
+msgstr ""
 
-#: src/ObservationDialog.cpp:672
+#: src/ObservationDialog.cpp:835
 msgid "Next prompt"
 msgstr "Prochain rappel"
 
-#: src/ObservationDialog.cpp:674 src/ObservationDialog.cpp:851
+#: src/ObservationDialog.cpp:837 src/ObservationDialog.cpp:1027
 msgid "minutes later"
 msgstr "minutes plus tard"
 
-#: src/ObservationDialog.cpp:677
+#: src/ObservationDialog.cpp:840
 msgid "Ctrl+Q quit"
 msgstr "Ctrl+Q quitter"
 
-#: src/ObservationDialog.cpp:851
+#: src/ObservationDialog.cpp:1027
 msgid "seconds later"
 msgstr "secondes plus tard"
 
-#: src/StatisticsDialog.cpp:443
+#: src/StatisticsDialog.cpp:200
 msgid "Day statistics"
 msgstr "Statistiques journalières"
 
-#: src/StatisticsDialog.cpp:446
+#: src/StatisticsDialog.cpp:203
 msgid "Week statistics"
 msgstr "Statistiques hebdomadaires"
 
-#: src/StatisticsDialog.cpp:450
+#: src/StatisticsDialog.cpp:207
 msgid "Month statistics"
 msgstr "Statistiques mensuelles"
 
-#: src/StatisticsDialog.cpp:454
+#: src/StatisticsDialog.cpp:210
 msgid "Year statistics"
 msgstr "Statistiques annuelles"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1403
+#: src/StatisticsDialog.cpp:213 src/StatisticsDialog.cpp:1577
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1413
+#: src/StatisticsDialog.cpp:385 src/StatisticsDialog.cpp:1590
 msgid "Month"
 msgstr "Mois"
 
-#: src/StatisticsDialog.cpp:699
+#: src/StatisticsDialog.cpp:568
 msgid "Prompted"
 msgstr "Affichage"
 
-#: src/StatisticsDialog.cpp:702
+#: src/StatisticsDialog.cpp:571
 msgid "Submitted"
 msgstr "Envoi"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1372
+#: src/StatisticsDialog.cpp:574 src/StatisticsDialog.cpp:1540
 msgid "Duration"
 msgstr "Durée"
 
-#: src/StatisticsDialog.cpp:708 src/StatisticsDialog.cpp:1373
+#: src/StatisticsDialog.cpp:577 src/StatisticsDialog.cpp:1541
 msgid "Energy"
 msgstr "Énergie"
 
-#: src/StatisticsDialog.cpp:711 src/StatisticsDialog.cpp:1374
+#: src/StatisticsDialog.cpp:580 src/StatisticsDialog.cpp:1542
 msgid "Mood"
 msgstr "Humeur"
 
-#: src/StatisticsDialog.cpp:714 src/StatisticsDialog.cpp:1375
+#: src/StatisticsDialog.cpp:583 src/StatisticsDialog.cpp:1543
 msgid "Grounding"
 msgstr "Ancrage"
 
-#: src/StatisticsDialog.cpp:717
+#: src/StatisticsDialog.cpp:586
 msgid "Avg"
 msgstr "Moy."
 
-#: src/StatisticsDialog.cpp:720
+#: src/StatisticsDialog.cpp:589
 msgid "Activity"
 msgstr "Activité"
 
-#: src/StatisticsDialog.cpp:723
+#: src/StatisticsDialog.cpp:592
 msgid "Quote"
 msgstr "Citation"
 
-#: src/StatisticsDialog.cpp:1177
+#: src/StatisticsDialog.cpp:729
+msgid "Edit"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:732
+msgid "Delete"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1222
 msgid "No records"
 msgstr "Aucun enregistrement"
 
-#: src/StatisticsDialog.cpp:1371 src/StatisticsDialog.cpp:1771
-#: src/StatisticsDialog.cpp:1814
+#: src/StatisticsDialog.cpp:1539 src/StatisticsDialog.cpp:1962
+#: src/StatisticsDialog.cpp:2076
 msgid "Records"
 msgstr "Enregistrements"
 
-#: src/StatisticsDialog.cpp:1376
+#: src/StatisticsDialog.cpp:1544
 msgid "EMG avg"
 msgstr "Moy. EMG"
 
-#: src/StatisticsDialog.cpp:1377
-msgid "Fit"
-msgstr "Ajust."
-
-#: src/StatisticsDialog.cpp:1385
+#: src/StatisticsDialog.cpp:1559
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: src/StatisticsDialog.cpp:1407
+#: src/StatisticsDialog.cpp:1582
 msgid "Day"
 msgstr "Jour"
 
-#: src/StatisticsDialog.cpp:1410
+#: src/StatisticsDialog.cpp:1586
 msgid "Week"
 msgstr "Semaine"
 
-#: src/StatisticsDialog.cpp:1416
+#: src/StatisticsDialog.cpp:1593
 msgid "Year"
 msgstr "Année"
 
-#: src/StatisticsDialog.cpp:1420
+#: src/StatisticsDialog.cpp:1597
 msgid "Today"
 msgstr "Aujourd’hui"
 
-#: src/StatisticsDialog.cpp:1423
+#: src/StatisticsDialog.cpp:1600
 msgid "Previous"
 msgstr "Précédent"
 
-#: src/StatisticsDialog.cpp:1426
+#: src/StatisticsDialog.cpp:1603
 msgid "Next"
 msgstr "Suivant"
 
-#: src/StatisticsDialog.cpp:1430
+#: src/StatisticsDialog.cpp:1607
 msgid "Close"
 msgstr "Fermer"
 
-#: src/StatisticsDialog.cpp:1442
+#: src/StatisticsDialog.cpp:1619
 msgid "Each Year"
 msgstr "Chaque année"
 
-#: src/StatisticsDialog.cpp:1491 src/StatisticsDialog.cpp:1835
+#: src/StatisticsDialog.cpp:1669 src/StatisticsDialog.cpp:2106
 msgid "Top activities"
 msgstr "Principales activités"
 
-#: src/StatisticsDialog.cpp:1772 src/StatisticsDialog.cpp:1815
+#: src/StatisticsDialog.cpp:1964 src/StatisticsDialog.cpp:2078
 msgid "Empty notes"
 msgstr "Notes vides"
 
-#: src/StatisticsDialog.cpp:1773 src/StatisticsDialog.cpp:1816
+#: src/StatisticsDialog.cpp:1966 src/StatisticsDialog.cpp:2080
 msgid "Total prompt duration"
 msgstr "Durée totale de l'invite"
 
-#: src/StatisticsDialog.cpp:1775 src/StatisticsDialog.cpp:1818
+#: src/StatisticsDialog.cpp:1968 src/StatisticsDialog.cpp:2083
 msgid "Average energy"
 msgstr "Énergie moyenne"
 
-#: src/StatisticsDialog.cpp:1777 src/StatisticsDialog.cpp:1820
+#: src/StatisticsDialog.cpp:1971 src/StatisticsDialog.cpp:2087
 msgid "Average mood"
 msgstr "Humeur moyenne"
 
-#: src/StatisticsDialog.cpp:1779 src/StatisticsDialog.cpp:1822
+#: src/StatisticsDialog.cpp:1974 src/StatisticsDialog.cpp:2092
 msgid "Average grounding"
 msgstr "Mise à la terre moyenne"
+
+#: src/StatisticsDialog.cpp:2158
+msgid "Save error"
+msgstr ""
 
 #: src/QuoteProvider.cpp:9
 msgid "明天是今天的延续，今天是明天的提前。"
@@ -783,6 +812,16 @@ msgstr "Aujourd'hui, je ne demande que trois chiffres et une phrase."
 #: src/QuoteProvider.cpp:108
 msgid "你现在在哪里？你正在做什么？你还要不要回来？"
 msgstr "Où es-tu maintenant ? Que fais-tu? Voulez-vous revenir?"
+
+#, c-format
+#~ msgid "Explain this quote: %s"
+#~ msgstr "Expliquez cette citation en français : %s"
+
+#~ msgid "^H History"
+#~ msgstr "^H Historique"
+
+#~ msgid "Fit"
+#~ msgstr "Ajust."
 
 #~ msgid "View"
 #~ msgstr "Affichage"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: observer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 13:41+0800\n"
+"POT-Creation-Date: 2026-06-17 13:50+0800\n"
 "PO-Revision-Date: 2026-06-13 20:00+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/oremind.cpp:108
+#: src/oremind.cpp:107
 msgid ""
 "Usage: oremind [OPTION]...\n"
 "Run a desktop self-observation prompt in the background.\n"
@@ -19,110 +19,110 @@ msgstr ""
 "사용법: oremind [OPTION]...\n"
 "데스크톱 자기 관찰 프롬프트를 백그라운드에서 실행합니다.\n"
 
-#: src/oremind.cpp:113
+#: src/oremind.cpp:112
 msgid "repeat for more verbose loggings\n"
 msgstr "더 자세한 로그를 보려면 반복 지정\n"
 
-#: src/oremind.cpp:115
+#: src/oremind.cpp:114
 msgid "show less logging messages\n"
 msgstr "로그 메시지를 더 적게 표시\n"
 
-#: src/oremind.cpp:117
+#: src/oremind.cpp:116
 msgid "display this help and exit\n"
 msgstr "이 도움말을 표시하고 종료\n"
 
-#: src/oremind.cpp:119
+#: src/oremind.cpp:118
 msgid "set UI locale, for example zh_CN, ja, ko, en\n"
 msgstr "로컬 UI 설정(예: zh_CN, ja, ko, en)\n"
 
-#: src/oremind.cpp:121
+#: src/oremind.cpp:120
 msgid "set theme: light or dark\n"
 msgstr "테마 설정: light 또는 dark\n"
 
-#: src/oremind.cpp:123
+#: src/oremind.cpp:122
 msgid "set final dialog opacity percentage, 0 to 100\n"
 msgstr "최종 대화상자 불투명도를 0에서 100 사이의 백분율로 설정\n"
 
-#: src/oremind.cpp:125
+#: src/oremind.cpp:124
 msgid "exit after NUM consecutive cancels\n"
 msgstr "연속 취소 NUM회 후 종료\n"
 
-#: src/oremind.cpp:127
+#: src/oremind.cpp:126
 msgid "set prompt interval in minutes\n"
 msgstr "프롬프트 간격을 분 단위로 설정\n"
 
-#: src/oremind.cpp:129
+#: src/oremind.cpp:128
 msgid "set calendar week start: M/m for Monday, S/s for Sunday\n"
 msgstr "달력 주 시작일 설정: M/m은 월요일, S/s는 일요일\n"
 
-#: src/oremind.cpp:131
+#: src/oremind.cpp:130
 msgid "SQLite file path, or log directory when PATH is a directory\n"
 msgstr "SQLite 파일 경로. PATH가 디렉터리이면 로그 저장 위치\n"
 
-#: src/oremind.cpp:133
+#: src/oremind.cpp:132
 msgid "output version information and exit\n"
 msgstr "버전 정보를 표시하고 종료\n"
 
-#: src/oremind.cpp:135
+#: src/oremind.cpp:134
 #, c-format
 msgid "Report bugs to: <%s>\n"
 msgstr "버그 제보: <%s>\n"
 
-#: src/oremind.cpp:182
+#: src/oremind.cpp:181
 #, c-format
 msgid "invalid locale: %s\n"
 msgstr "잘못된 로캘: %s\n"
 
-#: src/oremind.cpp:190
+#: src/oremind.cpp:189
 #, c-format
 msgid "expect theme name.\n"
 msgstr "테마 이름이 필요합니다.\n"
 
-#: src/oremind.cpp:196
+#: src/oremind.cpp:195
 #, c-format
 msgid "invalid theme: %s\n"
 msgstr "잘못된 테마: %s\n"
 
-#: src/oremind.cpp:207
+#: src/oremind.cpp:206
 #, c-format
 msgid "invalid opacity: %s\n"
 msgstr "잘못된 불투명도: %s\n"
 
-#: src/oremind.cpp:218
+#: src/oremind.cpp:217
 #, c-format
 msgid "invalid cancel count: %s\n"
 msgstr "잘못된 취소 횟수: %s\n"
 
-#: src/oremind.cpp:229
+#: src/oremind.cpp:228
 #, c-format
 msgid "invalid interval: %s\n"
 msgstr "잘못된 간격: %s\n"
 
-#: src/oremind.cpp:241
+#: src/oremind.cpp:240
 #, c-format
 msgid "invalid week start: %s\n"
 msgstr "잘못된 주 시작일: %s\n"
 
-#: src/oremind.cpp:250
+#: src/oremind.cpp:249
 #, c-format
 msgid "Copyright (C) %d %s\n"
 msgstr "저작권 (C) %d %s\n"
 
-#: src/oremind.cpp:251
+#: src/oremind.cpp:250
 msgid ""
 "License AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 msgstr ""
 "라이선스 AGPL-3.0-or-later: <https://www.gnu.org/licenses/agpl-3.0.html>\n"
 
-#: src/oremind.cpp:253
+#: src/oremind.cpp:252
 msgid "This is free software: you are free to change and redistribute it.\n"
 msgstr "이것은 자유 소프트웨어이며 자유롭게 변경하고 재배포할 수 있습니다.\n"
 
-#: src/oremind.cpp:255
+#: src/oremind.cpp:254
 msgid "This project opposes AI exploitation and AI hegemony.\n"
 msgstr "이 프로젝트는 AI 착취와 AI 패권에 반대합니다.\n"
 
-#: src/oremind.cpp:256
+#: src/oremind.cpp:255
 msgid ""
 "This project rejects mindless MIT-style licensing and politically naive BSD-"
 "style licensing.\n"
@@ -130,202 +130,231 @@ msgstr ""
 "이 프로젝트는 무비판적 MIT식 라이선스와 정치적으로 순진한 BSD식 라이선스를 거"
 "부합니다.\n"
 
-#: src/oremind.cpp:259
+#: src/oremind.cpp:258
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "법이 허용하는 범위에서 어떠한 보증도 없습니다.\n"
 
-#: src/ObserverFrame.cpp:84
+#: src/ObserverFrame.cpp:80
 msgid "Wake"
 msgstr "깨우기"
 
-#: src/ObserverFrame.cpp:85
+#: src/ObserverFrame.cpp:81
 msgid "Statistics / History"
 msgstr "통계 / 기록"
 
-#: src/ObserverFrame.cpp:87
+#: src/ObserverFrame.cpp:83
 msgid "Quit"
 msgstr "종료"
 
-#: src/ObservationDialog.cpp:566
+#: src/ObservationDialog.cpp:160
+#, c-format
+msgid "Explain in depth: %s (answer in English)"
+msgstr "심층 설명: %s (한국어로 답변)"
+
+#: src/ObservationDialog.cpp:180
+msgid "Right-click to ask AI"
+msgstr "우클릭하여 AI에게 물어보기"
+
+#: src/ObservationDialog.cpp:660
+msgid "Edit record"
+msgstr ""
+
+#: src/ObservationDialog.cpp:714
 msgid "energy"
 msgstr "에너지"
 
-#: src/ObservationDialog.cpp:570
+#: src/ObservationDialog.cpp:720
 msgid "mood"
 msgstr "기분"
 
-#: src/ObservationDialog.cpp:574
+#: src/ObservationDialog.cpp:725
 msgid "grounding"
 msgstr "접지감"
 
-#: src/ObservationDialog.cpp:586
+#: src/ObservationDialog.cpp:739
 msgid "Launch oremind again to wake immediately"
 msgstr "Launch oremind again to wake immediately"
 
-#: src/ObservationDialog.cpp:666
+#: src/ObservationDialog.cpp:824
+msgid "Enter save"
+msgstr ""
+
+#: src/ObservationDialog.cpp:824
 msgid "Enter submit"
 msgstr "Enter 제출"
 
-#: src/ObservationDialog.cpp:668
+#: src/ObservationDialog.cpp:828
+msgid "Esc cancel"
+msgstr ""
+
+#: src/ObservationDialog.cpp:828
 msgid "Esc skip"
 msgstr "Esc 건너뛰기"
 
-#: src/ObservationDialog.cpp:670
-msgid "^H History"
-msgstr "^H 기록"
+#: src/ObservationDialog.cpp:832
+msgid "F1 History"
+msgstr ""
 
-#: src/ObservationDialog.cpp:672
+#: src/ObservationDialog.cpp:835
 msgid "Next prompt"
 msgstr "다음 알림"
 
-#: src/ObservationDialog.cpp:674 src/ObservationDialog.cpp:851
+#: src/ObservationDialog.cpp:837 src/ObservationDialog.cpp:1027
 msgid "minutes later"
 msgstr "분 후"
 
-#: src/ObservationDialog.cpp:677
+#: src/ObservationDialog.cpp:840
 msgid "Ctrl+Q quit"
 msgstr "Ctrl+Q 종료"
 
-#: src/ObservationDialog.cpp:851
+#: src/ObservationDialog.cpp:1027
 msgid "seconds later"
 msgstr "초 후"
 
-#: src/StatisticsDialog.cpp:443
+#: src/StatisticsDialog.cpp:200
 msgid "Day statistics"
 msgstr "일별 통계"
 
-#: src/StatisticsDialog.cpp:446
+#: src/StatisticsDialog.cpp:203
 msgid "Week statistics"
 msgstr "주간 통계"
 
-#: src/StatisticsDialog.cpp:450
+#: src/StatisticsDialog.cpp:207
 msgid "Month statistics"
 msgstr "월별 통계"
 
-#: src/StatisticsDialog.cpp:454
+#: src/StatisticsDialog.cpp:210
 msgid "Year statistics"
 msgstr "연도 통계"
 
-#: src/StatisticsDialog.cpp:456 src/StatisticsDialog.cpp:1403
+#: src/StatisticsDialog.cpp:213 src/StatisticsDialog.cpp:1577
 msgid "Calendar"
 msgstr "달력"
 
-#: src/StatisticsDialog.cpp:629 src/StatisticsDialog.cpp:1413
+#: src/StatisticsDialog.cpp:385 src/StatisticsDialog.cpp:1590
 msgid "Month"
 msgstr "월"
 
-#: src/StatisticsDialog.cpp:699
+#: src/StatisticsDialog.cpp:568
 msgid "Prompted"
 msgstr "표시"
 
-#: src/StatisticsDialog.cpp:702
+#: src/StatisticsDialog.cpp:571
 msgid "Submitted"
 msgstr "제출"
 
-#: src/StatisticsDialog.cpp:705 src/StatisticsDialog.cpp:1372
+#: src/StatisticsDialog.cpp:574 src/StatisticsDialog.cpp:1540
 msgid "Duration"
 msgstr "지속 시간"
 
-#: src/StatisticsDialog.cpp:708 src/StatisticsDialog.cpp:1373
+#: src/StatisticsDialog.cpp:577 src/StatisticsDialog.cpp:1541
 msgid "Energy"
 msgstr "에너지"
 
-#: src/StatisticsDialog.cpp:711 src/StatisticsDialog.cpp:1374
+#: src/StatisticsDialog.cpp:580 src/StatisticsDialog.cpp:1542
 msgid "Mood"
 msgstr "기분"
 
-#: src/StatisticsDialog.cpp:714 src/StatisticsDialog.cpp:1375
+#: src/StatisticsDialog.cpp:583 src/StatisticsDialog.cpp:1543
 msgid "Grounding"
 msgstr "접지"
 
-#: src/StatisticsDialog.cpp:717
+#: src/StatisticsDialog.cpp:586
 msgid "Avg"
 msgstr "평균"
 
-#: src/StatisticsDialog.cpp:720
+#: src/StatisticsDialog.cpp:589
 msgid "Activity"
 msgstr "활동"
 
-#: src/StatisticsDialog.cpp:723
+#: src/StatisticsDialog.cpp:592
 msgid "Quote"
 msgstr "격언"
 
-#: src/StatisticsDialog.cpp:1177
+#: src/StatisticsDialog.cpp:729
+msgid "Edit"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:732
+msgid "Delete"
+msgstr ""
+
+#: src/StatisticsDialog.cpp:1222
 msgid "No records"
 msgstr "기록 없음"
 
-#: src/StatisticsDialog.cpp:1371 src/StatisticsDialog.cpp:1771
-#: src/StatisticsDialog.cpp:1814
+#: src/StatisticsDialog.cpp:1539 src/StatisticsDialog.cpp:1962
+#: src/StatisticsDialog.cpp:2076
 msgid "Records"
 msgstr "기록"
 
-#: src/StatisticsDialog.cpp:1376
+#: src/StatisticsDialog.cpp:1544
 msgid "EMG avg"
 msgstr "EMG 평균"
 
-#: src/StatisticsDialog.cpp:1377
-msgid "Fit"
-msgstr "맞춤"
-
-#: src/StatisticsDialog.cpp:1385
+#: src/StatisticsDialog.cpp:1559
 msgid "Statistics"
 msgstr "통계"
 
-#: src/StatisticsDialog.cpp:1407
+#: src/StatisticsDialog.cpp:1582
 msgid "Day"
 msgstr "낮"
 
-#: src/StatisticsDialog.cpp:1410
+#: src/StatisticsDialog.cpp:1586
 msgid "Week"
 msgstr "주"
 
-#: src/StatisticsDialog.cpp:1416
+#: src/StatisticsDialog.cpp:1593
 msgid "Year"
 msgstr "년"
 
-#: src/StatisticsDialog.cpp:1420
+#: src/StatisticsDialog.cpp:1597
 msgid "Today"
 msgstr "오늘"
 
-#: src/StatisticsDialog.cpp:1423
+#: src/StatisticsDialog.cpp:1600
 msgid "Previous"
 msgstr "이전"
 
-#: src/StatisticsDialog.cpp:1426
+#: src/StatisticsDialog.cpp:1603
 msgid "Next"
 msgstr "다음"
 
-#: src/StatisticsDialog.cpp:1430
+#: src/StatisticsDialog.cpp:1607
 msgid "Close"
 msgstr "닫기"
 
-#: src/StatisticsDialog.cpp:1442
+#: src/StatisticsDialog.cpp:1619
 msgid "Each Year"
 msgstr "매년"
 
-#: src/StatisticsDialog.cpp:1491 src/StatisticsDialog.cpp:1835
+#: src/StatisticsDialog.cpp:1669 src/StatisticsDialog.cpp:2106
 msgid "Top activities"
 msgstr "인기 활동"
 
-#: src/StatisticsDialog.cpp:1772 src/StatisticsDialog.cpp:1815
+#: src/StatisticsDialog.cpp:1964 src/StatisticsDialog.cpp:2078
 msgid "Empty notes"
 msgstr "빈 메모"
 
-#: src/StatisticsDialog.cpp:1773 src/StatisticsDialog.cpp:1816
+#: src/StatisticsDialog.cpp:1966 src/StatisticsDialog.cpp:2080
 msgid "Total prompt duration"
 msgstr "총 프롬프트 기간"
 
-#: src/StatisticsDialog.cpp:1775 src/StatisticsDialog.cpp:1818
+#: src/StatisticsDialog.cpp:1968 src/StatisticsDialog.cpp:2083
 msgid "Average energy"
 msgstr "평균 에너지"
 
-#: src/StatisticsDialog.cpp:1777 src/StatisticsDialog.cpp:1820
+#: src/StatisticsDialog.cpp:1971 src/StatisticsDialog.cpp:2087
 msgid "Average mood"
 msgstr "평균 기분"
 
-#: src/StatisticsDialog.cpp:1779 src/StatisticsDialog.cpp:1822
+#: src/StatisticsDialog.cpp:1974 src/StatisticsDialog.cpp:2092
 msgid "Average grounding"
 msgstr "평균 접지"
+
+#: src/StatisticsDialog.cpp:2158
+msgid "Save error"
+msgstr ""
 
 #: src/QuoteProvider.cpp:9
 msgid "明天是今天的延续，今天是明天的提前。"
@@ -726,6 +755,16 @@ msgstr "완벽한 시작보다 진짜 시작을 추구합니다."
 #: src/QuoteProvider.cpp:108
 msgid "你现在在哪里？你正在做什么？你还要不要回来？"
 msgstr "지금 이 1분은 상상 속 미래보다 무게가 큽니다."
+
+#, c-format
+#~ msgid "Explain this quote: %s"
+#~ msgstr "이 격언을 한국어로 설명해 주세요: %s"
+
+#~ msgid "^H History"
+#~ msgstr "^H 기록"
+
+#~ msgid "Fit"
+#~ msgstr "맞춤"
 
 #~ msgid "View"
 #~ msgstr "보기"

@@ -1,5 +1,6 @@
 src/oremind.cpp
 src/ObserverFrame.cpp
 src/ObservationDialog.cpp
+src/DeepSeekBrowserFrame.cpp
 src/StatisticsDialog.cpp
 src/QuoteProvider.cpp
