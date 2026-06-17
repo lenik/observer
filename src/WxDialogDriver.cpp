@@ -18,7 +18,6 @@ ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults& defaults)
 {
     ObservationDialog dialog(m_parent, defaults);
     m_activeDialog = &dialog;
-    dialog.CallAfter(&ObservationDialog::animateIn);
     const int result = dialog.ShowModal();
     m_activeDialog = nullptr;
 

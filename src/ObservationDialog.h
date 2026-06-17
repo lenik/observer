@@ -10,9 +10,21 @@
 
 #include <optional>
 #include <random>
+#include <string>
+#include <vector>
 
 class QuoteCanvas;
 class RatingControl;
+
+struct ObservationLayoutSnapshot {
+    std::string quote;
+    int windowWidth = 0;
+    int windowHeight = 0;
+    int quoteX = 0;
+    int quoteY = 0;
+    int quoteWidth = 0;
+    int quoteHeight = 0;
+};
 
 class ObservationDialog : public wxDialog {
   public:
@@ -23,6 +35,8 @@ class ObservationDialog : public wxDialog {
     void animateIn();
     void showStatistics();
     bool isStatisticsOpen() const { return m_statisticsOpen; }
+    ObservationLayoutSnapshot captureLayoutSnapshot() const;
+    static ObservationLayoutSnapshot captureLayoutSnapshot(const ObservePromptDefaults &defaults);
 
   private:
     void onCharHook(wxKeyEvent &event);
@@ -35,6 +49,11 @@ class ObservationDialog : public wxDialog {
     std::string currentTimestamp() const;
     void showRandomQuote();
     void toggleIntervalUnit();
+    void refitDialogLayout();
+    void updateAnimationAnchors();
+    void paintWindowChrome(wxPaintEvent &event);
+    void onFirstShow(wxShowEvent &event);
+    wxSize goldenRatioWindowSize(const wxSize &contentMin) const;
     std::string activityText() const;
 
     std::string m_quote;
@@ -58,13 +77,16 @@ class ObservationDialog : public wxDialog {
     wxStaticText *m_skipLabel = nullptr;
     wxStaticText *m_nextPromptLabel = nullptr;
     wxStyledTextCtrl *m_activityCtrl = nullptr;
+    wxPanel *m_contentPanel = nullptr;
     wxPoint m_animationStartPosition;
     wxPoint m_animationFinalPosition;
-    int m_finalOpacity = 178;
-    bool m_hasTransparency = false;
     bool m_closing = false;
     bool m_intervalInSeconds = false;
     bool m_statisticsOpen = false;
+    bool m_animationStarted = false;
+    wxColour m_chromeBg;
+    wxColour m_borderColour;
+    wxColour m_shadowColour;
 };
 
 #endif
