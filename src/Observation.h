@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <string>
 
-inline constexpr double DefaultObservationScore = 3.0;
+inline constexpr double DefaultObservationScore = 2.5;
 
 struct Observation {
     int64_t id = 0;
