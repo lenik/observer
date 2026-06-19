@@ -12,7 +12,7 @@ public:
     explicit WxDialogDriver(wxWindow* parent);
 
     ObserveResult prompt(const ObservePromptDefaults& defaults) override;
-    void showStatisticsIfActive();
+    void requestHistoryIfActive();
 
 private:
     wxWindow* m_parent;

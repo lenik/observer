@@ -33,10 +33,16 @@ class ObservationDialog : public wxDialog {
     Observation observation() const;
     double intervalSeconds() const;
     void animateIn();
-    void showStatistics();
-    bool isStatisticsOpen() const { return m_statisticsOpen; }
+    void requestHistory();
+    void openQuoteAssistant(const wxString &quote);
+    ObservePromptDefaults captureResumeDefaults() const;
+    std::optional<std::string> browserPrompt() const;
+    std::optional<std::string> browserSearchQuote() const;
+    std::optional<std::string> externalBrowserUrl() const;
     ObservationLayoutSnapshot captureLayoutSnapshot() const;
     static ObservationLayoutSnapshot captureLayoutSnapshot(const ObservePromptDefaults &defaults);
+    int modalResultCode() const { return m_modalResultCode; }
+    bool isEditMode() const { return m_editMode; }
 
   private:
     void onCharHook(wxKeyEvent &event);
@@ -81,12 +87,16 @@ class ObservationDialog : public wxDialog {
     wxPoint m_animationStartPosition;
     wxPoint m_animationFinalPosition;
     bool m_closing = false;
+    bool m_historyOpen = false;
+    int m_modalResultCode = wxID_CANCEL;
     bool m_intervalInSeconds = false;
-    bool m_statisticsOpen = false;
     bool m_animationStarted = false;
     wxColour m_chromeBg;
     wxColour m_borderColour;
     wxColour m_shadowColour;
+    wxString m_browserPrompt;
+    wxString m_browserSearchQuote;
+    std::optional<std::string> m_externalBrowserUrl;
 };
 
 #endif

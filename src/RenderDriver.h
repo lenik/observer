@@ -14,7 +14,9 @@ enum class ObserveResultKind {
     Submitted,
     Skipped,
     Snoozed,
-    Quit
+    Quit,
+    History,
+    Browser,
 };
 
 struct ObservePromptDefaults {
@@ -30,11 +32,17 @@ struct ObservePromptDefaults {
     std::size_t quoteIndex = 0;
     ObservationStore* store = nullptr;
     std::optional<Observation> editing;
+    std::string activityDraft;
+    int activityCaretPos = -1;
 };
 
 struct ObserveResult {
     ObserveResultKind kind;
     std::optional<Observation> observation;
+    std::optional<ObservePromptDefaults> resume;
+    std::optional<std::string> browserPrompt;
+    std::optional<std::string> browserSearchQuote;
+    std::optional<std::string> externalBrowserUrl;
     double intervalSeconds = 120.0;
 };
 

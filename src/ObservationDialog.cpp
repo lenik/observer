@@ -2,8 +2,7 @@
 
 #include "AppConfig.h"
 #include "AppIcon.h"
-#include "AuxGuiProcess.h"
-#include "ObserverFrame.h"
+#include "HistoryFrame.h"
 #include "ObservationStore.h"
 #include "UiTheme.h"
 #include "formatting.h"
@@ -41,6 +40,8 @@ constexpr int ID_SUBMIT = wxID_OK;
 constexpr int ID_SKIP = wxID_CANCEL;
 constexpr int ID_SNOOZE = wxID_HIGHEST + 1;
 constexpr int ID_QUIT = wxID_HIGHEST + 2;
+constexpr int ID_HISTORY = wxID_HIGHEST + 3;
+constexpr int ID_BROWSER = wxID_HIGHEST + 4;
 
 int clampScore(int value) {
     if (value < 0) {
@@ -267,32 +268,6 @@ bool isSimplifiedChineseLocale(const std::string &locale) {
     return locale == "zh_CN" || locale.rfind("zh_CN.", 0) == 0;
 }
 
-void openQuoteAiAssistant(const std::string &quote) {
-    if (trim(quote).empty()) {
-        return;
-    }
-
-    const wxString prompt =
-        wxString::Format(wxString::FromUTF8(_("Explain in depth: %s (answer in English)")),
-                         wxString::FromUTF8(quote.c_str()));
-    const std::string encoded = urlEncodeUtf8(prompt);
-    const std::string locale = effectiveAppLocale();
-    if (isSimplifiedChineseLocale(locale)) {
-        wxTheApp->CallAfter([prompt]() {
-            if (launchAuxGuiDeepSeek(prompt)) {
-                return;
-            }
-            wxLaunchDefaultBrowser(wxString::FromUTF8(buildDoubaoChatUrl(prompt).c_str()));
-        });
-        return;
-    }
-
-    const std::string hl = googleSearchHlTag(locale);
-    const wxString url = wxString::Format("https://www.google.com/search?udm=50&hl=%s&q=%s",
-                                          wxString::FromUTF8(hl.c_str()).c_str(), encoded.c_str());
-    wxLaunchDefaultBrowser(url);
-}
-
 } // namespace
 
 namespace {
@@ -313,10 +288,11 @@ class TransparentPanel : public wxPanel {
 class QuoteCanvas : public wxPanel {
   public:
     QuoteCanvas(wxWindow *parent, const std::string &quote, const UiThemeColors &colors,
-                std::function<void()> onClick, std::function<void()> onLayoutChanged)
+                std::function<void()> onClick, std::function<void()> onLayoutChanged,
+                std::function<void()> onAskAi)
         : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(kBaseWidth, kBaseHeight)),
           m_colors(colors), m_quote(toWxUtf8(quote)), m_onClick(std::move(onClick)),
-          m_onLayoutChanged(std::move(onLayoutChanged)) {
+          m_onLayoutChanged(std::move(onLayoutChanged)), m_onAskAi(std::move(onAskAi)) {
         SetBackgroundStyle(wxBG_STYLE_PAINT);
         SetBackgroundColour(m_colors.quoteBg);
         SetCursor(wxCursor(wxCURSOR_HAND));
@@ -328,9 +304,8 @@ class QuoteCanvas : public wxPanel {
             }
         });
         Bind(wxEVT_RIGHT_DOWN, [this](wxMouseEvent &) {
-            wxCharBuffer buffer = m_quote.utf8_str();
-            if (buffer.data() != nullptr) {
-                openQuoteAiAssistant(buffer.data());
+            if (m_onAskAi) {
+                m_onAskAi();
             }
         });
         Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
@@ -709,6 +684,7 @@ class QuoteCanvas : public wxPanel {
     wxString m_quote;
     std::function<void()> m_onClick;
     std::function<void()> m_onLayoutChanged;
+    std::function<void()> m_onAskAi;
     std::vector<wxString> m_layoutLines;
     wxFont m_drawFont;
     int m_layoutWidth = kBaseWidth;
@@ -1030,7 +1006,8 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     root->AddSpacer(blockGap);
     m_quoteCanvas = new QuoteCanvas(
         m_contentPanel, m_quote, colors, [this]() { showRandomQuote(); },
-        [this]() { refitDialogLayout(); });
+        [this]() { refitDialogLayout(); },
+        [this]() { openQuoteAssistant(wxString::FromUTF8(m_quote.c_str())); });
     root->Add(m_quoteCanvas, 0, wxLEFT | wxRIGHT | wxEXPAND, outerMargin);
 
     auto *ratingRow = new wxBoxSizer(wxHORIZONTAL);
@@ -1118,6 +1095,17 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
 
     if (m_editMode && m_editing.has_value()) {
         m_activityCtrl->SetText(wxString::FromUTF8(activityForEdit(m_editing->activity).c_str()));
+    } else if (!defaults.activityDraft.empty()) {
+        m_activityCtrl->SetText(wxString::FromUTF8(defaults.activityDraft.c_str()));
+    }
+
+    const int savedCaret = defaults.activityCaretPos;
+    if (savedCaret >= 0) {
+        CallAfter([this, savedCaret]() {
+            const int pos = std::min(savedCaret, m_activityCtrl->GetLength());
+            m_activityCtrl->GotoPos(pos);
+            m_activityCtrl->SetFocus();
+        });
     }
 
     auto *promptInputRow = new wxBoxSizer(wxHORIZONTAL);
@@ -1162,8 +1150,8 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     m_skipLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { skip(); });
     wxStaticText *historyLabel = nullptr;
     if (!m_editMode) {
-        historyLabel = makeLabel(wxString::FromUTF8(_("F1 History")), actionColour);
-        historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { showStatistics(); });
+        historyLabel = makeLabel(wxString::FromUTF8(_("F12 History")), actionColour);
+        historyLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { requestHistory(); });
         m_nextPromptLabel = makeLabel(wxString::FromUTF8(_("Next prompt")), footerColour);
         m_nextPromptLabel->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent &) { toggleIntervalUnit(); });
         m_intervalUnitLabel = makeLabel(wxString::FromUTF8(_("minutes later")), footerColour);
@@ -1196,7 +1184,13 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     root->Add(bottomBlock, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
     Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
-    Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent &) { skip(); });
+    Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent &event) {
+        if (m_closing) {
+            event.Skip();
+            return;
+        }
+        skip();
+    });
     Bind(wxEVT_SHOW, &ObservationDialog::onFirstShow, this);
     Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
         Layout();
@@ -1217,7 +1211,9 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     } else {
         Move(m_animationStartPosition);
     }
-    m_activityCtrl->SetFocus();
+    if (defaults.activityCaretPos < 0) {
+        m_activityCtrl->SetFocus();
+    }
 }
 
 Observation ObservationDialog::observation() const {
@@ -1246,6 +1242,10 @@ double ObservationDialog::intervalSeconds() const {
 }
 
 void ObservationDialog::onCharHook(wxKeyEvent &event) {
+    if (!IsShown() || !IsEnabled()) {
+        event.Skip();
+        return;
+    }
     const int keyCode = event.GetKeyCode();
     if (keyCode == WXK_RETURN || keyCode == WXK_NUMPAD_ENTER) {
         if (!event.ShiftDown()) {
@@ -1253,9 +1253,9 @@ void ObservationDialog::onCharHook(wxKeyEvent &event) {
             return;
         }
     }
-    if (keyCode == WXK_F1) {
+    if (keyCode == WXK_F12) {
         if (!m_editMode) {
-            showStatistics();
+            requestHistory();
         }
         return;
     }
@@ -1310,17 +1310,85 @@ void ObservationDialog::snooze() { finishWithResult(ID_SNOOZE); }
 
 void ObservationDialog::quit() { finishWithResult(ID_QUIT); }
 
-void ObservationDialog::showStatistics() {
-    if (m_statisticsOpen) {
+void ObservationDialog::requestHistory() {
+    if (m_historyOpen || m_store == nullptr) {
         return;
     }
 
-    m_statisticsOpen = true;
-    ObserverFrame::sendIpcCommand("HISTORY\n");
-    m_statisticsOpen = false;
+    m_historyOpen = true;
+    try {
+        HistoryFrame dialog(this, m_store, m_theme, m_weekStartsMonday, m_quotes);
+        dialog.ShowModal();
+    } catch (const std::exception &ex) {
+        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR,
+                     this);
+    }
+    m_historyOpen = false;
     if (m_activityCtrl != nullptr) {
         m_activityCtrl->SetFocus();
     }
+}
+
+void ObservationDialog::openQuoteAssistant(const wxString &quote) {
+    const wxString prompt = wxString::Format(
+        wxString::FromUTF8(_("Explain in depth: %s (answer in English)")), quote);
+    const std::string locale = effectiveAppLocale();
+    if (isSimplifiedChineseLocale(locale)) {
+        m_browserPrompt = prompt;
+        m_browserSearchQuote = quote;
+        m_externalBrowserUrl.reset();
+        finishWithResult(ID_BROWSER);
+        return;
+    }
+
+    const std::string encoded = urlEncodeUtf8(quote.ToStdString());
+    const std::string hl = googleSearchHlTag(locale);
+    m_browserPrompt.clear();
+    m_browserSearchQuote.clear();
+    m_externalBrowserUrl =
+        wxString::Format("https://www.google.com/search?udm=50&hl=%s&q=%s",
+                         wxString::FromUTF8(hl.c_str()).c_str(), encoded.c_str())
+            .ToStdString();
+    finishWithResult(ID_BROWSER);
+}
+
+ObservePromptDefaults ObservationDialog::captureResumeDefaults() const {
+    ObservePromptDefaults defaults;
+    defaults.energy = m_energyRating->value();
+    defaults.mood = m_moodRating->value();
+    defaults.grounding = m_groundingRating->value();
+    defaults.intervalSeconds = intervalSeconds();
+    defaults.opacityPercent = appConfig().opacityPercent;
+    defaults.weekStartsMonday = m_weekStartsMonday;
+    defaults.theme = m_theme;
+    defaults.quotes = m_quotes;
+    defaults.quoteIndex = m_quoteIndex;
+    defaults.quote = m_quote;
+    defaults.store = m_store;
+    if (m_activityCtrl != nullptr) {
+        wxCharBuffer buffer = m_activityCtrl->GetText().utf8_str();
+        defaults.activityDraft = buffer.data() != nullptr ? std::string(buffer.data()) : std::string();
+        defaults.activityCaretPos = m_activityCtrl->GetCurrentPos();
+    }
+    return defaults;
+}
+
+std::optional<std::string> ObservationDialog::browserPrompt() const {
+    if (m_browserPrompt.empty()) {
+        return std::nullopt;
+    }
+    return m_browserPrompt.ToStdString();
+}
+
+std::optional<std::string> ObservationDialog::browserSearchQuote() const {
+    if (m_browserSearchQuote.empty()) {
+        return std::nullopt;
+    }
+    return m_browserSearchQuote.ToStdString();
+}
+
+std::optional<std::string> ObservationDialog::externalBrowserUrl() const {
+    return m_externalBrowserUrl;
 }
 
 void ObservationDialog::updateAnimationAnchors() {
@@ -1517,8 +1585,23 @@ void ObservationDialog::finishWithResult(int result) {
         return;
     }
     m_closing = true;
+    m_modalResultCode = result;
     animateOut();
-    EndModal(result);
+    if (result == ID_BROWSER) {
+        long style = GetWindowStyle();
+        if ((style & wxSTAY_ON_TOP) != 0) {
+            SetWindowStyle(style & ~wxSTAY_ON_TOP);
+        }
+    }
+    if (IsModal()) {
+        if (result == ID_SUBMIT) {
+            EndModal(wxID_OK);
+        } else {
+            EndModal(wxID_CANCEL);
+        }
+    } else {
+        Show(false);
+    }
 }
 
 std::string ObservationDialog::activityText() const {

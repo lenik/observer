@@ -2,7 +2,9 @@
 
 #include "AppConfig.h"
 #include "AppIcon.h"
-#include "AuxGuiProcess.h"
+#include "DeepSeekBrowserFrame.h"
+#include "DeepSeekWebViewSetup.h"
+#include "HistoryFrame.h"
 #include "WxDialogDriver.h"
 
 #include <bas/locale/i18n.h>
@@ -116,7 +118,7 @@ ObserverFrame::~ObserverFrame()
     cleanupIpcServer();
 }
 
-bool ObserverFrame::sendIpcCommand(const std::string &command)
+bool ObserverFrame::notifyExistingInstance()
 {
     const std::string path = ipcSocketPath();
     sockaddr_un addr{};
@@ -129,24 +131,24 @@ bool ObserverFrame::sendIpcCommand(const std::string &command)
         return false;
     }
 
-    const bool connected =
-        ::connect(fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == 0;
+    const bool connected = ::connect(fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == 0;
     if (connected) {
-        (void)::write(fd, command.data(), command.size());
+        const char command[] = "WAKE\n";
+        (void)::write(fd, command, sizeof(command) - 1);
     }
     ::close(fd);
     return connected;
 }
 
-bool ObserverFrame::notifyExistingInstance()
+bool ObserverFrame::hasOpenBrowserWindow() const
 {
-    return sendIpcCommand("WAKE\n");
+    return m_browserFrame != nullptr;
 }
 
 void ObserverFrame::onTimer(wxTimerEvent& event)
 {
     (void)event;
-    if (m_promptOpen) {
+    if (m_promptOpen || hasOpenBrowserWindow()) {
         return;
     }
     showPrompt();
@@ -225,15 +227,7 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
         char buffer[64] = {};
         const ssize_t n = ::read(client, buffer, sizeof(buffer) - 1);
         ::close(client);
-        if (n <= 0) {
-            continue;
-        }
-        const std::string message(buffer, static_cast<std::size_t>(n));
-        if (message.find("HISTORY") != std::string::npos) {
-            CallAfter([this]() { openHistoryWindow(); });
-            continue;
-        }
-        if (message.find("WAKE") != std::string::npos) {
+        if (n > 0 && std::string(buffer, static_cast<std::size_t>(n)).find("WAKE") != std::string::npos) {
             handleExternalWake();
         }
     }
@@ -245,8 +239,13 @@ void ObserverFrame::handleExternalWake()
         if (m_promptOpen) {
             auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
             if (driver != nullptr) {
-                driver->showStatisticsIfActive();
+                driver->requestHistoryIfActive();
             }
+            return;
+        }
+
+        if (m_browserFrame != nullptr) {
+            m_browserFrame->activateWindow();
             return;
         }
 
@@ -259,27 +258,69 @@ void ObserverFrame::wakePrompt()
     if (m_promptOpen) {
         return;
     }
+    if (m_browserFrame != nullptr) {
+        m_browserFrame->activateWindow();
+        return;
+    }
 
     m_timer.Stop();
     showPrompt();
 }
 
-void ObserverFrame::openHistoryWindow()
+void ObserverFrame::showBrowserWindow(const wxString &prompt, const wxString &searchQuote)
 {
-    launchAuxGuiHistory();
+    if (m_browserFrame != nullptr) {
+        m_browserFrame->setPrompt(prompt, searchQuote);
+        m_browserFrame->activateWindow();
+        return;
+    }
+
+    auto *frame = new DeepSeekBrowserFrame(nullptr, prompt, searchQuote);
+    if (!frame->isReady()) {
+        delete frame;
+        wxMessageBox("WebView is unavailable on this system.", "DeepSeek", wxOK | wxICON_ERROR, this);
+        return;
+    }
+    m_browserFrame = frame;
+    frame->Bind(wxEVT_DESTROY, [this](wxWindowDestroyEvent &) {
+        m_browserFrame = nullptr;
+        onBrowserWindowClosed();
+    });
+    frame->activateWindow();
+}
+
+void ObserverFrame::onBrowserWindowClosed()
+{
+    CallAfter([this]() {
+        if (m_promptOpen || hasOpenBrowserWindow()) {
+            return;
+        }
+        wakePrompt();
+    });
 }
 
 void ObserverFrame::showHistoryFrame()
 {
     if (m_promptOpen) {
+        auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
+        if (driver != nullptr) {
+            driver->requestHistoryIfActive();
+        }
         return;
     }
-    openHistoryWindow();
+
+    try {
+        HistoryFrame dialog(this, m_store.get(), appConfig().theme, appConfig().weekStartsMonday,
+                            m_quoteProvider.quotes());
+        dialog.ShowModal();
+    } catch (const std::exception &ex) {
+        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
+    }
 }
 
 void ObserverFrame::scheduleNextPrompt(int delayMs)
 {
-    if (m_promptOpen) {
+    if (m_promptOpen || hasOpenBrowserWindow()) {
         return;
     }
     m_timer.Stop();
@@ -322,7 +363,7 @@ void ObserverFrame::handlePromptClosed(const ObserveResult& result)
 
 void ObserverFrame::showPrompt()
 {
-    if (m_promptOpen) {
+    if (m_promptOpen || hasOpenBrowserWindow()) {
         return;
     }
 
@@ -330,39 +371,74 @@ void ObserverFrame::showPrompt()
     m_timer.Stop();
 
     ObservePromptDefaults defaults;
-    defaults.energy = DefaultObservationScore;
-    defaults.mood = DefaultObservationScore;
-    defaults.grounding = DefaultObservationScore;
-    defaults.intervalSeconds = m_intervalSeconds;
-    defaults.opacityPercent = appConfig().opacityPercent;
-    defaults.weekStartsMonday = appConfig().weekStartsMonday;
-    defaults.theme = appConfig().theme;
-    defaults.quotes = m_quoteProvider.quotes();
-    defaults.quoteIndex = m_quoteProvider.randomIndex();
-    defaults.quote = defaults.quotes[defaults.quoteIndex];
-    defaults.store = m_store.get();
-    try {
-        m_store->load({});
-    } catch (const std::exception& ex) {
-        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR, this);
-    }
-
-    ObserveResult result = m_renderDriver->prompt(defaults);
-    m_intervalSeconds = result.intervalSeconds;
-
-    if (result.kind == ObserveResultKind::Submitted && result.observation.has_value()) {
-        try {
-            m_store->save(*result.observation);
-        } catch (const std::exception& ex) {
-            wxMessageBox(wxString::FromUTF8(ex.what()), "Observer SQLite Error", wxOK | wxICON_ERROR, this);
-        }
-    }
-
-    if (result.kind == ObserveResultKind::Skipped) {
-        ++m_consecutiveSkips;
+    if (m_savedPromptDefaults.has_value()) {
+        defaults = *m_savedPromptDefaults;
+        m_savedPromptDefaults.reset();
     } else {
-        m_consecutiveSkips = 0;
+        defaults.energy = DefaultObservationScore;
+        defaults.mood = DefaultObservationScore;
+        defaults.grounding = DefaultObservationScore;
+        defaults.intervalSeconds = m_intervalSeconds;
+        defaults.opacityPercent = appConfig().opacityPercent;
+        defaults.weekStartsMonday = appConfig().weekStartsMonday;
+        defaults.theme = appConfig().theme;
+        defaults.quotes = m_quoteProvider.quotes();
+        defaults.quoteIndex = m_quoteProvider.randomIndex();
+        defaults.quote = defaults.quotes[defaults.quoteIndex];
+        defaults.store = m_store.get();
     }
 
-    handlePromptClosed(result);
+    for (;;) {
+        try {
+            m_store->load({});
+        } catch (const std::exception& ex) {
+            wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR,
+                         this);
+        }
+
+        ObserveResult result = m_renderDriver->prompt(defaults);
+        m_intervalSeconds = result.intervalSeconds;
+        if (result.resume.has_value()) {
+            defaults = *result.resume;
+        }
+
+        if (result.kind == ObserveResultKind::Browser) {
+            if (result.resume.has_value()) {
+                m_savedPromptDefaults = *result.resume;
+            }
+            if (result.externalBrowserUrl.has_value()) {
+                wxLaunchDefaultBrowser(wxString::FromUTF8(result.externalBrowserUrl->c_str()));
+                m_promptOpen = false;
+                wakePrompt();
+            } else if (result.browserPrompt.has_value()) {
+                const wxString searchQuote =
+                    result.browserSearchQuote.has_value()
+                        ? wxString::FromUTF8(result.browserSearchQuote->c_str())
+                        : wxString();
+                m_promptOpen = false;
+                showBrowserWindow(wxString::FromUTF8(result.browserPrompt->c_str()), searchQuote);
+            } else {
+                m_promptOpen = false;
+            }
+            return;
+        }
+
+        if (result.kind == ObserveResultKind::Submitted && result.observation.has_value()) {
+            try {
+                m_store->save(*result.observation);
+            } catch (const std::exception& ex) {
+                wxMessageBox(wxString::FromUTF8(ex.what()), "Observer SQLite Error", wxOK | wxICON_ERROR,
+                             this);
+            }
+        }
+
+        if (result.kind == ObserveResultKind::Skipped) {
+            ++m_consecutiveSkips;
+        } else {
+            m_consecutiveSkips = 0;
+        }
+
+        handlePromptClosed(result);
+        break;
+    }
 }

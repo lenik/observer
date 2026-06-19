@@ -1694,8 +1694,8 @@ class StatisticsChartPanel : public wxPanel {
 
 HistoryFrame::HistoryFrame(wxWindow *parent, ObservationStore *store, std::string theme,
                            bool weekStartsMonday, const std::vector<std::string> &quotes)
-    : wxFrame(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition,
-              wxSize(1040, 760), wxDEFAULT_FRAME_STYLE | wxRESIZE_BORDER),
+    : wxDialog(parent, wxID_ANY, wxString::FromUTF8(_("Statistics")), wxDefaultPosition,
+               wxSize(1040, 760), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP),
       m_store(store), m_quotes(quotes), m_theme(theme), m_weekStartsMonday(weekStartsMonday),
       m_anchor(wxDateTime::Today()) {
     if (m_store != nullptr) {
@@ -1748,6 +1748,7 @@ HistoryFrame::HistoryFrame(wxWindow *parent, ObservationStore *store, std::strin
                        wxArtProvider::GetBitmap(wxART_CLOSE, wxART_TOOLBAR, wxSize(16, 16)),
                        wxString::FromUTF8("Esc"));
     m_toolbar->Realize();
+    m_toolbar->Bind(wxEVT_CHAR_HOOK, &HistoryFrame::onCharHook, this);
     m_toolbar->SetBackgroundColour(blendOver(colors.windowBg, colors.surfaceBg, 0.62));
     m_toolbar->SetForegroundColour(colors.windowFg);
 
@@ -1857,6 +1858,7 @@ HistoryFrame::HistoryFrame(wxWindow *parent, ObservationStore *store, std::strin
     SetSizer(root);
 
     m_eachYear->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent &) { render(); });
+    m_eachYear->Bind(wxEVT_CHAR_HOOK, &HistoryFrame::onCharHook, this);
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { setMode(ViewMode::Calendar); }, ID_MENU_CALENDAR);
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { setMode(ViewMode::Day); }, ID_MENU_DAY);
     Bind(wxEVT_TOOL, [this](wxCommandEvent &) { setMode(ViewMode::Week); }, ID_MENU_WEEK);
@@ -2046,6 +2048,7 @@ void HistoryFrame::updateToolbar() {
         id = ID_MENU_YEAR;
         break;
     }
+
     m_toolbar->ToggleTool(id, true);
 }
 
@@ -2306,12 +2309,6 @@ void HistoryFrame::renderStatistics(long selectIndex) {
 void HistoryFrame::goToday() {
     m_anchor = wxDateTime::Today();
     render();
-}
-
-void HistoryFrame::activateWindow() {
-    Show(true);
-    Raise();
-    SetFocus();
 }
 
 void HistoryFrame::onClose(wxCloseEvent &event) {

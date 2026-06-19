@@ -6,10 +6,10 @@
 #include "RenderDriver.h"
 
 #include <memory>
-#include <string>
 #include <wx/timer.h>
 #include <wx/wx.h>
 
+class DeepSeekBrowserFrame;
 class wxTaskBarIcon;
 
 class ObserverFrame : public wxFrame {
@@ -17,14 +17,13 @@ public:
     ObserverFrame();
     ~ObserverFrame() override;
     static bool notifyExistingInstance();
-    static bool sendIpcCommand(const std::string &command);
 
     void wakePrompt();
     void showHistoryFrame();
     void exitApp();
 
 private:
-    void openHistoryWindow();
+    void showBrowserWindow(const wxString &prompt, const wxString &searchQuote);
     void onTimer(wxTimerEvent& event);
     void setupTrayIcon();
     void cleanupTrayIcon();
@@ -34,7 +33,9 @@ private:
     void handleExternalWake();
     void scheduleNextPrompt(int delayMs);
     void handlePromptClosed(const ObserveResult& result);
+    void onBrowserWindowClosed();
     void showPrompt();
+    bool hasOpenBrowserWindow() const;
 
     static constexpr int SnoozeIntervalMs = 30000;
     static constexpr int PromptTimerId = wxID_HIGHEST + 100;
@@ -50,6 +51,8 @@ private:
     int m_ipcServerFd = -1;
     int m_consecutiveSkips = 0;
     bool m_promptOpen = false;
+    std::optional<ObservePromptDefaults> m_savedPromptDefaults;
+    DeepSeekBrowserFrame *m_browserFrame = nullptr;
 };
 
 #endif

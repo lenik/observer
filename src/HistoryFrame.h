@@ -13,7 +13,7 @@ class ObservationCalendarPanel;
 class ObservationRecordTable;
 class StatisticsChartPanel;
 
-class HistoryFrame : public wxFrame {
+class HistoryFrame : public wxDialog {
   public:
     enum class ViewMode {
         Calendar,
@@ -25,8 +25,6 @@ class HistoryFrame : public wxFrame {
 
     HistoryFrame(wxWindow *parent, ObservationStore *store, std::string theme, bool weekStartsMonday,
                  const std::vector<std::string> &quotes = {});
-
-    void activateWindow();
 
   private:
     void onCharHook(wxKeyEvent &event);
