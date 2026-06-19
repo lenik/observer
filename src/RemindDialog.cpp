@@ -2,7 +2,6 @@
 
 #include "AppConfig.h"
 #include "AppIcon.h"
-#include "HistoryFrame.h"
 #include "ObservationStore.h"
 #include "UiTheme.h"
 #include "formatting.h"
@@ -1311,22 +1310,10 @@ void RemindDialog::snooze() { finishWithResult(ID_SNOOZE); }
 void RemindDialog::quit() { finishWithResult(ID_QUIT); }
 
 void RemindDialog::requestHistory() {
-    if (m_historyOpen || m_store == nullptr) {
+    if (m_store == nullptr) {
         return;
     }
-
-    m_historyOpen = true;
-    try {
-        HistoryFrame dialog(this, m_store, m_theme, m_weekStartsMonday, m_quotes);
-        dialog.ShowModal();
-    } catch (const std::exception &ex) {
-        wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error", wxOK | wxICON_ERROR,
-                     this);
-    }
-    m_historyOpen = false;
-    if (m_activityCtrl != nullptr) {
-        m_activityCtrl->SetFocus();
-    }
+    finishWithResult(ID_HISTORY);
 }
 
 void RemindDialog::openQuoteAssistant(const wxString &quote) {

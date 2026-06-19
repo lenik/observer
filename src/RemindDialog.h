@@ -87,7 +87,6 @@ class RemindDialog : public wxDialog {
     wxPoint m_animationStartPosition;
     wxPoint m_animationFinalPosition;
     bool m_closing = false;
-    bool m_historyOpen = false;
     int m_modalResultCode = wxID_CANCEL;
     bool m_intervalInSeconds = false;
     bool m_animationStarted = false;
