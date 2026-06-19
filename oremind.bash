@@ -60,7 +60,7 @@ _oremind()
 		return
 	fi
 
-	if [[ $cur == -* ]]; then
+	if [[ -z "$cur" || "$cur" == -* ]]; then
 		COMPREPLY=($(compgen -W "$_oremind_opts" -- "$cur"))
 		return
 	fi

@@ -1905,6 +1905,10 @@ void HistoryFrame::onCharHook(wxKeyEvent &event) {
         Close();
         return;
     }
+    if (keyCode == WXK_F12) {
+        Close();
+        return;
+    }
     if (keyCode == WXK_DELETE) {
         deleteSelectedObservations();
         return;
