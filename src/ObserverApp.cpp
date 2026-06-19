@@ -1,7 +1,6 @@
 #include "ObserverApp.h"
 
 #include "AppConfig.h"
-#include "AuxGuiProcess.h"
 #include "DeepSeekWebViewSetup.h"
 #include "LayoutDiag.h"
 #include "ObserverFrame.h"
@@ -23,15 +22,7 @@ bool ObserverApp::OnInit()
         std::exit(status);
     }
 
-    if (g_auxGuiLaunchRequest.active) {
-        prepareDeepSeekWebViewEnvironment();
-        if (!runAuxGuiSession()) {
-            wxMessageBox("Auxiliary GUI process failed to start.", "Observer", wxOK | wxICON_ERROR);
-            return false;
-        }
-        return true;
-    }
-
+    prepareDeepSeekWebViewEnvironment();
     SetExitOnFrameDelete(false);
 
     if (ObserverFrame::notifyExistingInstance()) {
