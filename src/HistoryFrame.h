@@ -26,6 +26,9 @@ class HistoryFrame : public wxDialog {
     HistoryFrame(wxWindow *parent, ObservationStore *store, std::string theme, bool weekStartsMonday,
                  const std::vector<std::string> &quotes = {});
 
+    void setReturnToRemindOnDismiss(bool value) { m_returnToRemindOnDismiss = value; }
+    bool returnToRemind() const { return m_returnToRemind; }
+
   private:
     void onCharHook(wxKeyEvent &event);
     void onClose(wxCloseEvent &event);
@@ -73,6 +76,8 @@ class HistoryFrame : public wxDialog {
     StatisticsChartPanel *m_chart = nullptr;
     wxStaticText *m_tableTitle = nullptr;
     ObservationRecordTable *m_table = nullptr;
+    bool m_returnToRemindOnDismiss = false;
+    bool m_returnToRemind = false;
 };
 
 #endif // HISTORY_FRAME_H

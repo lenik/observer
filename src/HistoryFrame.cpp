@@ -1903,11 +1903,10 @@ void HistoryFrame::hookDisplaySurface(wxWindow *surface) {
 
 void HistoryFrame::onCharHook(wxKeyEvent &event) {
     const int keyCode = event.GetKeyCode();
-    if (keyCode == WXK_ESCAPE) {
-        Close();
-        return;
-    }
-    if (keyCode == WXK_F12) {
+    if (keyCode == WXK_ESCAPE || keyCode == WXK_F12) {
+        if (m_returnToRemindOnDismiss) {
+            m_returnToRemind = true;
+        }
         Close();
         return;
     }
