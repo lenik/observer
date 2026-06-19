@@ -1,5 +1,6 @@
 #include "WxDialogDriver.h"
 
+#include "HistoryFrame.h"
 #include "RemindDialog.h"
 
 namespace {
@@ -34,6 +35,10 @@ ObserveResult resultFromDialog(int result, RemindDialog &dialog) {
         }
         return observeResult;
     }
+    if (result == ID_HISTORY) {
+        return ObserveResult{ObserveResultKind::History, std::nullopt, dialog.captureResumeDefaults(),
+                             std::nullopt, std::nullopt, std::nullopt, dialog.intervalSeconds()};
+    }
     return ObserveResult{ObserveResultKind::Skipped, std::nullopt, std::nullopt, std::nullopt,
                          std::nullopt, std::nullopt, dialog.intervalSeconds()};
 }
@@ -43,12 +48,43 @@ ObserveResult resultFromDialog(int result, RemindDialog &dialog) {
 WxDialogDriver::WxDialogDriver(wxWindow *parent) : m_parent(parent) {}
 
 ObserveResult WxDialogDriver::prompt(const RemindPromptDefaults &defaults) {
-    RemindDialog dialog(m_parent, defaults);
-    m_activeDialog = &dialog;
-    dialog.ShowModal();
-    m_activeDialog = nullptr;
-    const int result = dialog.modalResultCode();
-    return resultFromDialog(result, dialog);
+    RemindPromptDefaults current = defaults;
+    for (;;) {
+        RemindDialog dialog(m_parent, current);
+        m_activeDialog = &dialog;
+        dialog.ShowModal();
+        m_activeDialog = nullptr;
+        const int result = dialog.modalResultCode();
+        ObserveResult observeResult = resultFromDialog(result, dialog);
+        if (observeResult.kind != ObserveResultKind::History) {
+            return observeResult;
+        }
+
+        if (observeResult.resume.has_value()) {
+            current = *observeResult.resume;
+        }
+
+        ObservationStore *store = current.store;
+        if (store == nullptr) {
+            return observeResult;
+        }
+
+        try {
+            HistoryFrame history(m_parent, store, current.theme, current.weekStartsMonday,
+                                 current.quotes);
+            history.setReturnToRemindOnDismiss(true);
+            history.ShowModal();
+            if (history.returnToRemind()) {
+                continue;
+            }
+        } catch (const std::exception &ex) {
+            wxMessageBox(wxString::FromUTF8(ex.what()), "Observer Statistics Error",
+                         wxOK | wxICON_ERROR, m_parent);
+        }
+
+        return ObserveResult{ObserveResultKind::Skipped, std::nullopt, std::nullopt, std::nullopt,
+                             std::nullopt, std::nullopt, current.intervalSeconds};
+    }
 }
 
 void WxDialogDriver::requestHistoryIfActive() {
