@@ -1,6 +1,6 @@
 #include "WxDialogDriver.h"
 
-#include "ObservationDialog.h"
+#include "RemindDialog.h"
 
 namespace {
 
@@ -9,7 +9,7 @@ constexpr int ID_QUIT = wxID_HIGHEST + 2;
 constexpr int ID_HISTORY = wxID_HIGHEST + 3;
 constexpr int ID_BROWSER = wxID_HIGHEST + 4;
 
-ObserveResult resultFromDialog(int result, ObservationDialog &dialog) {
+ObserveResult resultFromDialog(int result, RemindDialog &dialog) {
     if (result == wxID_OK) {
         return ObserveResult{ObserveResultKind::Submitted, dialog.observation(), std::nullopt,
                              std::nullopt, std::nullopt, std::nullopt, dialog.intervalSeconds()};
@@ -42,8 +42,8 @@ ObserveResult resultFromDialog(int result, ObservationDialog &dialog) {
 
 WxDialogDriver::WxDialogDriver(wxWindow *parent) : m_parent(parent) {}
 
-ObserveResult WxDialogDriver::prompt(const ObservePromptDefaults &defaults) {
-    ObservationDialog dialog(m_parent, defaults);
+ObserveResult WxDialogDriver::prompt(const RemindPromptDefaults &defaults) {
+    RemindDialog dialog(m_parent, defaults);
     m_activeDialog = &dialog;
     dialog.ShowModal();
     m_activeDialog = nullptr;

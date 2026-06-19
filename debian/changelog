@@ -38,7 +38,7 @@ observer (1.0.6) testing; urgency=medium
 
   * Add history record edit and delete in the statistics table, with auto-save
     when closing the history window.
-  * Reuse ObservationDialog for editing records.
+  * Reuse RemindDialog for editing records.
   * Replace loadAll with a stateful ObservationStore query API: load(criteria),
     rowAt, update, remove, and commit.
   * Use promptedAt epoch milliseconds as DataDir row keys.

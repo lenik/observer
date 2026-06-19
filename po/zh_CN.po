@@ -132,80 +132,80 @@ msgstr "本项目拒绝无脑 MIT 式许可和政治幼稚的 BSD 式许可。\n
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "在法律允许范围内，不提供任何担保。\n"
 
-#: src/ObserverFrame.cpp:80
+#: src/SystemFrame.cpp:80
 msgid "Wake"
 msgstr "唤醒"
 
-#: src/ObserverFrame.cpp:81
+#: src/SystemFrame.cpp:81
 msgid "Statistics / History"
 msgstr "统计 / 历史"
 
-#: src/ObserverFrame.cpp:83
+#: src/SystemFrame.cpp:83
 msgid "Quit"
 msgstr "退出"
 
-#: src/ObservationDialog.cpp:176
+#: src/RemindDialog.cpp:176
 #, c-format
 msgid "Explain in depth: %s (answer in English)"
 msgstr "深入解释: %s (回答用中文)"
 
-#: src/ObservationDialog.cpp:206
+#: src/RemindDialog.cpp:206
 msgid "Right-click to ask AI"
 msgstr "右击问一下AI"
 
-#: src/ObservationDialog.cpp:692
+#: src/RemindDialog.cpp:692
 msgid "Edit record"
 msgstr ""
 
-#: src/ObservationDialog.cpp:746
+#: src/RemindDialog.cpp:746
 msgid "energy"
 msgstr "能量"
 
-#: src/ObservationDialog.cpp:752
+#: src/RemindDialog.cpp:752
 msgid "mood"
 msgstr "心情"
 
-#: src/ObservationDialog.cpp:757
+#: src/RemindDialog.cpp:757
 msgid "grounding"
 msgstr "接地"
 
-#: src/ObservationDialog.cpp:771
+#: src/RemindDialog.cpp:771
 msgid "Launch oremind again to wake immediately"
 msgstr "再次启动 oremind 可立即唤醒"
 
-#: src/ObservationDialog.cpp:856
+#: src/RemindDialog.cpp:856
 msgid "Enter save"
 msgstr ""
 
-#: src/ObservationDialog.cpp:856
+#: src/RemindDialog.cpp:856
 msgid "Enter submit"
 msgstr "Enter 提交"
 
-#: src/ObservationDialog.cpp:860
+#: src/RemindDialog.cpp:860
 msgid "Esc cancel"
 msgstr ""
 
-#: src/ObservationDialog.cpp:860
+#: src/RemindDialog.cpp:860
 msgid "Esc skip"
 msgstr "Esc 跳过"
 
-#: src/ObservationDialog.cpp:864
+#: src/RemindDialog.cpp:864
 msgid "F1 History"
 msgstr ""
 
-#: src/ObservationDialog.cpp:867
+#: src/RemindDialog.cpp:867
 msgid "Next prompt"
 msgstr "下次提醒"
 
-#: src/ObservationDialog.cpp:869 src/ObservationDialog.cpp:1059
+#: src/RemindDialog.cpp:869 src/RemindDialog.cpp:1059
 msgid "minutes later"
 msgstr "分钟后"
 
-#: src/ObservationDialog.cpp:872
+#: src/RemindDialog.cpp:872
 msgid "Ctrl+Q quit"
 msgstr "Ctrl+Q 退出"
 
-#: src/ObservationDialog.cpp:1059
+#: src/RemindDialog.cpp:1059
 msgid "seconds later"
 msgstr "秒后"
 

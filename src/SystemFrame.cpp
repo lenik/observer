@@ -1,4 +1,4 @@
-#include "ObserverFrame.h"
+#include "SystemFrame.h"
 
 #include "AppConfig.h"
 #include "AppIcon.h"
@@ -49,9 +49,9 @@ bool fillSocketAddress(sockaddr_un& addr, const std::string& path)
     return true;
 }
 
-class ObserverTrayIcon : public wxTaskBarIcon {
+class SystemTrayIcon : public wxTaskBarIcon {
 public:
-    explicit ObserverTrayIcon(ObserverFrame* frame)
+    explicit SystemTrayIcon(SystemFrame* frame)
         : m_frame(frame)
     {
         Bind(wxEVT_TASKBAR_LEFT_UP, [this](wxTaskBarIconEvent&) {
@@ -87,12 +87,12 @@ public:
     }
 
 private:
-    ObserverFrame* m_frame;
+    SystemFrame* m_frame;
 };
 
 }
 
-ObserverFrame::ObserverFrame()
+SystemFrame::SystemFrame()
     : wxFrame(nullptr, wxID_ANY, "Observer"),
       m_timer(this, PromptTimerId),
       m_ipcTimer(this, IpcTimerId)
@@ -100,8 +100,8 @@ ObserverFrame::ObserverFrame()
     m_intervalSeconds = appConfig().intervalSeconds;
     m_store = createObservationStore();
     m_renderDriver = std::make_unique<WxDialogDriver>(this);
-    Bind(wxEVT_TIMER, &ObserverFrame::onTimer, this, PromptTimerId);
-    Bind(wxEVT_TIMER, &ObserverFrame::onIpcPoll, this, IpcTimerId);
+    Bind(wxEVT_TIMER, &SystemFrame::onTimer, this, PromptTimerId);
+    Bind(wxEVT_TIMER, &SystemFrame::onIpcPoll, this, IpcTimerId);
     setupIpcServer();
     setupTrayIcon();
     const wxIcon appIcon = observerAppIcon(32);
@@ -109,16 +109,16 @@ ObserverFrame::ObserverFrame()
         SetIcon(appIcon);
     }
     Hide();
-    CallAfter(&ObserverFrame::showPrompt);
+    CallAfter(&SystemFrame::showPrompt);
 }
 
-ObserverFrame::~ObserverFrame()
+SystemFrame::~SystemFrame()
 {
     cleanupTrayIcon();
     cleanupIpcServer();
 }
 
-bool ObserverFrame::notifyExistingInstance()
+bool SystemFrame::notifyExistingInstance()
 {
     const std::string path = ipcSocketPath();
     sockaddr_un addr{};
@@ -140,12 +140,12 @@ bool ObserverFrame::notifyExistingInstance()
     return connected;
 }
 
-bool ObserverFrame::hasOpenBrowserWindow() const
+bool SystemFrame::hasOpenBrowserWindow() const
 {
     return m_browserFrame != nullptr;
 }
 
-void ObserverFrame::onTimer(wxTimerEvent& event)
+void SystemFrame::onTimer(wxTimerEvent& event)
 {
     (void)event;
     if (m_promptOpen || hasOpenBrowserWindow()) {
@@ -154,16 +154,16 @@ void ObserverFrame::onTimer(wxTimerEvent& event)
     showPrompt();
 }
 
-void ObserverFrame::setupTrayIcon()
+void SystemFrame::setupTrayIcon()
 {
-    m_trayIcon = std::make_unique<ObserverTrayIcon>(this);
+    m_trayIcon = std::make_unique<SystemTrayIcon>(this);
     const wxIcon icon = observerAppIcon(32);
     if (icon.IsOk()) {
         m_trayIcon->SetIcon(icon, wxString::FromUTF8("Observer"));
     }
 }
 
-void ObserverFrame::cleanupTrayIcon()
+void SystemFrame::cleanupTrayIcon()
 {
     if (m_trayIcon != nullptr) {
         m_trayIcon->RemoveIcon();
@@ -171,7 +171,7 @@ void ObserverFrame::cleanupTrayIcon()
     }
 }
 
-void ObserverFrame::setupIpcServer()
+void SystemFrame::setupIpcServer()
 {
     const std::string path = ipcSocketPath();
     sockaddr_un addr{};
@@ -198,7 +198,7 @@ void ObserverFrame::setupIpcServer()
     m_ipcTimer.Start(100);
 }
 
-void ObserverFrame::cleanupIpcServer()
+void SystemFrame::cleanupIpcServer()
 {
     m_ipcTimer.Stop();
     if (m_ipcServerFd >= 0) {
@@ -208,7 +208,7 @@ void ObserverFrame::cleanupIpcServer()
     }
 }
 
-void ObserverFrame::onIpcPoll(wxTimerEvent& event)
+void SystemFrame::onIpcPoll(wxTimerEvent& event)
 {
     (void)event;
     if (m_ipcServerFd < 0) {
@@ -233,7 +233,7 @@ void ObserverFrame::onIpcPoll(wxTimerEvent& event)
     }
 }
 
-void ObserverFrame::handleExternalWake()
+void SystemFrame::handleExternalWake()
 {
     CallAfter([this]() {
         if (m_promptOpen) {
@@ -253,7 +253,7 @@ void ObserverFrame::handleExternalWake()
     });
 }
 
-void ObserverFrame::wakePrompt()
+void SystemFrame::wakePrompt()
 {
     if (m_promptOpen) {
         return;
@@ -267,7 +267,7 @@ void ObserverFrame::wakePrompt()
     showPrompt();
 }
 
-void ObserverFrame::showBrowserWindow(const wxString &prompt, const wxString &searchQuote)
+void SystemFrame::showBrowserWindow(const wxString &prompt, const wxString &searchQuote)
 {
     if (m_browserFrame != nullptr) {
         m_browserFrame->setPrompt(prompt, searchQuote);
@@ -289,7 +289,7 @@ void ObserverFrame::showBrowserWindow(const wxString &prompt, const wxString &se
     frame->activateWindow();
 }
 
-void ObserverFrame::onBrowserWindowClosed()
+void SystemFrame::onBrowserWindowClosed()
 {
     CallAfter([this]() {
         if (m_promptOpen || hasOpenBrowserWindow()) {
@@ -299,7 +299,7 @@ void ObserverFrame::onBrowserWindowClosed()
     });
 }
 
-void ObserverFrame::showHistoryFrame()
+void SystemFrame::showHistoryFrame()
 {
     if (m_promptOpen) {
         auto* driver = dynamic_cast<WxDialogDriver*>(m_renderDriver.get());
@@ -318,7 +318,7 @@ void ObserverFrame::showHistoryFrame()
     }
 }
 
-void ObserverFrame::scheduleNextPrompt(int delayMs)
+void SystemFrame::scheduleNextPrompt(int delayMs)
 {
     if (m_promptOpen || hasOpenBrowserWindow()) {
         return;
@@ -330,7 +330,7 @@ void ObserverFrame::scheduleNextPrompt(int delayMs)
     m_timer.StartOnce(delayMs);
 }
 
-void ObserverFrame::exitApp()
+void SystemFrame::exitApp()
 {
     Close(true);
     if (wxTheApp != nullptr) {
@@ -338,7 +338,7 @@ void ObserverFrame::exitApp()
     }
 }
 
-void ObserverFrame::handlePromptClosed(const ObserveResult& result)
+void SystemFrame::handlePromptClosed(const ObserveResult& result)
 {
     m_promptOpen = false;
 
@@ -361,7 +361,7 @@ void ObserverFrame::handlePromptClosed(const ObserveResult& result)
     scheduleNextPrompt(std::max(1, static_cast<int>(m_intervalSeconds * 1000.0)));
 }
 
-void ObserverFrame::showPrompt()
+void SystemFrame::showPrompt()
 {
     if (m_promptOpen || hasOpenBrowserWindow()) {
         return;
@@ -370,7 +370,7 @@ void ObserverFrame::showPrompt()
     m_promptOpen = true;
     m_timer.Stop();
 
-    ObservePromptDefaults defaults;
+    RemindPromptDefaults defaults;
     if (m_savedPromptDefaults.has_value()) {
         defaults = *m_savedPromptDefaults;
         m_savedPromptDefaults.reset();

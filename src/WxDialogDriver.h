@@ -5,18 +5,18 @@
 
 #include <wx/window.h>
 
-class ObservationDialog;
+class RemindDialog;
 
 class WxDialogDriver : public RenderDriver {
 public:
     explicit WxDialogDriver(wxWindow* parent);
 
-    ObserveResult prompt(const ObservePromptDefaults& defaults) override;
+    ObserveResult prompt(const RemindPromptDefaults& defaults) override;
     void requestHistoryIfActive();
 
 private:
     wxWindow* m_parent;
-    ObservationDialog* m_activeDialog = nullptr;
+    RemindDialog* m_activeDialog = nullptr;
 };
 
 #endif

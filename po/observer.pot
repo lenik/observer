@@ -135,80 +135,80 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 
-#: src/ObserverFrame.cpp:80
+#: src/SystemFrame.cpp:80
 msgid "Wake"
 msgstr ""
 
-#: src/ObserverFrame.cpp:81
+#: src/SystemFrame.cpp:81
 msgid "Statistics / History"
 msgstr ""
 
-#: src/ObserverFrame.cpp:83
+#: src/SystemFrame.cpp:83
 msgid "Quit"
 msgstr ""
 
-#: src/ObservationDialog.cpp:176
+#: src/RemindDialog.cpp:176
 #, c-format
 msgid "Explain in depth: %s (answer in English)"
 msgstr ""
 
-#: src/ObservationDialog.cpp:206
+#: src/RemindDialog.cpp:206
 msgid "Right-click to ask AI"
 msgstr ""
 
-#: src/ObservationDialog.cpp:692
+#: src/RemindDialog.cpp:692
 msgid "Edit record"
 msgstr ""
 
-#: src/ObservationDialog.cpp:746
+#: src/RemindDialog.cpp:746
 msgid "energy"
 msgstr ""
 
-#: src/ObservationDialog.cpp:752
+#: src/RemindDialog.cpp:752
 msgid "mood"
 msgstr ""
 
-#: src/ObservationDialog.cpp:757
+#: src/RemindDialog.cpp:757
 msgid "grounding"
 msgstr ""
 
-#: src/ObservationDialog.cpp:771
+#: src/RemindDialog.cpp:771
 msgid "Launch oremind again to wake immediately"
 msgstr ""
 
-#: src/ObservationDialog.cpp:856
+#: src/RemindDialog.cpp:856
 msgid "Enter save"
 msgstr ""
 
-#: src/ObservationDialog.cpp:856
+#: src/RemindDialog.cpp:856
 msgid "Enter submit"
 msgstr ""
 
-#: src/ObservationDialog.cpp:860
+#: src/RemindDialog.cpp:860
 msgid "Esc cancel"
 msgstr ""
 
-#: src/ObservationDialog.cpp:860
+#: src/RemindDialog.cpp:860
 msgid "Esc skip"
 msgstr ""
 
-#: src/ObservationDialog.cpp:864
+#: src/RemindDialog.cpp:864
 msgid "F1 History"
 msgstr ""
 
-#: src/ObservationDialog.cpp:867
+#: src/RemindDialog.cpp:867
 msgid "Next prompt"
 msgstr ""
 
-#: src/ObservationDialog.cpp:869 src/ObservationDialog.cpp:1059
+#: src/RemindDialog.cpp:869 src/RemindDialog.cpp:1059
 msgid "minutes later"
 msgstr ""
 
-#: src/ObservationDialog.cpp:872
+#: src/RemindDialog.cpp:872
 msgid "Ctrl+Q quit"
 msgstr ""
 
-#: src/ObservationDialog.cpp:1059
+#: src/RemindDialog.cpp:1059
 msgid "seconds later"
 msgstr ""
 

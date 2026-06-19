@@ -1,7 +1,7 @@
 #ifndef LAYOUT_DIAG_H
 #define LAYOUT_DIAG_H
 
-#include "ObservationDialog.h"
+#include "RemindDialog.h"
 
 #include <string>
 

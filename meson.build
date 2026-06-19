@@ -272,8 +272,8 @@ foreach source : app_sources
     if name == 'oremind'
         sources = [
           'src/ObserverApp.cpp',
-          'src/ObserverFrame.cpp',
-          'src/ObservationDialog.cpp',
+          'src/SystemFrame.cpp',
+          'src/RemindDialog.cpp',
           'src/DeepSeekBrowserFrame.cpp',
           'src/DeepSeekWebViewSetup.cpp',
           'src/HistoryFrame.cpp',

@@ -53,7 +53,7 @@ void writeSnapshot(std::ostream &out, const ObservationLayoutSnapshot &snapshot)
 } // namespace
 
 int runLayoutDiagnostics(const std::string &outputPath) {
-    ObservePromptDefaults defaults;
+    RemindPromptDefaults defaults;
     defaults.theme = normalizeUiTheme(appConfig().theme);
     if (defaults.theme.empty()) {
         defaults.theme = "light";
@@ -67,7 +67,7 @@ int runLayoutDiagnostics(const std::string &outputPath) {
     defaults.quoteIndex = provider.randomIndex();
     defaults.quote = defaults.quotes[defaults.quoteIndex];
 
-    const ObservationLayoutSnapshot snapshot = ObservationDialog::captureLayoutSnapshot(defaults);
+    const ObservationLayoutSnapshot snapshot = RemindDialog::captureLayoutSnapshot(defaults);
 
     std::ofstream out(outputPath);
     if (!out.is_open()) {

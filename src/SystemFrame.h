@@ -1,5 +1,5 @@
-#ifndef OBSERVER_FRAME_H
-#define OBSERVER_FRAME_H
+#ifndef SYSTEM_FRAME_H
+#define SYSTEM_FRAME_H
 
 #include "ObservationStore.h"
 #include "QuoteProvider.h"
@@ -12,10 +12,10 @@
 class DeepSeekBrowserFrame;
 class wxTaskBarIcon;
 
-class ObserverFrame : public wxFrame {
+class SystemFrame : public wxFrame {
 public:
-    ObserverFrame();
-    ~ObserverFrame() override;
+    SystemFrame();
+    ~SystemFrame() override;
     static bool notifyExistingInstance();
 
     void wakePrompt();
@@ -51,7 +51,7 @@ private:
     int m_ipcServerFd = -1;
     int m_consecutiveSkips = 0;
     bool m_promptOpen = false;
-    std::optional<ObservePromptDefaults> m_savedPromptDefaults;
+    std::optional<RemindPromptDefaults> m_savedPromptDefaults;
     DeepSeekBrowserFrame *m_browserFrame = nullptr;
 };
 

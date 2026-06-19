@@ -1,7 +1,7 @@
 #include "HistoryFrame.h"
 
 #include "config.h"
-#include "ObservationDialog.h"
+#include "RemindDialog.h"
 #include "ObservationStore.h"
 #include "calendar.h"
 #include "emoji.h"
@@ -2338,7 +2338,7 @@ void HistoryFrame::refreshAfterMutation(long selectIndex) {
 
 void HistoryFrame::editObservation(const Observation &original) {
     CallAfter([this, original]() {
-        ObservePromptDefaults defaults;
+        RemindPromptDefaults defaults;
         defaults.theme = m_theme;
         defaults.weekStartsMonday = m_weekStartsMonday;
         defaults.energy = original.energy;
@@ -2352,7 +2352,7 @@ void HistoryFrame::editObservation(const Observation &original) {
         defaults.editing = original;
         defaults.store = m_store;
 
-        ObservationDialog dialog(this, defaults);
+        RemindDialog dialog(this, defaults);
         if (dialog.ShowModal() != wxID_OK) {
             return;
         }

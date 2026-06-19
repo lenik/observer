@@ -19,7 +19,7 @@ enum class ObserveResultKind {
     Browser,
 };
 
-struct ObservePromptDefaults {
+struct RemindPromptDefaults {
     double energy = DefaultObservationScore;
     double mood = DefaultObservationScore;
     double grounding = DefaultObservationScore;
@@ -39,7 +39,7 @@ struct ObservePromptDefaults {
 struct ObserveResult {
     ObserveResultKind kind;
     std::optional<Observation> observation;
-    std::optional<ObservePromptDefaults> resume;
+    std::optional<RemindPromptDefaults> resume;
     std::optional<std::string> browserPrompt;
     std::optional<std::string> browserSearchQuote;
     std::optional<std::string> externalBrowserUrl;
@@ -49,7 +49,7 @@ struct ObserveResult {
 class RenderDriver {
 public:
     virtual ~RenderDriver() = default;
-    virtual ObserveResult prompt(const ObservePromptDefaults& defaults) = 0;
+    virtual ObserveResult prompt(const RemindPromptDefaults& defaults) = 0;
 };
 
 #endif

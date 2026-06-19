@@ -134,80 +134,80 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "법이 허용하는 범위에서 어떠한 보증도 없습니다.\n"
 
-#: src/ObserverFrame.cpp:80
+#: src/SystemFrame.cpp:80
 msgid "Wake"
 msgstr "깨우기"
 
-#: src/ObserverFrame.cpp:81
+#: src/SystemFrame.cpp:81
 msgid "Statistics / History"
 msgstr "통계 / 기록"
 
-#: src/ObserverFrame.cpp:83
+#: src/SystemFrame.cpp:83
 msgid "Quit"
 msgstr "종료"
 
-#: src/ObservationDialog.cpp:160
+#: src/RemindDialog.cpp:160
 #, c-format
 msgid "Explain in depth: %s (answer in English)"
 msgstr "심층 설명: %s (한국어로 답변)"
 
-#: src/ObservationDialog.cpp:180
+#: src/RemindDialog.cpp:180
 msgid "Right-click to ask AI"
 msgstr "우클릭하여 AI에게 물어보기"
 
-#: src/ObservationDialog.cpp:660
+#: src/RemindDialog.cpp:660
 msgid "Edit record"
 msgstr ""
 
-#: src/ObservationDialog.cpp:714
+#: src/RemindDialog.cpp:714
 msgid "energy"
 msgstr "에너지"
 
-#: src/ObservationDialog.cpp:720
+#: src/RemindDialog.cpp:720
 msgid "mood"
 msgstr "기분"
 
-#: src/ObservationDialog.cpp:725
+#: src/RemindDialog.cpp:725
 msgid "grounding"
 msgstr "접지감"
 
-#: src/ObservationDialog.cpp:739
+#: src/RemindDialog.cpp:739
 msgid "Launch oremind again to wake immediately"
 msgstr "Launch oremind again to wake immediately"
 
-#: src/ObservationDialog.cpp:824
+#: src/RemindDialog.cpp:824
 msgid "Enter save"
 msgstr ""
 
-#: src/ObservationDialog.cpp:824
+#: src/RemindDialog.cpp:824
 msgid "Enter submit"
 msgstr "Enter 제출"
 
-#: src/ObservationDialog.cpp:828
+#: src/RemindDialog.cpp:828
 msgid "Esc cancel"
 msgstr ""
 
-#: src/ObservationDialog.cpp:828
+#: src/RemindDialog.cpp:828
 msgid "Esc skip"
 msgstr "Esc 건너뛰기"
 
-#: src/ObservationDialog.cpp:832
+#: src/RemindDialog.cpp:832
 msgid "F1 History"
 msgstr ""
 
-#: src/ObservationDialog.cpp:835
+#: src/RemindDialog.cpp:835
 msgid "Next prompt"
 msgstr "다음 알림"
 
-#: src/ObservationDialog.cpp:837 src/ObservationDialog.cpp:1027
+#: src/RemindDialog.cpp:837 src/RemindDialog.cpp:1027
 msgid "minutes later"
 msgstr "분 후"
 
-#: src/ObservationDialog.cpp:840
+#: src/RemindDialog.cpp:840
 msgid "Ctrl+Q quit"
 msgstr "Ctrl+Q 종료"
 
-#: src/ObservationDialog.cpp:1027
+#: src/RemindDialog.cpp:1027
 msgid "seconds later"
 msgstr "초 후"
 

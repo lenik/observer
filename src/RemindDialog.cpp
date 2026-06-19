@@ -1,4 +1,4 @@
-#include "ObservationDialog.h"
+#include "RemindDialog.h"
 
 #include "AppConfig.h"
 #include "AppIcon.h"
@@ -947,7 +947,7 @@ class RatingControl : public wxPanel {
     wxRect m_ratingRect;
 };
 
-ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaults &defaults)
+RemindDialog::RemindDialog(wxWindow *parent, const RemindPromptDefaults &defaults)
     : wxDialog(), m_quote(defaults.editing.has_value() && !defaults.editing->quote.empty()
                               ? defaults.editing->quote
                               : defaults.quote),
@@ -971,7 +971,7 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     m_chromeBg = colors.windowBg;
     m_borderColour = colors.border;
     m_shadowColour = colors.windowShadow;
-    Bind(wxEVT_PAINT, &ObservationDialog::paintWindowChrome, this);
+    Bind(wxEVT_PAINT, &RemindDialog::paintWindowChrome, this);
 
     m_contentPanel = new TransparentPanel(this);
     auto *root = new wxBoxSizer(wxVERTICAL);
@@ -1183,7 +1183,7 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     root->AddStretchSpacer(1);
     root->Add(bottomBlock, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, outerMargin);
 
-    Bind(wxEVT_CHAR_HOOK, &ObservationDialog::onCharHook, this);
+    Bind(wxEVT_CHAR_HOOK, &RemindDialog::onCharHook, this);
     Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent &event) {
         if (m_closing) {
             event.Skip();
@@ -1191,7 +1191,7 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
         }
         skip();
     });
-    Bind(wxEVT_SHOW, &ObservationDialog::onFirstShow, this);
+    Bind(wxEVT_SHOW, &RemindDialog::onFirstShow, this);
     Bind(wxEVT_SIZE, [this](wxSizeEvent &event) {
         Layout();
         Refresh();
@@ -1216,7 +1216,7 @@ ObservationDialog::ObservationDialog(wxWindow *parent, const ObservePromptDefaul
     }
 }
 
-Observation ObservationDialog::observation() const {
+Observation RemindDialog::observation() const {
     Observation result{
         m_editing.has_value() ? m_editing->id : 0,
         m_promptedAt,
@@ -1230,7 +1230,7 @@ Observation ObservationDialog::observation() const {
     return result;
 }
 
-double ObservationDialog::intervalSeconds() const {
+double RemindDialog::intervalSeconds() const {
     if (m_intervalCtrl == nullptr) {
         return clampIntervalSeconds(appConfig().intervalSeconds);
     }
@@ -1241,7 +1241,7 @@ double ObservationDialog::intervalSeconds() const {
     return clampIntervalSeconds(value);
 }
 
-void ObservationDialog::onCharHook(wxKeyEvent &event) {
+void RemindDialog::onCharHook(wxKeyEvent &event) {
     if (!IsShown() || !IsEnabled()) {
         event.Skip();
         return;
@@ -1302,15 +1302,15 @@ void ObservationDialog::onCharHook(wxKeyEvent &event) {
     event.Skip();
 }
 
-void ObservationDialog::submit() { finishWithResult(ID_SUBMIT); }
+void RemindDialog::submit() { finishWithResult(ID_SUBMIT); }
 
-void ObservationDialog::skip() { finishWithResult(ID_SKIP); }
+void RemindDialog::skip() { finishWithResult(ID_SKIP); }
 
-void ObservationDialog::snooze() { finishWithResult(ID_SNOOZE); }
+void RemindDialog::snooze() { finishWithResult(ID_SNOOZE); }
 
-void ObservationDialog::quit() { finishWithResult(ID_QUIT); }
+void RemindDialog::quit() { finishWithResult(ID_QUIT); }
 
-void ObservationDialog::requestHistory() {
+void RemindDialog::requestHistory() {
     if (m_historyOpen || m_store == nullptr) {
         return;
     }
@@ -1329,7 +1329,7 @@ void ObservationDialog::requestHistory() {
     }
 }
 
-void ObservationDialog::openQuoteAssistant(const wxString &quote) {
+void RemindDialog::openQuoteAssistant(const wxString &quote) {
     const wxString prompt = wxString::Format(
         wxString::FromUTF8(_("Explain in depth: %s (answer in English)")), quote);
     const std::string locale = effectiveAppLocale();
@@ -1352,8 +1352,8 @@ void ObservationDialog::openQuoteAssistant(const wxString &quote) {
     finishWithResult(ID_BROWSER);
 }
 
-ObservePromptDefaults ObservationDialog::captureResumeDefaults() const {
-    ObservePromptDefaults defaults;
+RemindPromptDefaults RemindDialog::captureResumeDefaults() const {
+    RemindPromptDefaults defaults;
     defaults.energy = m_energyRating->value();
     defaults.mood = m_moodRating->value();
     defaults.grounding = m_groundingRating->value();
@@ -1373,25 +1373,25 @@ ObservePromptDefaults ObservationDialog::captureResumeDefaults() const {
     return defaults;
 }
 
-std::optional<std::string> ObservationDialog::browserPrompt() const {
+std::optional<std::string> RemindDialog::browserPrompt() const {
     if (m_browserPrompt.empty()) {
         return std::nullopt;
     }
     return m_browserPrompt.ToStdString();
 }
 
-std::optional<std::string> ObservationDialog::browserSearchQuote() const {
+std::optional<std::string> RemindDialog::browserSearchQuote() const {
     if (m_browserSearchQuote.empty()) {
         return std::nullopt;
     }
     return m_browserSearchQuote.ToStdString();
 }
 
-std::optional<std::string> ObservationDialog::externalBrowserUrl() const {
+std::optional<std::string> RemindDialog::externalBrowserUrl() const {
     return m_externalBrowserUrl;
 }
 
-void ObservationDialog::updateAnimationAnchors() {
+void RemindDialog::updateAnimationAnchors() {
     int displayIndex = wxDisplay::GetFromWindow(this);
     if (displayIndex == wxNOT_FOUND) {
         displayIndex = 0;
@@ -1428,7 +1428,7 @@ int ratioWidth(int height, double ratio) {
 
 } // namespace
 
-wxSize ObservationDialog::goldenRatioWindowSize(const wxSize &contentMin) const {
+wxSize RemindDialog::goldenRatioWindowSize(const wxSize &contentMin) const {
     int width = contentMin.GetWidth();
     int height = contentMin.GetHeight();
     if (width <= 0 || height <= 0) {
@@ -1449,7 +1449,7 @@ wxSize ObservationDialog::goldenRatioWindowSize(const wxSize &contentMin) const 
     return wxSize(width, height);
 }
 
-void ObservationDialog::onFirstShow(wxShowEvent &event) {
+void RemindDialog::onFirstShow(wxShowEvent &event) {
     if (!event.IsShown()) {
         event.Skip();
         return;
@@ -1462,7 +1462,7 @@ void ObservationDialog::onFirstShow(wxShowEvent &event) {
     animateIn();
 }
 
-void ObservationDialog::paintWindowChrome(wxPaintEvent &event) {
+void RemindDialog::paintWindowChrome(wxPaintEvent &event) {
     wxAutoBufferedPaintDC dc(this);
     const wxSize size = GetClientSize();
     if (size.x <= 0 || size.y <= 0) {
@@ -1503,7 +1503,7 @@ void ObservationDialog::paintWindowChrome(wxPaintEvent &event) {
     event.Skip();
 }
 
-void ObservationDialog::refitDialogLayout() {
+void RemindDialog::refitDialogLayout() {
     Layout();
     if (wxSizer *sizer = GetSizer()) {
         const wxSize contentMin = sizer->CalcMin();
@@ -1517,7 +1517,7 @@ void ObservationDialog::refitDialogLayout() {
     }
 }
 
-void ObservationDialog::showRandomQuote() {
+void RemindDialog::showRandomQuote() {
     if (m_quotes.empty()) {
         return;
     }
@@ -1533,7 +1533,7 @@ void ObservationDialog::showRandomQuote() {
     }
 }
 
-void ObservationDialog::toggleIntervalUnit() {
+void RemindDialog::toggleIntervalUnit() {
     if (m_intervalCtrl == nullptr || m_intervalUnitLabel == nullptr) {
         return;
     }
@@ -1547,7 +1547,7 @@ void ObservationDialog::toggleIntervalUnit() {
     Layout();
 }
 
-void ObservationDialog::animateIn() {
+void RemindDialog::animateIn() {
     constexpr int Frames = 12;
     constexpr int FrameDelayMs = 8;
     for (int i = 0; i <= Frames; ++i) {
@@ -1564,7 +1564,7 @@ void ObservationDialog::animateIn() {
     m_activityCtrl->SetFocus();
 }
 
-void ObservationDialog::animateOut() {
+void RemindDialog::animateOut() {
     constexpr int Frames = 10;
     constexpr int FrameDelayMs = 8;
     for (int i = 0; i <= Frames; ++i) {
@@ -1580,7 +1580,7 @@ void ObservationDialog::animateOut() {
     }
 }
 
-void ObservationDialog::finishWithResult(int result) {
+void RemindDialog::finishWithResult(int result) {
     if (m_closing) {
         return;
     }
@@ -1604,11 +1604,11 @@ void ObservationDialog::finishWithResult(int result) {
     }
 }
 
-std::string ObservationDialog::activityText() const {
+std::string RemindDialog::activityText() const {
     return trimmedUtf8(m_activityCtrl != nullptr ? m_activityCtrl->GetText() : wxString());
 }
 
-std::string ObservationDialog::currentTimestamp() const {
+std::string RemindDialog::currentTimestamp() const {
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
     std::tm localTime{};
@@ -1640,14 +1640,14 @@ wxRect quoteCanvasRect(wxWindow *dialog, wxWindow *quoteCanvas) {
 
 } // namespace
 
-ObservationLayoutSnapshot ObservationDialog::captureLayoutSnapshot() const {
+ObservationLayoutSnapshot RemindDialog::captureLayoutSnapshot() const {
     ObservationLayoutSnapshot snapshot;
     snapshot.quote = m_quote;
     const wxSize client = GetClientSize();
     snapshot.windowWidth = client.GetWidth();
     snapshot.windowHeight = client.GetHeight();
 
-    const wxRect quote = quoteCanvasRect(const_cast<ObservationDialog *>(this), m_quoteCanvas);
+    const wxRect quote = quoteCanvasRect(const_cast<RemindDialog *>(this), m_quoteCanvas);
     snapshot.quoteX = quote.x;
     snapshot.quoteY = quote.y;
     snapshot.quoteWidth = quote.width;
@@ -1656,8 +1656,8 @@ ObservationLayoutSnapshot ObservationDialog::captureLayoutSnapshot() const {
 }
 
 ObservationLayoutSnapshot
-ObservationDialog::captureLayoutSnapshot(const ObservePromptDefaults &defaults) {
-    ObservationDialog dialog(nullptr, defaults);
+RemindDialog::captureLayoutSnapshot(const RemindPromptDefaults &defaults) {
+    RemindDialog dialog(nullptr, defaults);
     dialog.Layout();
     dialog.refitDialogLayout();
     return dialog.captureLayoutSnapshot();

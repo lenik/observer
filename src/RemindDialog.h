@@ -26,21 +26,21 @@ struct ObservationLayoutSnapshot {
     int quoteHeight = 0;
 };
 
-class ObservationDialog : public wxDialog {
+class RemindDialog : public wxDialog {
   public:
-    explicit ObservationDialog(wxWindow *parent, const ObservePromptDefaults &defaults);
+    explicit RemindDialog(wxWindow *parent, const RemindPromptDefaults &defaults);
 
     Observation observation() const;
     double intervalSeconds() const;
     void animateIn();
     void requestHistory();
     void openQuoteAssistant(const wxString &quote);
-    ObservePromptDefaults captureResumeDefaults() const;
+    RemindPromptDefaults captureResumeDefaults() const;
     std::optional<std::string> browserPrompt() const;
     std::optional<std::string> browserSearchQuote() const;
     std::optional<std::string> externalBrowserUrl() const;
     ObservationLayoutSnapshot captureLayoutSnapshot() const;
-    static ObservationLayoutSnapshot captureLayoutSnapshot(const ObservePromptDefaults &defaults);
+    static ObservationLayoutSnapshot captureLayoutSnapshot(const RemindPromptDefaults &defaults);
     int modalResultCode() const { return m_modalResultCode; }
     bool isEditMode() const { return m_editMode; }
 

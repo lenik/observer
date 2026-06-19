@@ -137,80 +137,80 @@ msgstr ""
 msgid "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr "Es gibt KEINE GARANTIE, soweit gesetzlich zulaessig.\n"
 
-#: src/ObserverFrame.cpp:80
+#: src/SystemFrame.cpp:80
 msgid "Wake"
 msgstr "Aufwecken"
 
-#: src/ObserverFrame.cpp:81
+#: src/SystemFrame.cpp:81
 msgid "Statistics / History"
 msgstr "Statistik / Verlauf"
 
-#: src/ObserverFrame.cpp:83
+#: src/SystemFrame.cpp:83
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/ObservationDialog.cpp:160
+#: src/RemindDialog.cpp:160
 #, c-format
 msgid "Explain in depth: %s (answer in English)"
 msgstr "Ausführliche Erklärung: %s (Antwort auf Deutsch)"
 
-#: src/ObservationDialog.cpp:180
+#: src/RemindDialog.cpp:180
 msgid "Right-click to ask AI"
 msgstr "Rechtsklick, um die KI zu fragen"
 
-#: src/ObservationDialog.cpp:660
+#: src/RemindDialog.cpp:660
 msgid "Edit record"
 msgstr ""
 
-#: src/ObservationDialog.cpp:714
+#: src/RemindDialog.cpp:714
 msgid "energy"
 msgstr "Energie"
 
-#: src/ObservationDialog.cpp:720
+#: src/RemindDialog.cpp:720
 msgid "mood"
 msgstr "Stimmung"
 
-#: src/ObservationDialog.cpp:725
+#: src/RemindDialog.cpp:725
 msgid "grounding"
 msgstr "Erdung"
 
-#: src/ObservationDialog.cpp:739
+#: src/RemindDialog.cpp:739
 msgid "Launch oremind again to wake immediately"
 msgstr "Launch oremind again to wake immediately"
 
-#: src/ObservationDialog.cpp:824
+#: src/RemindDialog.cpp:824
 msgid "Enter save"
 msgstr ""
 
-#: src/ObservationDialog.cpp:824
+#: src/RemindDialog.cpp:824
 msgid "Enter submit"
 msgstr "Enter senden"
 
-#: src/ObservationDialog.cpp:828
+#: src/RemindDialog.cpp:828
 msgid "Esc cancel"
 msgstr ""
 
-#: src/ObservationDialog.cpp:828
+#: src/RemindDialog.cpp:828
 msgid "Esc skip"
 msgstr "Esc überspringen"
 
-#: src/ObservationDialog.cpp:832
+#: src/RemindDialog.cpp:832
 msgid "F1 History"
 msgstr ""
 
-#: src/ObservationDialog.cpp:835
+#: src/RemindDialog.cpp:835
 msgid "Next prompt"
 msgstr "Nächste Erinnerung"
 
-#: src/ObservationDialog.cpp:837 src/ObservationDialog.cpp:1027
+#: src/RemindDialog.cpp:837 src/RemindDialog.cpp:1027
 msgid "minutes later"
 msgstr "Minuten später"
 
-#: src/ObservationDialog.cpp:840
+#: src/RemindDialog.cpp:840
 msgid "Ctrl+Q quit"
 msgstr "Ctrl+Q beenden"
 
-#: src/ObservationDialog.cpp:1027
+#: src/RemindDialog.cpp:1027
 msgid "seconds later"
 msgstr "Sekunden später"
 
