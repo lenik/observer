@@ -1,3 +1,19 @@
+observer (1.0.9) testing; urgency=medium
+
+  * Switch between the remind and history dialogs without nesting modals: F12
+    from the remind dialog closes it and opens history; F12 or Esc in history
+    closes history and reopens the remind dialog with saved input.
+  * Rename ObservationDialog to RemindDialog and StatisticsDialog to
+    HistoryFrame.
+  * Run DeepSeek in the main process; replace wxWebView with a native WebKit pane
+    and persistent site data.
+  * Add DeepSeek history-search RPA to reuse an existing chat before submitting
+    a new prompt.
+  * Hand off to history or quote AI from the remind dialog without losing
+    draft scores and activity text.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Thu, 19 Jun 2026 12:00:00 +0800
+
 observer (1.0.8) testing; urgency=medium
 
   * Add eight UI themes—innocent, maiden, girl, morandi, github, ios, msdos, and

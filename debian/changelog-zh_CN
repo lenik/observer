@@ -1,0 +1,129 @@
+observer (1.0.9) testing; urgency=medium
+
+  * 提醒窗与历史窗切换不再嵌套模态框：提醒窗按 F12 先关闭再打开历史窗；历史窗
+    按 F12 或 Esc 关闭后重新打开提醒窗并保留已填内容。
+  * 将 ObservationDialog 重命名为 RemindDialog，StatisticsDialog 重命名为
+    HistoryFrame。
+  * DeepSeek 改在主进程运行；以原生 WebKit 面板替代 wxWebView，并持久化站点数据。
+  * 新增 DeepSeek 历史搜索 RPA，提交新提问前优先复用已有对话。
+  * 从提醒窗切换到历史或格言 AI 时保留草稿评分与活动文本。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Thu, 19 Jun 2026 12:00:00 +0800
+
+observer (1.0.8) testing; urgency=medium
+
+  * 新增八种 UI 主题：innocent、maiden、girl、morandi、github、ios、msdos、
+    windows；观察弹窗与统计窗口共用调色板；-t/--theme 接受精确主题名。
+  * 统计窗口按主题配色，日摘要与指标卡片采用玻璃风格，记录表加边框，列标题居中。
+  * 改进观察弹窗布局：在句末标点处换行格言、均衡断行、限制格言宽度，窗口尺寸
+    趋近黄金比例；格言与活动输入优先使用中文字体。
+  * 修复 EMG 评分标签与旋钮重叠；按主题调整面板填充与评分环颜色。
+  * 点击格言可询问 AI 助手：zh_CN 启动 DeepSeek（豆包为备选），其他语言打开
+    Google AI 模式搜索。
+  * 新增内嵌 DeepSeek 浏览器（--deepseek-browser），含 WebKit 磁盘缓存、友好
+    验证码设置，聊天页加载后自动提交提问。
+  * 新增 --diag，将观察弹窗布局指标写入 layout.toml 后退出。
+  * 扩展 oremind.bash 补全以支持新主题与选项；更新翻译目录；oremind 链接
+    wxWebView 并更新 Debian 构建依赖。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Wed, 18 Jun 2026 12:00:00 +0800
+
+observer (1.0.7) testing; urgency=medium
+
+  * 统计记录表支持多选，默认无选中项；无选中时 Up/Down 滚动日期。
+  * 删除所选历史记录时不再弹出确认对话框。
+  * F2–F7 评分快捷键支持 Shift、Ctrl、Alt：反向、Ctrl 步进 1.0、Alt 步进 5.0。
+  * 更新 README 与 man 页，说明历史表编辑与评分修饰键。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Tue, 16 Jun 2026 22:00:00 +0800
+
+observer (1.0.6) testing; urgency=medium
+
+  * 统计表支持编辑与删除历史记录，关闭历史窗口时自动保存。
+  * 复用 ObservationDialog 编辑记录。
+  * 用 ObservationStore 查询 API（load、rowAt、update、remove、commit）替代
+    loadAll；以 promptedAt 毫秒时间戳作为 DataDir 行键。
+  * 表聚焦时仍用 Up/Down 导航行，删除后选中下一行。
+  * 弹窗已打开时再次启动 oremind 可打开统计/历史；历史已可见时忽略重复打开。
+  * 更新 README 与 man 页，说明启动器重复启动行为。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Wed, 17 Jun 2026 12:00:00 +0800
+
+observer (1.0.5) testing; urgency=medium
+
+  * 统计中忽略 energy、mood、grounding 仍为默认分的样本。
+  * 将 --sqlite-db 重命名为 --database，默认 --cancel 改为 5。
+  * 重映射弹窗快捷键：F8 推迟，F1 打开历史，F2–F4 降低 grounding/mood/energy，
+    移除 Ctrl+H。
+  * 更新 README 与 man 页，说明 CLI 与快捷键变更。
+  * 移除 Win+Alt+G 与 Win+Alt+H 全局热键；改由桌面启动器快捷键与单实例 IPC 唤醒。
+  * 等待期间快速连启两次 oremind 可打开统计/历史。
+  * 重映射弹窗快捷键：F1 打开历史；F2–F4 降低 grounding/mood/energy；F5–F7
+    提高 energy/mood/grounding。
+  * 新增简体中文 man 页，更新英文 man 与 README。
+  * 移除直接 libx11 构建依赖。
+  * 修复 GTK 托盘图标黑边：裁剪图标背景内边距，创建 wxIcon 前添加 32 位 alpha。
+  * 捆绑图标改用 icon-256.png，移除 icon-light.png 与 icon-dark.png。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Tue, 16 Jun 2026 18:00:00 +0800
+
+observer (1.0.4) testing; urgency=medium
+
+  * 新增 Win+Alt+H 全局快捷键，等待期间打开统计/历史。
+  * 统计图表 X 轴支持鼠标滚轮缩放与拖拽平移。
+  * 为记录数、提问时长、EMG 均值添加 subdued 趋势叠加，拟合趋势线不出现在图例。
+  * 日/周统计图的分值点改用真实观察样本，而非小时或日聚合点。
+  * 缩短统计记录表时间列翻译（中文「弹出」「提交」等）。
+  * 将可复用统计辅助拆分为 calendar、lunar、emoji、locale 模块。
+  * 在记录表中选中记录时高亮日/周统计图样本。
+  * 将月份选择器改为 iOS 风格双列年/月选择器，支持滚轮、拖拽、键盘、确定与取消。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Mon, 15 Jun 2026 13:55:00 +0800
+
+observer (1.0.3) testing; urgency=medium
+
+  * 新增系统托盘图标，含唤醒、统计/历史、退出。
+  * 托盘左键点击亦可唤醒（除 Win+Alt+G 外）。
+  * 单实例检测：再次启动时唤醒已有实例、输出 warning 并退出。
+  * 新增 -c/--cancel，配置连续取消多少次后退出。
+  * 扩展 README 统计/历史文档：日历摘要、图表、可排序记录表与导航快捷键。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Mon, 15 Jun 2026 10:30:00 +0800
+
+observer (1.0.2) testing; urgency=medium
+
+  * 修复统计工具栏视图切换：对检查工具用手动互斥，Calendar 与 Day/Week/Month/Year
+    在分隔符两侧仍为一组。
+  * 修复视图按钮快捷键帮助：AddCheckTool 时在 shortHelp 前传入 wxNullBitmap。
+  * 重设计统计日历单元：公历日期左上，农历标签其下，记录数与色点右下。
+  * 先绘制日历填充再单独绘制网格线，保持 1px 边框一致，空单元格不画线。
+  * 今日以橙色填充与边框高亮，日历标题导航显示相邻月份名。
+  * 统计记录表改用 wxGenericListCtrl，排序与深色主题渲染更可靠。
+  * 记录空提交，同时保存弹出与提交时间戳；目录日志与 SQLite 含提问时长。
+  * 新增 Ctrl-H 模态统计对话框：日历、日、周、月、年分析视图。
+  * 自定义日历：农历日标签、节日高亮、选中日摘要、记录标记、可排序记录表。
+  * 新增 --weekstart，选择周一或周日为日历周起始。
+  * 改进统计导航：工具栏动作与键盘快捷键。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Sun, 14 Jun 2026 17:45:00 +0800
+
+observer (1.0.1) testing; urgency=medium
+
+  * 新增 -l/--locale 语言选择，相对可执行路径加载开发中翻译。
+  * 弹窗页脚新增 Quit，Ctrl-Q 为弹窗内退出快捷键。
+  * 新增 Win+Alt+G X11 全局热键，等待期间立即弹出提示。
+  * 新增 --opacity，控制最终弹窗透明度（0–100）。
+  * 为全局热键实现添加 X11 构建依赖。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Sat, 13 Jun 2026 22:05:05 +0800
+
+observer (1.0.0) testing; urgency=medium
+
+  * oremind 桌面自我观察提醒首次发布。
+  * wxWidgets 后台应用：启动即弹窗、定时提醒、推迟、连按三次 Escape 退出。
+  * 深/浅主题、格言 canvas、emoji 评分、快捷键、间隔编辑、滑入淡出动画。
+  * 默认 SQLite（~/.observer/observer.sqlite3），--sqlite-db 可指向目录写每日文本日志。
+  * trim 活动文本，跳过空提交，默认 e/m/g 分不写入记录。
+  * gettext 目录、bash 补全、man 页与项目文档。
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Sat, 13 Jun 2026 19:54:27 +0800
