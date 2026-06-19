@@ -274,7 +274,6 @@ foreach source : app_sources
           'src/ObserverApp.cpp',
           'src/ObserverFrame.cpp',
           'src/ObservationDialog.cpp',
-          'src/AuxGuiProcess.cpp',
           'src/DeepSeekBrowserFrame.cpp',
           'src/DeepSeekWebViewSetup.cpp',
           'src/HistoryFrame.cpp',

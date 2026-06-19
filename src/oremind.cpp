@@ -10,8 +10,6 @@
 
 #include "config.h"
 #include "AppConfig.h"
-#include "AuxGuiProcess.h"
-#include "DeepSeekWebViewSetup.h"
 #include "LayoutDiag.h"
 #include "UiTheme.h"
 #include "ObserverApp.h"
@@ -152,11 +150,6 @@ int main(int argc, char **argv) {
     bind_textdomain_codeset("observer", "UTF-8");
     textdomain("observer");
 
-    if (!parseAuxGuiLaunchRequest(argc, argv, g_auxGuiLaunchRequest)) {
-        fprintf(stderr, _("invalid auxiliary GUI arguments.\n"));
-        return 1;
-    }
-
     static const struct option long_opts[] = {
         {"verbose", no_argument, NULL, 'v'},
         {"quiet", no_argument, NULL, 'q'},
@@ -281,17 +274,6 @@ int main(int argc, char **argv) {
     argv += optind;
 
     loginfo_fmt("%s: verbose mode enabled", exe);
-
-    if (g_auxGuiLaunchRequest.active) {
-        prepareDeepSeekWebViewEnvironment();
-        int wxArgc = 1;
-        char *wxArgv[] = {const_cast<char *>(exe), nullptr};
-        return wxEntry(wxArgc, wxArgv);
-    }
-
-    if (!appConfig().diagMode) {
-        forkAuxGuiDaemon(exe);
-    }
 
     int wxArgc = 1;
     char *wxArgv[] = {const_cast<char *>(exe), nullptr};
