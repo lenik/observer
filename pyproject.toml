@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61,<82", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "source2native"
+version = "1.0.0"
+description = "Convert Debian packages from quilt to native source format"
+requires-python = ">=3.10"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Lenik", email = "lenik@bodz.net" }]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Build Tools",
+]
+
+[project.scripts]
+source2native = "source2native:main"
+
+[tool.setuptools]
+py-modules = ["source2native"]

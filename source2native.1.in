@@ -1,0 +1,106 @@
+.TH SOURCE2NATIVE 1 "@PROJECT_YEAR@" "source2native @PROJECT_VERSION@" "User Commands"
+.SH NAME
+source2native \- convert Debian packages to native source format
+.SH SYNOPSIS
+.B source2native
+[\fIOPTION\fR]... \fIpackage-root\fR...
+.SH DESCRIPTION
+.B source2native
+ensures that one or more Debian source trees use the
+.BR "3.0 (native)"
+source format instead of
+.BR "3.0 (quilt)".
+.PP
+For each \fIpackage-root\fR (a directory containing
+.BR debian/ ),
+the tool:
+.IP \(bu 2
+writes
+.B debian/source/format
+as
+.BR "3.0 (native)"
+.IP \(bu 2
+rewrites every
+.B debian/changelog
+header to drop the Debian revision suffix (for example
+.BR "1.2.3-1"
+becomes
+.BR "1.2.3" )
+.IP \(bu 2
+optionally removes quilt-only files or upstream
+.BR ".orig.tar.*"
+archives
+.IP \(bu 2
+creates a git commit with message
+.B "Changed source format to native."
+when changes were made
+.PP
+Unless
+.B \-\-no\-commit
+is given and the tree is a git repository, the tool first runs
+.BR "git stash"
+to save local modifications, performs the conversion and commit on a clean
+worktree, then runs
+.BR "git stash pop"
+to restore your previous changes. If
+.B stash pop
+fails because of merge conflicts, the autostash entry is dropped; resolve
+conflicts in the worktree manually.
+.SH OPTIONS
+.TP
+.BR \-n ", " \-\-dry\-run
+Show planned changes without modifying files, stashing, committing, or popping.
+.TP
+.B \-\-no\-commit
+Apply file changes but do not create a git commit. The stash workflow is skipped.
+.TP
+.B \-\-drop\-quilt
+Remove quilt-only paths:
+.BR debian/patches ,
+.BR debian/source/local-options ,
+.BR debian/README.source ,
+and
+.BR debian/watch .
+Without this option, remaining quilt artifacts are reported on stderr.
+.TP
+.B \-\-drop\-orig
+Remove sibling
+.BR "*.orig.tar.*"
+files for the package. Without this option, found tarballs are reported on
+stderr.
+.TP
+.BR \-h ", " \-\-help
+Print a short usage summary and exit.
+.TP
+.BR \-\-version
+Print program version and exit.
+.SH EXAMPLES
+Preview conversion of a package:
+.PP
+.nf
+source2native -n ~/src/my-package
+.fi
+.PP
+Convert and commit, also removing quilt metadata:
+.PP
+.nf
+source2native --drop-quilt ~/src/my-package
+.fi
+.SH EXIT STATUS
+.TP
+.B 0
+Success, or no changes were required.
+.TP
+.B 1
+A path was missing, git
+.B stash pop
+failed, or another subprocess error occurred.
+.SH SEE ALSO
+.BR dpkg-source (1),
+.BR git-stash (1)
+.SH AUTHOR
+@PROJECT_AUTHOR@
+.SH COPYRIGHT
+Copyright \(co @PROJECT_AUTHOR@.
+License AGPL-3+: GNU Affero GPL version 3 or later
+<https://www.gnu.org/licenses/agpl-3.0.html>.
