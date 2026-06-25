@@ -1,3 +1,11 @@
+observer (1.0.10) testing; urgency=medium
+
+  * RemindDialog: paint the content panel's rounded background and border on the
+    panel itself instead of a transparent overlay filled in by the parent chrome
+    pass.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Thu, 25 Jun 2026 12:00:00 +0800
+
 observer (1.0.9) testing; urgency=medium
 
   * Switch between the remind and history dialogs without nesting modals: F12

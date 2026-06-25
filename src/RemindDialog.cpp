@@ -274,12 +274,36 @@ namespace {
 constexpr int kShadowSize = 20;
 constexpr int kCornerRadius = 12;
 
-class TransparentPanel : public wxPanel {
+class ContentChromePanel : public wxPanel {
   public:
-    explicit TransparentPanel(wxWindow *parent) : wxPanel() {
-        SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
-        Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
+    ContentChromePanel(wxWindow *parent, const wxColour &bg, const wxColour &border)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE),
+          m_bg(bg), m_border(border) {
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
+        SetBackgroundColour(bg);
+        Bind(wxEVT_PAINT, &ContentChromePanel::onPaint, this);
     }
+
+  private:
+    void onPaint(wxPaintEvent &event) {
+        wxAutoBufferedPaintDC dc(this);
+        const wxSize size = GetClientSize();
+        if (size.x <= 0 || size.y <= 0) {
+            event.Skip();
+            return;
+        }
+
+        std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
+        if (gc) {
+            gc->SetPen(wxPen(m_border, 1));
+            gc->SetBrush(m_bg);
+            gc->DrawRoundedRectangle(0.5, 0.5, size.x - 1.0, size.y - 1.0, kCornerRadius);
+        }
+        event.Skip();
+    }
+
+    wxColour m_bg;
+    wxColour m_border;
 };
 
 } // namespace
@@ -972,7 +996,7 @@ RemindDialog::RemindDialog(wxWindow *parent, const RemindPromptDefaults &default
     m_shadowColour = colors.windowShadow;
     Bind(wxEVT_PAINT, &RemindDialog::paintWindowChrome, this);
 
-    m_contentPanel = new TransparentPanel(this);
+    m_contentPanel = new ContentChromePanel(this, m_chromeBg, m_borderColour);
     auto *root = new wxBoxSizer(wxVERTICAL);
     m_theme = defaults.theme;
     m_quotes = defaults.quotes;
@@ -1486,8 +1510,6 @@ void RemindDialog::paintWindowChrome(wxPaintEvent &event) {
     gc->SetPen(wxPen(m_borderColour, 1));
     gc->SetBrush(m_chromeBg);
     gc->DrawRoundedRectangle(contentX, contentY, contentW, contentH, kCornerRadius);
-
-    event.Skip();
 }
 
 void RemindDialog::refitDialogLayout() {
