@@ -1,0 +1,18 @@
+# bash completion for source2native
+
+_source2native()
+{
+	local cur
+	_init_completion || return
+
+	case "$cur" in
+		-*)
+			COMPREPLY=($(compgen -W '-n --dry-run --no-commit --drop-quilt --drop-orig --version -h --help' -- "$cur"))
+			return
+			;;
+	esac
+
+	_filedir -d
+}
+
+complete -F _source2native source2native
