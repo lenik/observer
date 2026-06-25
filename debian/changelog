@@ -1,0 +1,8 @@
+source2native (1.0.0) unstable; urgency=medium
+
+  * Initial release.
+  * Convert debian/source/format to native and strip changelog revisions.
+  * Git stash/commit/pop workflow with autostash drop on pop conflicts.
+  * Add README, man page, bash completion, and Debian packaging.
+
+ -- Lenik (谢继雷) <lenik@bodz.net>  Thu, 25 Jun 2026 12:00:00 +0800

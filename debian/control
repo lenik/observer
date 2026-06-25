@@ -1,0 +1,20 @@
+Source: source2native
+Section: devel
+Priority: optional
+Maintainer: Lenik (谢继雷) <lenik@bodz.net>
+Build-Depends: debhelper-compat (= 13), meson, ninja-build
+Standards-Version: 4.7.0
+Homepage: https://github.com/lenik/source2native
+Rules-Requires-Root: no
+
+Package: source2native
+Architecture: all
+Depends: ${misc:Depends}, python3 (>= 3.10), git
+Recommends: bash-completion
+Description: convert Debian packages from quilt to native source format
+ source2native rewrites debian/source/format to 3.0 (native), strips Debian
+ revision suffixes from debian/changelog entries, and optionally removes quilt
+ metadata or upstream .orig.tar.* files.
+ .
+ When run inside a git repository, the tool stashes local changes, commits the
+ conversion, then restores the stash so unrelated work-in-progress stays intact.
